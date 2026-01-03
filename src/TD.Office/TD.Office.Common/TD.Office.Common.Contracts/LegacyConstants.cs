@@ -23,6 +23,7 @@
 			public const string IzvestajNeispravnihCenaUMagacinima =
 				"izvestaj-neispravnih-cena-u-magacinima";
 			public const string RobaPopis = "roba-popis";
+			public const string MasovniSMS = "masovni-sms";
 		}
 
 		public static class Jwt

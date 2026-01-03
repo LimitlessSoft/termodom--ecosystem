@@ -385,6 +385,80 @@ Assistant: I've completed the changes and committed them automatically.
 
 **Exception**: When the user explicitly uses commit-related commands like "quick commit" or "fast commit", proceed with the commit workflow as that is an explicit request.
 
+### TD.Office Permission System
+
+TD.Office uses an enum-based permission system with database persistence. When adding a new permission, modify these files in order:
+
+**Backend Files (3 files):**
+
+1. **Permission Group Constant** - `src/TD.Office/TD.Office.Common/TD.Office.Common.Contracts/LegacyConstants.cs`
+   ```csharp
+   public static class PermissionGroup
+   {
+       // Add new group constant (kebab-case string)
+       public const string MojModul = "moj-modul";
+   }
+   ```
+
+2. **Permission Enum** - `src/TD.Office/TD.Office.Common/TD.Office.Common.Contracts/Enums/Permission.cs`
+   ```csharp
+   // Add to NavBar group for navigation visibility
+   // Add to module-specific group for granular control
+   [PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+   [PermissionGroup(LegacyConstants.PermissionGroup.MojModul)]
+   [Description("Moj Modul - pristup modulu")]
+   MojModulRead,
+   ```
+
+3. **Controller Protection** - Apply `[Permissions]` attribute to controller
+   ```csharp
+   [LSCoreAuth]
+   [Permissions(Permission.Access, Permission.MojModulRead)]
+   public class MojModulController : ControllerBase
+   ```
+
+**Frontend Files (2 files):**
+
+4. **Permission Constants** - `src/TD.Office/TD.Office.Public/TD.Office.Public.Fe/src/constants/permissions/permissionsConstants.js`
+   ```javascript
+   PERMISSIONS_GROUPS: {
+       MOJ_MODUL: 'moj-modul',  // Must match backend kebab-case
+   },
+   USER_PERMISSIONS: {
+       MOJ_MODUL: {
+           READ: 'MojModulRead',  // Must match backend enum name
+       },
+   }
+   ```
+
+5. **Navigation Menu** - `src/TD.Office/TD.Office.Public/TD.Office.Public.Fe/src/constants/navBar/navBarConstants.js`
+   ```javascript
+   {
+       label: NAV_BAR_CONSTANTS.MODULE_LABELS.MOJ_MODUL,
+       href: URL_CONSTANTS.MOJ_MODUL.INDEX,
+       hasPermission: hasPermission(
+           permissions,
+           PERMISSIONS_CONSTANTS.USER_PERMISSIONS.MOJ_MODUL.READ
+       ),
+       icon: <SomeIcon />,
+   }
+   ```
+
+**How Permission System Works:**
+- `UserPermissionEntity` stores user-permission relationships in database
+- `[Permissions(...)]` attribute on controllers validates access via LSCore middleware
+- Frontend fetches permissions via `GET /permissions/{group}` API
+- `usePermissions(group)` hook fetches permissions, `hasPermission()` helper checks them
+- Navigation menu filters items where `hasPermission === false`
+
+**Key Files Reference:**
+- Permission enum: `TD.Office.Common.Contracts/Enums/Permission.cs`
+- Permission groups: `TD.Office.Common.Contracts/LegacyConstants.cs`
+- User-permission entity: `TD.Office.Common.Contracts/Entities/UserPermissionEntity.cs`
+- Permissions controller: `TD.Office.Public.Api/Controllers/PermissionsController.cs`
+- FE permission hook: `TD.Office.Public.Fe/src/hooks/usePermissionsHook.ts`
+- FE permission helper: `TD.Office.Public.Fe/src/helpers/permissionsHelpers.ts`
+
 ## Important Notes
 
 - **LSCore Framework**: Understanding LSCore patterns is essential. It provides Repository, Validation, Mapper, Auth, and ApiClient abstractions used throughout the codebase.

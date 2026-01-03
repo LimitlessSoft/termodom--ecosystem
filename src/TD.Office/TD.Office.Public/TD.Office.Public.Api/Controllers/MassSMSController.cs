@@ -10,7 +10,7 @@ using TD.Office.Public.Contracts.Interfaces.IManagers;
 namespace TD.Office.Public.Api.Controllers;
 
 [LSCoreAuth]
-[Permissions(Permission.Access)]
+[Permissions(Permission.Access, Permission.MasovniSMSRead)]
 public class MassSMSController(
 	MassSMSApiClient client,
 	ITDWebAdminApiManager webAdminApiManager,
