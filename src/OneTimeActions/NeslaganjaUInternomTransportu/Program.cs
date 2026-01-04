@@ -39,11 +39,11 @@ while (string.IsNullOrWhiteSpace(opt))
 		case "3":
 			IzlistajNeslaganjaGdeUIzlaznomDokumentuNemaNabavnaCena();
 			break;
-		case "5":
-			Console.WriteLine("Nije implementirano!");
+		case "4":
+			IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCene();
 			break;
-		case "6":
-			Console.WriteLine("Nije implementirano!");
+		case "5":
+			IzlistajStavkeSaKolicinomIAbsolutnimRabatomOd();
 			break;
 		case "0":
 			return;
@@ -68,10 +68,10 @@ void PrintHeader(Dokument sourceDok, Dokument destinacioniDokument)
 {
 	Console.WriteLine();
 	Console.WriteLine("===");
-    Console.WriteLine($"Izvorni VrDok: {sourceDok.VrDok}");
-    Console.WriteLine($"Izvorni BrDok: {sourceDok.BrDok}");
-    Console.WriteLine($"Izvorni MagacinId: {sourceDok.MagacinId}");
-    Console.WriteLine($"Destinacioni VrDok: {destinacioniDokument.VrDok}");
+	Console.WriteLine($"Izvorni VrDok: {sourceDok.VrDok}");
+	Console.WriteLine($"Izvorni BrDok: {sourceDok.BrDok}");
+	Console.WriteLine($"Izvorni MagacinId: {sourceDok.MagacinId}");
+	Console.WriteLine($"Destinacioni VrDok: {destinacioniDokument.VrDok}");
 	Console.WriteLine($"Destinacioni BrDok: {destinacioniDokument.BrDok}");
 	Console.WriteLine($"Destinacioni MagacinId: {destinacioniDokument.MagacinId}");
 }
@@ -185,7 +185,10 @@ void IzlistajNeslaganjaDokumenta(
 		);
 	var vrDok = dok.Item1;
 	var brDok = dok.Item2;
-	var dokument = ctx.Dokumenti.Where(x => x.VrDok == vrDok && x.BrDok == brDok).Include(x => x.Stavke).FirstOrDefault();
+	var dokument = ctx
+		.Dokumenti.Where(x => x.VrDok == vrDok && x.BrDok == brDok)
+		.Include(x => x.Stavke)
+		.FirstOrDefault();
 	if (dokument == null)
 	{
 		Console.WriteLine();
@@ -193,9 +196,9 @@ void IzlistajNeslaganjaDokumenta(
 		return;
 	}
 
-	var interniTransporti = ctx.InterniTransporti.Where(x =>
-		x.IzVrDok == vrDok && x.IzBrDok == brDok
-	).ToList();
+	var interniTransporti = ctx
+		.InterniTransporti.Where(x => x.IzVrDok == vrDok && x.IzBrDok == brDok)
+		.ToList();
 	if (!interniTransporti.Any())
 	{
 		if (alertNotTransported)
@@ -213,16 +216,21 @@ void IzlistajNeslaganjaDokumenta(
 	foreach (var interniTransport in interniTransporti)
 	{
 		var printedHeader = false;
-		var dokumentTransporta = ctx.Dokumenti.Where(x =>
-			x.VrDok == interniTransport.UVrDok && x.BrDok == interniTransport.UBrDok
-		).Include(x => x.Stavke).FirstOrDefault();
+		var dokumentTransporta = ctx
+			.Dokumenti.Where(x =>
+				x.VrDok == interniTransport.UVrDok && x.BrDok == interniTransport.UBrDok
+			)
+			.Include(x => x.Stavke)
+			.FirstOrDefault();
 		if (dokumentTransporta == null)
 			throw new NullReferenceException(nameof(dokumentTransporta));
 
 		// check broj stavki
 		if (whatToCheck.BrojStavki)
 		{
-			var transportovanoBrojStavki = dokumentTransporta.Stavke.Count(x => IsStandardRoba(x.RobaId));
+			var transportovanoBrojStavki = dokumentTransporta.Stavke.Count(x =>
+				IsStandardRoba(x.RobaId)
+			);
 			if (originalnoBrojStavki != transportovanoBrojStavki)
 			{
 				if (!printedHeader)
@@ -238,12 +246,13 @@ void IzlistajNeslaganjaDokumenta(
 		if (whatToCheck.SveStavkeIste)
 		{
 			var distinctRobaIdsUTransportovanomDokumentu = dokumentTransporta
-				.Stavke
-				.Where(x => IsStandardRoba(x.RobaId))
+				.Stavke.Where(x => IsStandardRoba(x.RobaId))
 				.Select(x => x.RobaId)
 				.Distinct()
 				.ToHashSet();
-			var sveStavkeIsteListCheck = dokument.Stavke.Where(x => IsStandardRoba(x.RobaId)).ToList();
+			var sveStavkeIsteListCheck = dokument
+				.Stavke.Where(x => IsStandardRoba(x.RobaId))
+				.ToList();
 			sveStavkeIsteListCheck.RemoveAll(x =>
 				distinctRobaIdsUTransportovanomDokumentu.Contains(x.RobaId)
 			);
@@ -268,9 +277,9 @@ void IzlistajNeslaganjaDokumenta(
 			{
 				foreach (var stavka in dokument.Stavke.Where(x => IsStandardRoba(x.RobaId)))
 				{
-					var stavkaDestinacionogDokumenta = dokumentTransporta.Stavke.Where(x => IsStandardRoba(x.RobaId)).First(x =>
-						x.RobaId == stavka.RobaId
-					);
+					var stavkaDestinacionogDokumenta = dokumentTransporta
+						.Stavke.Where(x => IsStandardRoba(x.RobaId))
+						.First(x => x.RobaId == stavka.RobaId);
 					if (Math.Abs(stavkaDestinacionogDokumenta.Kolicina - stavka.Kolicina) > 0.01)
 					{
 						if (!printedHeader)
@@ -295,16 +304,16 @@ void IzlistajNeslaganjaDokumenta(
 			{
 				foreach (var stavka in dokument.Stavke.Where(x => IsStandardRoba(x.RobaId)))
 				{
-					var stavkaDestinacionogDokumenta = dokumentTransporta.Stavke.Where(x => IsStandardRoba(x.RobaId)).First(x =>
-						x.RobaId == stavka.RobaId
-					);
+					var stavkaDestinacionogDokumenta = dokumentTransporta
+						.Stavke.Where(x => IsStandardRoba(x.RobaId))
+						.First(x => x.RobaId == stavka.RobaId);
 					if (
 						Math.Abs(stavkaDestinacionogDokumenta.ProdajnaCena - stavka.ProdajnaCena)
 						> 0.01
 					)
 					{
 						if (!printedHeader)
-                            PrintHeader(dokument, dokumentTransporta);
+							PrintHeader(dokument, dokumentTransporta);
 						Console.WriteLine(
 							"Neslaganje u prodajnim cenama stavke izvornog i destinacionog dokumenta!"
 						);
@@ -325,16 +334,16 @@ void IzlistajNeslaganjaDokumenta(
 			{
 				foreach (var stavka in dokument.Stavke.Where(x => IsStandardRoba(x.RobaId)))
 				{
-					var stavkaDestinacionogDokumenta = dokumentTransporta.Stavke.Where(x => IsStandardRoba(x.RobaId)).First(x =>
-						x.RobaId == stavka.RobaId
-					);
+					var stavkaDestinacionogDokumenta = dokumentTransporta
+						.Stavke.Where(x => IsStandardRoba(x.RobaId))
+						.First(x => x.RobaId == stavka.RobaId);
 					if (
 						Math.Abs(stavkaDestinacionogDokumenta.NabavnaCena - stavka.NabavnaCena)
 						> 0.01
 					)
 					{
 						if (!printedHeader)
-                            PrintHeader(dokument, dokumentTransporta);
+							PrintHeader(dokument, dokumentTransporta);
 						Console.WriteLine(
 							"Neslaganje u nabavnim cenama stavke izvornog i destinacionog dokumenta!"
 						);
@@ -432,4 +441,219 @@ void IzlistajNeslaganjaGdeUIzlaznomDokumentuNemaNabavnaCenaSvihDokumenata()
 				NabavnaCenaNula = true,
 			}
 		);
+}
+
+int UnosZnaka()
+{
+	Console.WriteLine();
+	Console.WriteLine("Zelim da selektuje stavke kojima je vrednost filtera: ");
+	Console.WriteLine("1. Veci/a od X%");
+	Console.WriteLine("2. Manji/a od X%");
+	var opt = Console.ReadLine();
+	int o = 0;
+	if (!int.TryParse(opt, out o))
+	{
+		Console.WriteLine("Neispravna opcija!");
+		UnosZnaka();
+	}
+	return o == 1 ? 1 : -1;
+}
+double UnosRazlikeProcenti()
+{
+	double razlikaProcenti;
+	Console.WriteLine();
+	Console.Write("Unesite procenat razlike vrednosti: ");
+	var b = Console.ReadLine();
+	if (!double.TryParse(b, out razlikaProcenti))
+	{
+		Console.WriteLine("Procenat nije dobar!");
+		UnosRazlikeProcenti();
+	}
+	if (razlikaProcenti <= 0)
+	{
+		Console.WriteLine("Unesite procenat u pozitivnoj vrednosti.");
+		UnosRazlikeProcenti();
+	}
+	return razlikaProcenti;
+}
+void IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCene()
+{
+	var dok = IzborDokumenta();
+	var znak = UnosZnaka();
+	var razlikaProcenti = UnosRazlikeProcenti();
+
+	if (dok == null)
+		IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCeneSviDokumenti(
+			znak,
+			razlikaProcenti
+		);
+	else
+		IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCeneDokumenta(
+			ctx.Dokumenti.First(x => x.VrDok == dok.Item1 && x.BrDok == dok.Item2),
+			znak,
+			razlikaProcenti
+		);
+}
+void IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCeneSviDokumenti(
+	int znak,
+	double procenti
+)
+{
+	var dokumentiSaInternimTransportom = ctx
+		.InterniTransporti.Select(x => new Tuple<int, int>(x.IzVrDok, x.IzBrDok))
+		.Distinct();
+
+	foreach (var d in dokumentiSaInternimTransportom)
+		IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCeneDokumenta(
+			ctx.Dokumenti.First(x => x.VrDok == d.Item1 && x.BrDok == d.Item2),
+			znak,
+			procenti
+		);
+}
+void IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCeneDokumenta(
+	Dokument d,
+	int znak,
+	double razlikaProcenti
+)
+{
+	Console.WriteLine();
+	Console.WriteLine(
+		"Ova akcija ce selektovati i ispisati sve stavke destinacionih dokumenata internog trasporta kojima je razlika izmedju prodajne i nabavne cene veca ili manja od X%"
+	);
+
+	var transporti = ctx.InterniTransporti.Where(x => x.IzVrDok == d.VrDok && x.IzBrDok == d.BrDok);
+	foreach (var t in transporti)
+	{
+		var dok = ctx.Dokumenti.First(x => x.VrDok == t.UVrDok && x.BrDok == t.UBrDok);
+		var stavke = ctx
+			.Stavke.Where(x => x.VrDok == dok.VrDok && x.BrDok == dok.BrDok && x.Kolicina != 0)
+			.ToList();
+		foreach (var stavka in stavke)
+		{
+			if (stavka.ProdajnaCena == 0)
+			{
+				PrintRoba(stavka.RobaId);
+				Console.WriteLine($"Prodajna cena 0!");
+				PrintFooter();
+				continue;
+			}
+			if (stavka.NabavnaCena == 0)
+			{
+				PrintRoba(stavka.RobaId);
+				Console.WriteLine($"Nabavna cena 0!");
+				PrintFooter();
+				continue;
+			}
+			if (stavka.ProdajnaCena <= stavka.NabavnaCena)
+			{
+				PrintRoba(stavka.RobaId);
+				Console.WriteLine($"Prodajna cena == Nabavna cena!");
+				PrintFooter();
+				continue;
+			}
+			var razlikaPerc = (stavka.ProdajnaCena / stavka.NabavnaCena - 1) * 100;
+			if (znak == 1)
+			{
+				if (razlikaPerc > razlikaProcenti)
+				{
+					PrintRoba(stavka.RobaId);
+					Console.WriteLine(
+						$"Razlika prodajne i nabavne cene veca od {razlikaProcenti}%!"
+					);
+					Console.WriteLine($"Nabavna cena: {stavka.NabavnaCena}");
+					Console.WriteLine($"Prodajna cena: {stavka.ProdajnaCena}");
+					PrintFooter();
+					continue;
+				}
+			}
+			else
+			{
+				if (razlikaPerc < razlikaProcenti)
+				{
+					PrintRoba(stavka.RobaId);
+					Console.WriteLine(
+						$"Razlika prodajne i nabavne cene manja od {razlikaProcenti}%!"
+					);
+					Console.WriteLine($"Nabavna cena: {stavka.NabavnaCena}");
+					Console.WriteLine($"Prodajna cena: {stavka.ProdajnaCena}");
+					PrintFooter();
+					continue;
+				}
+			}
+		}
+	}
+}
+
+void IzlistajStavkeSaKolicinomIAbsolutnimRabatomOd()
+{
+	var dok = IzborDokumenta();
+	var znak = UnosZnaka();
+	var razlikaProcenti = UnosRazlikeProcenti();
+
+	if (dok == null)
+		IzlistajStavkeSaKolicinomIAbsolutnimRabatomOdSviDokumenti(znak, razlikaProcenti);
+	else
+		IzlistajStavkeSaKolicinomIAbsolutnimRabatomOdDokumenta(
+			ctx.Dokumenti.First(x => x.VrDok == dok.Item1 && x.BrDok == dok.Item2),
+			znak,
+			razlikaProcenti
+		);
+}
+void IzlistajStavkeSaKolicinomIAbsolutnimRabatomOdSviDokumenti(int znak, double procenti)
+{
+	var dokumentiSaInternimTransportom = ctx
+		.InterniTransporti.Select(x => new Tuple<int, int>(x.IzVrDok, x.IzBrDok))
+		.Distinct();
+
+	foreach (var d in dokumentiSaInternimTransportom)
+		IzlistajStavkeSaKolicinomIAbsolutnimRabatomOdDokumenta(
+			ctx.Dokumenti.First(x => x.VrDok == d.Item1 && x.BrDok == d.Item2),
+			znak,
+			procenti
+		);
+}
+void IzlistajStavkeSaKolicinomIAbsolutnimRabatomOdDokumenta(
+	Dokument d,
+	int znak,
+	double razlikaProcenti
+)
+{
+	Console.WriteLine();
+	Console.WriteLine(
+		$"Ova akcija ce selektovati i ispisati sve stavke destinacionih dokumenata internog trasporta kojima je rabat {(znak == 1 ? "veci" : "manji")} X%"
+	);
+
+	var transporti = ctx.InterniTransporti.Where(x => x.IzVrDok == d.VrDok && x.IzBrDok == d.BrDok);
+	foreach (var t in transporti)
+	{
+		var dok = ctx.Dokumenti.First(x => x.VrDok == t.UVrDok && x.BrDok == t.UBrDok);
+		var stavke = ctx
+			.Stavke.Where(x => x.VrDok == dok.VrDok && x.BrDok == dok.BrDok && x.Kolicina != 0)
+			.ToList();
+		foreach (var stavka in stavke)
+		{
+			if (znak == 1)
+			{
+				if (stavka.Rabat > razlikaProcenti)
+				{
+					PrintRoba(stavka.RobaId);
+					Console.WriteLine($"Rabat je veci od {razlikaProcenti}%!");
+					Console.WriteLine($"Rabat: {stavka.Rabat}");
+					PrintFooter();
+					continue;
+				}
+			}
+			else
+			{
+				if (stavka.Rabat < razlikaProcenti)
+				{
+					PrintRoba(stavka.RobaId);
+					Console.WriteLine($"Rabat je manji od {razlikaProcenti}%!");
+					Console.WriteLine($"Rabat: {stavka.Rabat}");
+					PrintFooter();
+					continue;
+				}
+			}
+		}
+	}
 }
