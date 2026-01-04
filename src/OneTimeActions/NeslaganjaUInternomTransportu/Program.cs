@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using NeslaganjaUInternomTransportu;
 using TD.Komercijalno.Contracts.Entities;
 
@@ -63,13 +64,16 @@ Console.WriteLine("====");
 Console.WriteLine("====");
 Console.Read();
 
-void PrintHeader(Dokument dokument)
+void PrintHeader(Dokument sourceDok, Dokument destinacioniDokument)
 {
 	Console.WriteLine();
 	Console.WriteLine("===");
-	Console.WriteLine($"VrDok: {dokument.VrDok}");
-	Console.WriteLine($"BrDok: {dokument.BrDok}");
-	Console.WriteLine($"MagacinId: {dokument.MagacinId}");
+    Console.WriteLine($"Izvorni VrDok: {sourceDok.VrDok}");
+    Console.WriteLine($"Izvorni BrDok: {sourceDok.BrDok}");
+    Console.WriteLine($"Izvorni MagacinId: {sourceDok.MagacinId}");
+    Console.WriteLine($"Destinacioni VrDok: {destinacioniDokument.VrDok}");
+	Console.WriteLine($"Destinacioni BrDok: {destinacioniDokument.BrDok}");
+	Console.WriteLine($"Destinacioni MagacinId: {destinacioniDokument.MagacinId}");
 }
 void PrintFooter()
 {
@@ -79,7 +83,6 @@ void PrintRoba(int robaId)
 {
 	Console.WriteLine();
 	var roba = sifarnik[robaId];
-	Console.WriteLine("===");
 	Console.WriteLine($"[{roba.KatBr}] {roba.Naziv}");
 }
 Tuple<int, int>? IzborDokumenta()
@@ -161,6 +164,7 @@ void IzlistajOsnovnaNeslaganjaSvihDokumenata()
 		);
 }
 
+bool IsStandardRoba(int robaId) => sifarnik.Keys.Contains(robaId) && sifarnik[robaId].Vrsta == 1;
 void IzlistajNeslaganjaDokumenta(
 	Tuple<int, int> dok,
 	bool alertNotTransported,
@@ -181,7 +185,7 @@ void IzlistajNeslaganjaDokumenta(
 		);
 	var vrDok = dok.Item1;
 	var brDok = dok.Item2;
-	var dokument = ctx.Dokumenti.FirstOrDefault(x => x.VrDok == vrDok && x.BrDok == brDok);
+	var dokument = ctx.Dokumenti.Where(x => x.VrDok == vrDok && x.BrDok == brDok).Include(x => x.Stavke).FirstOrDefault();
 	if (dokument == null)
 	{
 		Console.WriteLine();
@@ -191,7 +195,7 @@ void IzlistajNeslaganjaDokumenta(
 
 	var interniTransporti = ctx.InterniTransporti.Where(x =>
 		x.IzVrDok == vrDok && x.IzBrDok == brDok
-	);
+	).ToList();
 	if (!interniTransporti.Any())
 	{
 		if (alertNotTransported)
@@ -204,24 +208,25 @@ void IzlistajNeslaganjaDokumenta(
 		return;
 	}
 
-	var originalnoBrojStavki = dokument.Stavke.Count;
+	var vrstaRoba = 1;
+	var originalnoBrojStavki = dokument.Stavke.Count(x => IsStandardRoba(x.RobaId));
 	foreach (var interniTransport in interniTransporti)
 	{
 		var printedHeader = false;
-		var dokumentTransporta = ctx.Dokumenti.FirstOrDefault(x =>
+		var dokumentTransporta = ctx.Dokumenti.Where(x =>
 			x.VrDok == interniTransport.UVrDok && x.BrDok == interniTransport.UBrDok
-		);
+		).Include(x => x.Stavke).FirstOrDefault();
 		if (dokumentTransporta == null)
 			throw new NullReferenceException(nameof(dokumentTransporta));
 
 		// check broj stavki
 		if (whatToCheck.BrojStavki)
 		{
-			var transportovanoBrojStavki = dokumentTransporta.Stavke.Count;
+			var transportovanoBrojStavki = dokumentTransporta.Stavke.Count(x => IsStandardRoba(x.RobaId));
 			if (originalnoBrojStavki != transportovanoBrojStavki)
 			{
 				if (!printedHeader)
-					PrintHeader(dokumentTransporta);
+					PrintHeader(dokument, dokumentTransporta);
 				Console.WriteLine("Neslaganje u broju stavki!");
 				Console.WriteLine($"Izvorni dokument stavki: {originalnoBrojStavki}");
 				Console.WriteLine($"Transportovani dokument stavki: {transportovanoBrojStavki}");
@@ -233,39 +238,43 @@ void IzlistajNeslaganjaDokumenta(
 		if (whatToCheck.SveStavkeIste)
 		{
 			var distinctRobaIdsUTransportovanomDokumentu = dokumentTransporta
-				.Stavke.Select(x => x.RobaId)
+				.Stavke
+				.Where(x => IsStandardRoba(x.RobaId))
+				.Select(x => x.RobaId)
 				.Distinct()
 				.ToHashSet();
-			var sveStavkeIsteListCheck = dokument.Stavke.ToList();
+			var sveStavkeIsteListCheck = dokument.Stavke.Where(x => IsStandardRoba(x.RobaId)).ToList();
 			sveStavkeIsteListCheck.RemoveAll(x =>
 				distinctRobaIdsUTransportovanomDokumentu.Contains(x.RobaId)
 			);
 			sveStavkeIste = sveStavkeIsteListCheck.Count == 0;
-			if (sveStavkeIste)
+			if (!sveStavkeIste)
 			{
 				if (!printedHeader)
-					PrintHeader(dokumentTransporta);
+					PrintHeader(dokument, dokumentTransporta);
 				Console.WriteLine("Neslaganje u samim stavkama!");
 				Console.WriteLine(
 					"U izvornom dokumentu postoje stavke koje ne postoje u destinacionom ili obratno!"
 				);
+				foreach (var st in sveStavkeIsteListCheck)
+					PrintRoba(st.RobaId);
 			}
 		}
 
 		// check kolicine
-		if (whatToCheck.SveStavkeIste)
+		if (whatToCheck.Kolicine)
 		{
 			if (sveStavkeIste)
 			{
-				foreach (var stavka in dokument.Stavke)
+				foreach (var stavka in dokument.Stavke.Where(x => IsStandardRoba(x.RobaId)))
 				{
-					var stavkaDestinacionogDokumenta = dokumentTransporta.Stavke.First(x =>
+					var stavkaDestinacionogDokumenta = dokumentTransporta.Stavke.Where(x => IsStandardRoba(x.RobaId)).First(x =>
 						x.RobaId == stavka.RobaId
 					);
 					if (Math.Abs(stavkaDestinacionogDokumenta.Kolicina - stavka.Kolicina) > 0.01)
 					{
 						if (!printedHeader)
-							PrintHeader(dokumentTransporta);
+							PrintHeader(dokument, dokumentTransporta);
 						Console.WriteLine(
 							"Neslaganje u kolicinama stavke izvornog i destinacionog dokumenta!"
 						);
@@ -284,9 +293,9 @@ void IzlistajNeslaganjaDokumenta(
 		{
 			if (sveStavkeIste)
 			{
-				foreach (var stavka in dokument.Stavke)
+				foreach (var stavka in dokument.Stavke.Where(x => IsStandardRoba(x.RobaId)))
 				{
-					var stavkaDestinacionogDokumenta = dokumentTransporta.Stavke.First(x =>
+					var stavkaDestinacionogDokumenta = dokumentTransporta.Stavke.Where(x => IsStandardRoba(x.RobaId)).First(x =>
 						x.RobaId == stavka.RobaId
 					);
 					if (
@@ -295,7 +304,7 @@ void IzlistajNeslaganjaDokumenta(
 					)
 					{
 						if (!printedHeader)
-							PrintHeader(dokumentTransporta);
+                            PrintHeader(dokument, dokumentTransporta);
 						Console.WriteLine(
 							"Neslaganje u prodajnim cenama stavke izvornog i destinacionog dokumenta!"
 						);
@@ -314,9 +323,9 @@ void IzlistajNeslaganjaDokumenta(
 		{
 			if (sveStavkeIste)
 			{
-				foreach (var stavka in dokument.Stavke)
+				foreach (var stavka in dokument.Stavke.Where(x => IsStandardRoba(x.RobaId)))
 				{
-					var stavkaDestinacionogDokumenta = dokumentTransporta.Stavke.First(x =>
+					var stavkaDestinacionogDokumenta = dokumentTransporta.Stavke.Where(x => IsStandardRoba(x.RobaId)).First(x =>
 						x.RobaId == stavka.RobaId
 					);
 					if (
@@ -325,7 +334,7 @@ void IzlistajNeslaganjaDokumenta(
 					)
 					{
 						if (!printedHeader)
-							PrintHeader(dokumentTransporta);
+                            PrintHeader(dokument, dokumentTransporta);
 						Console.WriteLine(
 							"Neslaganje u nabavnim cenama stavke izvornog i destinacionog dokumenta!"
 						);
