@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TD.Komercijalno.Contracts.Entities;
 
-[Table("INTERNITRANSPORT")]
+[Table("INTERTRANSPORT")]
 public class InterniTransport
 {
 	[Column("ITID")]
