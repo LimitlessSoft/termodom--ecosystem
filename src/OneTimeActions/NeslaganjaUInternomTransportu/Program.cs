@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NeslaganjaUInternomTransportu;
+using System.Text;
 using TD.Komercijalno.Contracts.Entities;
 
 var bazaConnString = "C:\\Poslovanje\\Baze\\2025\\FRANSIZA2025TCMD.FDB";
@@ -79,11 +80,14 @@ void PrintFooter()
 {
 	Console.WriteLine("===");
 }
-void PrintRoba(int robaId)
+void PrintRoba(int robaId) => Console.WriteLine(FormatRobaPrint(robaId));
+string FormatRobaPrint(int robaId)
 {
-	Console.WriteLine();
-	var roba = sifarnik[robaId];
-	Console.WriteLine($"[{roba.KatBr}] {roba.Naziv}");
+	var sb = new StringBuilder();
+	sb.AppendLine();
+    var roba = sifarnik[robaId];
+    sb.AppendLine($"[{roba.KatBr}] {roba.Naziv}");
+	return sb.ToString();
 }
 Tuple<int, int>? IzborDokumenta()
 {
@@ -234,7 +238,10 @@ void IzlistajNeslaganjaDokumenta(
 			if (originalnoBrojStavki != transportovanoBrojStavki)
 			{
 				if (!printedHeader)
+				{
 					PrintHeader(dokument, dokumentTransporta);
+					printedHeader = true;
+				}
 				Console.WriteLine("Neslaganje u broju stavki!");
 				Console.WriteLine($"Izvorni dokument stavki: {originalnoBrojStavki}");
 				Console.WriteLine($"Transportovani dokument stavki: {transportovanoBrojStavki}");
@@ -260,7 +267,10 @@ void IzlistajNeslaganjaDokumenta(
 			if (!sveStavkeIste)
 			{
 				if (!printedHeader)
+				{
 					PrintHeader(dokument, dokumentTransporta);
+					printedHeader = true;
+				}
 				Console.WriteLine("Neslaganje u samim stavkama!");
 				Console.WriteLine(
 					"U izvornom dokumentu postoje stavke koje ne postoje u destinacionom ili obratno!"
@@ -283,7 +293,10 @@ void IzlistajNeslaganjaDokumenta(
 					if (Math.Abs(stavkaDestinacionogDokumenta.Kolicina - stavka.Kolicina) > 0.01)
 					{
 						if (!printedHeader)
+						{
 							PrintHeader(dokument, dokumentTransporta);
+							printedHeader = true;
+						}
 						Console.WriteLine(
 							"Neslaganje u kolicinama stavke izvornog i destinacionog dokumenta!"
 						);
@@ -313,7 +326,10 @@ void IzlistajNeslaganjaDokumenta(
 					)
 					{
 						if (!printedHeader)
+						{
 							PrintHeader(dokument, dokumentTransporta);
+							printedHeader = true;
+						}
 						Console.WriteLine(
 							"Neslaganje u prodajnim cenama stavke izvornog i destinacionog dokumenta!"
 						);
@@ -343,7 +359,10 @@ void IzlistajNeslaganjaDokumenta(
 					)
 					{
 						if (!printedHeader)
+						{
 							PrintHeader(dokument, dokumentTransporta);
+							printedHeader = true;
+						}
 						Console.WriteLine(
 							"Neslaganje u nabavnim cenama stavke izvornog i destinacionog dokumenta!"
 						);
@@ -478,7 +497,11 @@ double UnosRazlikeProcenti()
 }
 void IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCene()
 {
-	var dok = IzborDokumenta();
+    Console.WriteLine();
+    Console.WriteLine(
+        "Ova akcija ce selektovati i ispisati sve stavke destinacionih dokumenata internog trasporta kojima je razlika izmedju prodajne i nabavne cene veca ili manja od X%"
+    );
+    var dok = IzborDokumenta();
 	var znak = UnosZnaka();
 	var razlikaProcenti = UnosRazlikeProcenti();
 
@@ -504,11 +527,19 @@ void IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCeneSviDokument
 		.Distinct();
 
 	foreach (var d in dokumentiSaInternimTransportom)
+	{
+		var dd = ctx.Dokumenti.FirstOrDefault(x => x.VrDok == d.Item1 && x.BrDok == d.Item2);
+		if (dd == null)
+		{
+			Console.WriteLine($"Nasao sam neki invalidan interni transport [IzVrDok: {d.Item1}, IzBrDok: {d.Item2}]");
+			continue;
+		}
 		IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCeneDokumenta(
-			ctx.Dokumenti.First(x => x.VrDok == d.Item1 && x.BrDok == d.Item2),
+			dd,
 			znak,
 			procenti
 		);
+	}
 }
 void IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCeneDokumenta(
 	Dokument d,
@@ -516,10 +547,6 @@ void IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCeneDokumenta(
 	double razlikaProcenti
 )
 {
-	Console.WriteLine();
-	Console.WriteLine(
-		"Ova akcija ce selektovati i ispisati sve stavke destinacionih dokumenata internog trasporta kojima je razlika izmedju prodajne i nabavne cene veca ili manja od X%"
-	);
 
 	var transporti = ctx.InterniTransporti.Where(x => x.IzVrDok == d.VrDok && x.IzBrDok == d.BrDok);
 	foreach (var t in transporti)
@@ -528,27 +555,25 @@ void IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCeneDokumenta(
 		var stavke = ctx
 			.Stavke.Where(x => x.VrDok == dok.VrDok && x.BrDok == dok.BrDok && x.Kolicina != 0)
 			.ToList();
-		foreach (var stavka in stavke)
+		var sb = new StringBuilder();
+        foreach (var stavka in stavke)
 		{
 			if (stavka.ProdajnaCena == 0)
 			{
-				PrintRoba(stavka.RobaId);
-				Console.WriteLine($"Prodajna cena 0!");
-				PrintFooter();
+				sb.AppendLine(FormatRobaPrint(stavka.RobaId));
+				sb.AppendLine($"Prodajna cena 0!");
 				continue;
 			}
 			if (stavka.NabavnaCena == 0)
-			{
-				PrintRoba(stavka.RobaId);
-				Console.WriteLine($"Nabavna cena 0!");
-				PrintFooter();
-				continue;
+            {
+                sb.AppendLine(FormatRobaPrint(stavka.RobaId));
+                sb.AppendLine($"Nabavna cena 0!");
+                continue;
 			}
 			if (stavka.ProdajnaCena <= stavka.NabavnaCena)
-			{
-				PrintRoba(stavka.RobaId);
-				Console.WriteLine($"Prodajna cena == Nabavna cena!");
-				PrintFooter();
+            {
+                sb.AppendLine(FormatRobaPrint(stavka.RobaId));
+                sb.AppendLine($"Prodajna cena == Nabavna cena!");
 				continue;
 			}
 			var razlikaPerc = (stavka.ProdajnaCena / stavka.NabavnaCena - 1) * 100;
@@ -556,37 +581,41 @@ void IzlistajStavkeSaKolicinomIAbsolutnomRazlikomProdajneINabavneCeneDokumenta(
 			{
 				if (razlikaPerc > razlikaProcenti)
 				{
-					PrintRoba(stavka.RobaId);
-					Console.WriteLine(
-						$"Razlika prodajne i nabavne cene veca od {razlikaProcenti}%!"
-					);
-					Console.WriteLine($"Nabavna cena: {stavka.NabavnaCena}");
-					Console.WriteLine($"Prodajna cena: {stavka.ProdajnaCena}");
-					PrintFooter();
-					continue;
+                    sb.AppendLine(FormatRobaPrint(stavka.RobaId));
+                    sb.AppendLine($"Razlika prodajne i nabavne cene veca od {razlikaProcenti}%!");
+                    sb.AppendLine($"Nabavna cena: {stavka.NabavnaCena}");
+                    sb.AppendLine($"Prodajna cena: {stavka.ProdajnaCena}");
+                    continue;
 				}
 			}
 			else
 			{
 				if (razlikaPerc < razlikaProcenti)
-				{
-					PrintRoba(stavka.RobaId);
-					Console.WriteLine(
-						$"Razlika prodajne i nabavne cene manja od {razlikaProcenti}%!"
-					);
-					Console.WriteLine($"Nabavna cena: {stavka.NabavnaCena}");
-					Console.WriteLine($"Prodajna cena: {stavka.ProdajnaCena}");
-					PrintFooter();
-					continue;
+                {
+                    sb.AppendLine(FormatRobaPrint(stavka.RobaId));
+                    sb.AppendLine($"Razlika prodajne i nabavne cene manja od {razlikaProcenti}%!");
+                    sb.AppendLine($"Nabavna cena: {stavka.NabavnaCena}");
+                    sb.AppendLine($"Prodajna cena: {stavka.ProdajnaCena}");
+                    continue;
 				}
 			}
+		}
+		if(sb.Length > 0)
+		{
+			PrintHeader(d, dok);
+			Console.WriteLine(sb.ToString());
+			PrintFooter();
 		}
 	}
 }
 
 void IzlistajStavkeSaKolicinomIAbsolutnimRabatomOd()
 {
-	var dok = IzborDokumenta();
+    Console.WriteLine();
+    Console.WriteLine(
+        $"Ova akcija ce selektovati i ispisati sve stavke destinacionih dokumenata internog trasporta kojima je rabat veci/manji od X%"
+    );
+    var dok = IzborDokumenta();
 	var znak = UnosZnaka();
 	var razlikaProcenti = UnosRazlikeProcenti();
 
@@ -606,11 +635,19 @@ void IzlistajStavkeSaKolicinomIAbsolutnimRabatomOdSviDokumenti(int znak, double 
 		.Distinct();
 
 	foreach (var d in dokumentiSaInternimTransportom)
-		IzlistajStavkeSaKolicinomIAbsolutnimRabatomOdDokumenta(
-			ctx.Dokumenti.First(x => x.VrDok == d.Item1 && x.BrDok == d.Item2),
+	{
+		var dd = ctx.Dokumenti.FirstOrDefault(x => x.VrDok == d.Item1 && x.BrDok == d.Item2);
+		if(dd == null)
+		{
+            Console.WriteLine($"Nasao sam neki invalidan interni transport [IzVrDok: {d.Item1}, IzBrDok: {d.Item2}]");
+			continue;
+		}
+        IzlistajStavkeSaKolicinomIAbsolutnimRabatomOdDokumenta(
+			dd,
 			znak,
 			procenti
 		);
+	}
 }
 void IzlistajStavkeSaKolicinomIAbsolutnimRabatomOdDokumenta(
 	Dokument d,
@@ -618,11 +655,6 @@ void IzlistajStavkeSaKolicinomIAbsolutnimRabatomOdDokumenta(
 	double razlikaProcenti
 )
 {
-	Console.WriteLine();
-	Console.WriteLine(
-		$"Ova akcija ce selektovati i ispisati sve stavke destinacionih dokumenata internog trasporta kojima je rabat {(znak == 1 ? "veci" : "manji")} X%"
-	);
-
 	var transporti = ctx.InterniTransporti.Where(x => x.IzVrDok == d.VrDok && x.IzBrDok == d.BrDok);
 	foreach (var t in transporti)
 	{
@@ -630,30 +662,35 @@ void IzlistajStavkeSaKolicinomIAbsolutnimRabatomOdDokumenta(
 		var stavke = ctx
 			.Stavke.Where(x => x.VrDok == dok.VrDok && x.BrDok == dok.BrDok && x.Kolicina != 0)
 			.ToList();
+		var sb = new StringBuilder();
 		foreach (var stavka in stavke)
 		{
 			if (znak == 1)
 			{
 				if (stavka.Rabat > razlikaProcenti)
 				{
-					PrintRoba(stavka.RobaId);
-					Console.WriteLine($"Rabat je veci od {razlikaProcenti}%!");
-					Console.WriteLine($"Rabat: {stavka.Rabat}");
-					PrintFooter();
+					sb.AppendLine(FormatRobaPrint(stavka.RobaId));
+					sb.AppendLine($"Rabat je veci od {razlikaProcenti}%!");
+					sb.AppendLine($"Rabat: {stavka.Rabat}");
 					continue;
 				}
 			}
 			else
 			{
 				if (stavka.Rabat < razlikaProcenti)
-				{
-					PrintRoba(stavka.RobaId);
-					Console.WriteLine($"Rabat je manji od {razlikaProcenti}%!");
-					Console.WriteLine($"Rabat: {stavka.Rabat}");
-					PrintFooter();
-					continue;
+                {
+                    sb.AppendLine(FormatRobaPrint(stavka.RobaId));
+                    sb.AppendLine($"Rabat je manji od {razlikaProcenti}%!");
+                    sb.AppendLine($"Rabat: {stavka.Rabat}");
+                    continue;
 				}
 			}
 		}
-	}
+		if (sb.Length > 0)
+		{
+			PrintHeader(d, dok);
+			Console.WriteLine(sb.ToString());
+			PrintFooter();
+		}
+    }
 }
