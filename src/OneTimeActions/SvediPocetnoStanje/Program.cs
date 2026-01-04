@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using TD.Komercijalno.Contracts.Entities;
 using TD.Komercijalno.Contracts.Requests.Stavke;
 using TD.Komercijalno.Domain.Managers;
 using TD.Komercijalno.Repository.Repositories;
@@ -25,6 +23,8 @@ var source = new DB(
 	$"data source=4monitor; initial catalog = {bazaConnString}; user=SYSDBA; password=m"
 );
 using var ctx = source.CreateContext();
+StavkaManager.DoNotValidate = true;
+ProcedureManager.DoNotValidate = true;
 var stavkaManager = new StavkaManager(
 	NullLogger<StavkaManager>.Instance,
 	ctx,
@@ -34,6 +34,7 @@ var stavkaManager = new StavkaManager(
 	new StavkaRepository(ctx, NullLogger<StavkaRepository>.Instance),
 	new ProcedureManager(NullLogger<ProcedureManager>.Instance, ctx)
 );
+var sifarnik = ctx.Roba.ToDictionary(x => x.Id, x => x);
 string opt = string.Empty;
 while (string.IsNullOrWhiteSpace(opt))
 {
@@ -41,8 +42,11 @@ while (string.IsNullOrWhiteSpace(opt))
 	switch (opt)
 	{
 		case "1":
-			SvediSamoOnojRobiSaKarticamaUMinusu();
+			Console.WriteLine("Nije implementirano!");
 			break;
+		case "2":
+            SvediSamoOnojRobiSaKarticamaUMinusu();
+            break;
 		case "0":
 			return;
 		default:
@@ -50,6 +54,17 @@ while (string.IsNullOrWhiteSpace(opt))
 			break;
 	}
 }
+Console.WriteLine("====");
+Console.WriteLine("====");
+Console.WriteLine("====");
+Console.WriteLine();
+Console.WriteLine("Gotovo!");
+Console.WriteLine("Pritisni bilo koje dugme da izadjes!");
+Console.WriteLine();
+Console.WriteLine("====");
+Console.WriteLine("====");
+Console.WriteLine("====");
+Console.Read();
 
 List<int> IzborMagacina()
 {
@@ -83,10 +98,11 @@ List<int> IzborMagacina()
 	}
 	return magacini;
 }
-
-void Log(int magacinId, string message)
+void Log(int magacinId, string message, bool inline = false)
 {
-	Console.WriteLine($"[{magacinId}] {message}");
+	Console.Write($"[{magacinId}] {message}");
+	if (!inline)
+		Console.WriteLine();
 }
 void SvediSamoOnojRobiSaKarticamaUMinusu()
 {
@@ -113,15 +129,22 @@ void SvediSamoOnojRobiSaKarticamaUMinusu()
 		var stavke = ctx.Stavke.Where(x => x.MagacinId == magacin).ToList();
 		foreach (var rum in robaUMagacinu)
 		{
-			var minimalnoStanje = stavke.Where(x => x.RobaId == rum.RobaId).Min(x => x.TrenStanje);
+			var roba = sifarnik[rum.RobaId];
+			Log(magacin, $"Analiziram [{roba.KatBr}] {roba.Naziv}...", true);
+			var stavkeRobe = stavke.Where(x => x.RobaId == rum.RobaId);
+            var minimalnoStanje = stavkeRobe.Any() ? stavkeRobe.Min(x => x.TrenStanje) : 0;
 			var stavkaUPocetnomStanju = pocetnoStanjeMagacina.Stavke.FirstOrDefault(x =>
 				x.RobaId == rum.RobaId
 			);
 			var trenutnaKolicinaUPocetnom = stavkaUPocetnomStanju?.Kolicina ?? 0;
 			var realnoMinimalnoStanjeKadaBiUPocetnomKolicinaBilaNula =
 				minimalnoStanje - trenutnaKolicinaUPocetnom;
-			if (realnoMinimalnoStanjeKadaBiUPocetnomKolicinaBilaNula > 0)
+			if (realnoMinimalnoStanjeKadaBiUPocetnomKolicinaBilaNula >= 0 || trenutnaKolicinaUPocetnom >= Math.Abs(realnoMinimalnoStanjeKadaBiUPocetnomKolicinaBilaNula))
+			{
+				Console.WriteLine("OK");
 				continue;
+			}
+            Console.WriteLine($"Nije ok ({minimalnoStanje}). Resavam...");
 			var potrebnaKolicina = Math.Abs(realnoMinimalnoStanjeKadaBiUPocetnomKolicinaBilaNula);
 			if (stavkaUPocetnomStanju == null)
 			{
@@ -137,6 +160,8 @@ void SvediSamoOnojRobiSaKarticamaUMinusu()
 			}
 			else
 			{
+				if (stavkaUPocetnomStanju.Kolicina == potrebnaKolicina)
+					continue;
 				stavkaUPocetnomStanju.Kolicina = potrebnaKolicina;
 				ctx.SaveChanges();
 			}

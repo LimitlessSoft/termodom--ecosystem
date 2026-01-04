@@ -26,9 +26,11 @@ public class StavkaManager(
 	IProcedureManager procedureManager
 ) : IStavkaManager
 {
+	public static bool DoNotValidate = false;
 	public StavkaDto Create(StavkaCreateRequest request)
 	{
-		request.Validate();
+		if(!DoNotValidate)
+			request.Validate();
 
 		var stavka = new Stavka();
 
