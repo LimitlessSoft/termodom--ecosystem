@@ -17,13 +17,25 @@ var source = new DB(
 );
 using var ctx = source.CreateContext();
 var neispravniMagacini = ctx.Stavke.Where(x => x.TrenStanje < 0).Select(x => x.MagacinId).Distinct().ToList();
-if(neispravniMagacini.Any())
+if (neispravniMagacini.Any())
 {
     Console.WriteLine("Magacini sa neispravnim karticama: ");
-    foreach(var mag in neispravniMagacini)
+    foreach (var mag in neispravniMagacini)
         Console.WriteLine(mag);
-    Console.WriteLine("Gotovo!");
     return;
 }
-Console.WriteLine("Svi magacini su OK!");
+else
+{
+    Console.WriteLine("Svi magacini su OK!");
+}
+Console.WriteLine("====");
+Console.WriteLine("====");
+Console.WriteLine("====");
+Console.WriteLine();
 Console.WriteLine("Gotovo!");
+Console.WriteLine("Pritisni bilo koje dugme da izadjes!");
+Console.WriteLine();
+Console.WriteLine("====");
+Console.WriteLine("====");
+Console.WriteLine("====");
+Console.Read();
