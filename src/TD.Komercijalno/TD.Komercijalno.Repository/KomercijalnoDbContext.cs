@@ -9,6 +9,7 @@ namespace TD.Komercijalno.Repository
 	{
 		public DbSet<Magacin> Magacini { get; set; }
 		public DbSet<Dokument> Dokumenti { get; set; }
+		public DbSet<InterniTransport> InterniTransporti { get; set; }
 		public DbSet<VrstaDokMag> VrstaDokMag { get; set; }
 		public DbSet<VrstaDok> VrstaDok { get; set; }
 		public DbSet<RobaUMagacinu> RobaUMagacinu { get; set; }
@@ -31,6 +32,8 @@ namespace TD.Komercijalno.Repository
 			modelBuilder.Entity<NacinPlacanja>().HasKey(x => x.NUID);
 
 			modelBuilder.Entity<Namena>().HasKey(x => x.Id);
+
+			modelBuilder.Entity<InterniTransport>().HasKey(x => x.Id);
 
 			modelBuilder
 				.Entity<Dokument>()
