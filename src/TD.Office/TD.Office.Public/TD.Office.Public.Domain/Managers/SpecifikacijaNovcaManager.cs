@@ -127,17 +127,16 @@ public class SpecifikacijaNovcaManager(
 	)
 	{
 		var user = userRepository.GetCurrentUser();
+		var response = specifikacijaNovcaRepository
+			.Get(request.Id)
+			.ToMapped<SpecifikacijaNovcaEntity, GetSpecifikacijaNovcaDto>();
 		if (
-			user.StoreId != request.Id
+			user.StoreId != response.MagacinId
 			&& !user.Permissions.Any(x =>
 				x.IsActive && x.Permission == Permission.SpecifikacijaNovcaSviMagacini
 			)
 		)
 			throw new LSCoreForbiddenException();
-
-		var response = specifikacijaNovcaRepository
-			.Get(request.Id)
-			.ToMapped<SpecifikacijaNovcaEntity, GetSpecifikacijaNovcaDto>();
 
 		response.Racunar = await CalculateRacunarDataAsync(
 			(int)response.MagacinId,
