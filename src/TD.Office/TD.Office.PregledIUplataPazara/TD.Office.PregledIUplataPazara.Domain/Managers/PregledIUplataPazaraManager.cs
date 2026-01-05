@@ -35,6 +35,9 @@ public class PregledIUplataPazaraManager(
 				years.Add(temp.Year);
 				temp = temp.AddYears(1);
 			}
+			var narednaGodina = years.Max() + 1;
+			if (narednaGodina <= DateTime.UtcNow.Year)
+				years.Add(narednaGodina);
 
 			foreach (var magacinId in request.Magacin)
 			{
@@ -45,7 +48,7 @@ public class PregledIUplataPazaraManager(
 				foreach (var year in years)
 				{
 					var client = komercijalnoClientFactory.Create(
-						DateTime.UtcNow.Year,
+						year,
 						TDKomercijalnoClientHelpers.ParseEnvironment(
 							configurationRoot[Constants.DeployVariable]!
 						),
@@ -78,6 +81,27 @@ public class PregledIUplataPazaraManager(
 							.AddRange(
 								await client.Izvodi.GetMultipleAsync(new IzvodGetMultipleRequest())
 							);
+						if (year != DateTime.UtcNow.Year && year == years.Max())
+						{
+							// Uzimam i narednu godinu izvoda jer nam treba jer tamo postoji referentni prethodne godine
+							var y = year + 1;
+							if (!izvodi.ContainsKey(y))
+								izvodi.Add(y, []);
+
+							var clientTemp = komercijalnoClientFactory.Create(
+								y,
+								TDKomercijalnoClientHelpers.ParseEnvironment(
+									configurationRoot[Constants.DeployVariable]!
+								),
+								magacinFirma.ApiFirma
+							);
+							izvodi[y]
+								.AddRange(
+									await clientTemp.Izvodi.GetMultipleAsync(
+										new IzvodGetMultipleRequest()
+									)
+								);
+						}
 					}
 				}
 
@@ -95,7 +119,30 @@ public class PregledIUplataPazaraManager(
 							&& Convert.ToInt32(x.PozivNaBroj.Substring(0, 2)) == datumObrade.Month
 							&& Convert.ToInt32(x.PozivNaBroj.Substring(2, 2)) == datumObrade.Day
 							&& Convert.ToInt32(x.PozivNaBroj.Substring(4, 3)) == magacinId
+						)
+						.ToList();
+
+					if (datumObrade.Month >= 6)
+					{
+						izvodiNaDan_N.AddRange(
+							izvodi[datumObrade.Year + 1]
+								.Where(x =>
+									!string.IsNullOrEmpty(x.Konto)
+									&& (
+										x.Konto.Substring(0, 3) == "243"
+										|| x.Konto.Substring(0, 3) == "240"
+									)
+									&& !string.IsNullOrWhiteSpace(x.PozivNaBroj)
+									&& x.PozivNaBroj.Length == 7
+									&& Convert.ToInt32(x.PozivNaBroj.Substring(0, 2))
+										== datumObrade.Month
+									&& Convert.ToInt32(x.PozivNaBroj.Substring(2, 2))
+										== datumObrade.Day
+									&& Convert.ToInt32(x.PozivNaBroj.Substring(4, 3)) == magacinId
+								)
+								.ToList()
 						);
+					}
 
 					var konto_N = string.Empty;
 					var pozNaBroj_N = string.Empty;

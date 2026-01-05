@@ -23,8 +23,5 @@ public class GetPregledIUplataPazaraRequestValidator
 		RuleFor(x => x.OdDatumaInclusive)
 			.LessThanOrEqualTo(x => x.DoDatumaInclusive)
 			.WithMessage(PregledIUplataPazaraValiadtionCodes.PUPVC_004.GetValidationMessage());
-		RuleFor(x => x.Tolerancija)
-			.NotEmpty()
-			.WithMessage(PregledIUplataPazaraValiadtionCodes.PUPVC_005.GetValidationMessage());
 	}
 }
