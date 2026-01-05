@@ -15,7 +15,4 @@ public enum PregledIUplataPazaraValiadtionCodes
 
 	[LSCoreValidationMessage("'Do datuma' ne moze biti manji od 'Od datuma'.")]
 	PUPVC_004,
-
-	[LSCoreValidationMessage("Tolerancija je obavezna.")]
-	PUPVC_005
 }

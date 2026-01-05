@@ -13,9 +13,11 @@ namespace TD.Komercijalno.Domain.Managers;
 public class ProcedureManager(ILogger<ProcedureManager> logger, KomercijalnoDbContext dbContext)
 	: IProcedureManager
 {
+	public static bool DoNotValidate = false;
 	public double GetProdajnaCenaNaDan(ProceduraGetProdajnaCenaNaDanRequest request)
 	{
-		request.Validate();
+		if(!DoNotValidate)
+			request.Validate();
 
 		var poslednjaStavka = dbContext
 			.Stavke.Include(x => x.Dokument)
