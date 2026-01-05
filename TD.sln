@@ -177,6 +177,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeslaganjaUInternomTranspor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvediPocetnoStanje", "src\OneTimeActions\SvediPocetnoStanje\SvediPocetnoStanje.csproj", "{901F5660-FAE3-4FAC-92F2-615099579EFA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IzlistajMagacineaNeispravnimKarticama", "src\OneTimeActions\IzlistajMagacineaNeispravnimKarticama\IzlistajMagacineaNeispravnimKarticama\IzlistajMagacineaNeispravnimKarticama.csproj", "{C9054919-0520-4B67-B826-B5C02D4CDA62}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -463,6 +465,10 @@ Global
 		{901F5660-FAE3-4FAC-92F2-615099579EFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{901F5660-FAE3-4FAC-92F2-615099579EFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{901F5660-FAE3-4FAC-92F2-615099579EFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9054919-0520-4B67-B826-B5C02D4CDA62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9054919-0520-4B67-B826-B5C02D4CDA62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9054919-0520-4B67-B826-B5C02D4CDA62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9054919-0520-4B67-B826-B5C02D4CDA62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -547,6 +553,7 @@ Global
 		{0DB645C4-079E-4319-84B2-5197F1CCC3DB} = {0EF8B7FE-6191-4236-87F9-216C5C64696D}
 		{7153105A-FA31-48E6-8C93-52DE0717322F} = {0EF8B7FE-6191-4236-87F9-216C5C64696D}
 		{901F5660-FAE3-4FAC-92F2-615099579EFA} = {0EF8B7FE-6191-4236-87F9-216C5C64696D}
+		{C9054919-0520-4B67-B826-B5C02D4CDA62} = {0EF8B7FE-6191-4236-87F9-216C5C64696D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}
