@@ -40,14 +40,6 @@ export const PregledIUplataPazaraDetaljiIzvoda = ({ params }) => {
             width: 100,
         },
         {
-            field: 'datum',
-            headerName: 'Datum',
-            width: 150,
-            valueGetter: (params) => {
-                return moment(params.value).format(DATE_FORMAT)
-            },
-        },
-        {
             field: 'potrazuje',
             headerName: 'Potrazuje',
             type: 'number',

@@ -24,6 +24,16 @@ public class PregledIUplataPazaraManager(
 	public async Task<PregledIUplataPazaraResponse> GetAsync(GetPregledIUplataPazaraRequest request)
 	{
 		request.Validate();
+		string belgradeTimeZoneId = "Central Europe Standard Time";
+		var belgradeTimezone = TimeZoneInfo.FindSystemTimeZoneById(belgradeTimeZoneId);
+		request.OdDatumaInclusive = TimeZoneInfo.ConvertTimeFromUtc(
+			request.OdDatumaInclusive,
+			belgradeTimezone
+		);
+		request.DoDatumaInclusive = TimeZoneInfo.ConvertTimeFromUtc(
+			request.DoDatumaInclusive,
+			belgradeTimezone
+		);
 		try
 		{
 			var dto = new PregledIUplataPazaraResponse();
@@ -64,7 +74,7 @@ public class PregledIUplataPazaraManager(
 						var resp = await client.Dokumenti.GetMultipleAsync(
 							new DokumentGetMultipleRequest()
 							{
-								VrDok = [15, 22],
+								VrDok = [15, 22, 90],
 								DatumOd = request.OdDatumaInclusive.AddDays(-1),
 								DatumDo = request.DoDatumaInclusive.AddDays(1),
 							}
@@ -121,28 +131,25 @@ public class PregledIUplataPazaraManager(
 							&& Convert.ToInt32(x.PozivNaBroj.Substring(4, 3)) == magacinId
 						)
 						.ToList();
-
-					if (datumObrade.Month >= 6)
-					{
-						izvodiNaDan_N.AddRange(
-							izvodi[datumObrade.Year + 1]
-								.Where(x =>
-									!string.IsNullOrEmpty(x.Konto)
-									&& (
-										x.Konto.Substring(0, 3) == "243"
-										|| x.Konto.Substring(0, 3) == "240"
-									)
-									&& !string.IsNullOrWhiteSpace(x.PozivNaBroj)
-									&& x.PozivNaBroj.Length == 7
-									&& Convert.ToInt32(x.PozivNaBroj.Substring(0, 2))
-										== datumObrade.Month
-									&& Convert.ToInt32(x.PozivNaBroj.Substring(2, 2))
-										== datumObrade.Day
-									&& Convert.ToInt32(x.PozivNaBroj.Substring(4, 3)) == magacinId
+					izvodiNaDan_N.AddRange(
+						izvodi[datumObrade.Year + 1]
+							.Where(x =>
+								!string.IsNullOrEmpty(x.Konto)
+								&& (
+									x.Konto.Substring(0, 3) == "243"
+									|| x.Konto.Substring(0, 3) == "240"
 								)
-								.ToList()
-						);
-					}
+								&& !string.IsNullOrWhiteSpace(x.PozivNaBroj)
+								&& x.PozivNaBroj.Length == 12
+								&& Convert.ToInt32(x.PozivNaBroj.Substring(0, 2))
+									== datumObrade.Month
+								&& Convert.ToInt32(x.PozivNaBroj.Substring(2, 2)) == datumObrade.Day
+								&& Convert.ToInt32(x.PozivNaBroj.Substring(4, 3)) == magacinId
+								&& Convert.ToInt32(x.PozivNaBroj.Substring(8, 4))
+									== datumObrade.Date.Year
+							)
+							.ToList()
+					);
 
 					var konto_N = string.Empty;
 					var pozNaBroj_N = string.Empty;
@@ -201,10 +208,10 @@ public class PregledIUplataPazaraManager(
 							dto.Items.Add(item);
 							dto.UkupnaRazlika += item.Razlika;
 							item.Izvodi.AddRange(
-								izvodiNaDan_N.Select(
-									x => new PregledIUplataPazaraResponseItemIzvodDto()
+								izvodiNaDan_N.Select(x =>
+								{
+									return new PregledIUplataPazaraResponseItemIzvodDto()
 									{
-										Datum = datumObrade.Date,
 										BrojIzvoda = x.BrDok,
 										VrDok = x.VrDok,
 										ZiroRacun = x.ZiroRacun,
@@ -213,8 +220,8 @@ public class PregledIUplataPazaraManager(
 										MagacinId = magacinId,
 										Potrazuje = x.Potrazuje ?? 0,
 										Duguje = x.Duguje ?? 0,
-									}
-								)
+									};
+								})
 							);
 						}
 					}
