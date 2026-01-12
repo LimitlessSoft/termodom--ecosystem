@@ -61,8 +61,9 @@ public abstract class TestBase
 		);
 		builder.Services.AddSingleton(new Mock<IUserRepository>().Object);
 
-		// Removed builder.AddLSCoreDependencyInjection("TD.Office.Public") because it validates all dependencies
-		// and we are manually instantiating what we need in tests for now, or we can add specific registrations.
+		// Re-enable LSCore dependency injection for mapper registration
+		// This scans TD.Office assemblies for ILSCoreMapper implementations
+		builder.AddLSCoreDependencyInjection("TD.Office");
 
 		builder.Services.AddSingleton(configurationMock.Object);
 		builder.Services.AddSingleton(new Mock<ITDKomercijalnoClientFactory>().Object);

@@ -35,7 +35,6 @@ public class PregledIUplataPazaraResponseItemIzvodDto
 	public string Konto { get; set; }
 	public string PozivNaBroj { get; set; }
 	public int MagacinId { get; set; }
-	public DateTime Datum { get; set; }
 	public double Potrazuje { get; set; }
 	public double Duguje { get; set; }
 }

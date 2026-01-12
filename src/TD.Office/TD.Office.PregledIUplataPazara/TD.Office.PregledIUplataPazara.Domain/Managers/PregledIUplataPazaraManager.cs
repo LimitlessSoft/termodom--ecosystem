@@ -24,6 +24,16 @@ public class PregledIUplataPazaraManager(
 	public async Task<PregledIUplataPazaraResponse> GetAsync(GetPregledIUplataPazaraRequest request)
 	{
 		request.Validate();
+		string belgradeTimeZoneId = "Central Europe Standard Time";
+		var belgradeTimezone = TimeZoneInfo.FindSystemTimeZoneById(belgradeTimeZoneId);
+		request.OdDatumaInclusive = TimeZoneInfo.ConvertTimeFromUtc(
+			request.OdDatumaInclusive,
+			belgradeTimezone
+		);
+		request.DoDatumaInclusive = TimeZoneInfo.ConvertTimeFromUtc(
+			request.DoDatumaInclusive,
+			belgradeTimezone
+		);
 		try
 		{
 			var dto = new PregledIUplataPazaraResponse();
@@ -35,6 +45,9 @@ public class PregledIUplataPazaraManager(
 				years.Add(temp.Year);
 				temp = temp.AddYears(1);
 			}
+			var narednaGodina = years.Max() + 1;
+			if (narednaGodina <= DateTime.UtcNow.Year)
+				years.Add(narednaGodina);
 
 			foreach (var magacinId in request.Magacin)
 			{
@@ -45,7 +58,7 @@ public class PregledIUplataPazaraManager(
 				foreach (var year in years)
 				{
 					var client = komercijalnoClientFactory.Create(
-						DateTime.UtcNow.Year,
+						year,
 						TDKomercijalnoClientHelpers.ParseEnvironment(
 							configurationRoot[Constants.DeployVariable]!
 						),
@@ -61,7 +74,7 @@ public class PregledIUplataPazaraManager(
 						var resp = await client.Dokumenti.GetMultipleAsync(
 							new DokumentGetMultipleRequest()
 							{
-								VrDok = [15, 22],
+								VrDok = [15, 22, 90],
 								DatumOd = request.OdDatumaInclusive.AddDays(-1),
 								DatumDo = request.DoDatumaInclusive.AddDays(1),
 							}
@@ -78,6 +91,27 @@ public class PregledIUplataPazaraManager(
 							.AddRange(
 								await client.Izvodi.GetMultipleAsync(new IzvodGetMultipleRequest())
 							);
+						if (year != DateTime.UtcNow.Year && year == years.Max())
+						{
+							// Uzimam i narednu godinu izvoda jer nam treba jer tamo postoji referentni prethodne godine
+							var y = year + 1;
+							if (!izvodi.ContainsKey(y))
+								izvodi.Add(y, []);
+
+							var clientTemp = komercijalnoClientFactory.Create(
+								y,
+								TDKomercijalnoClientHelpers.ParseEnvironment(
+									configurationRoot[Constants.DeployVariable]!
+								),
+								magacinFirma.ApiFirma
+							);
+							izvodi[y]
+								.AddRange(
+									await clientTemp.Izvodi.GetMultipleAsync(
+										new IzvodGetMultipleRequest()
+									)
+								);
+						}
 					}
 				}
 
@@ -95,7 +129,27 @@ public class PregledIUplataPazaraManager(
 							&& Convert.ToInt32(x.PozivNaBroj.Substring(0, 2)) == datumObrade.Month
 							&& Convert.ToInt32(x.PozivNaBroj.Substring(2, 2)) == datumObrade.Day
 							&& Convert.ToInt32(x.PozivNaBroj.Substring(4, 3)) == magacinId
-						);
+						)
+						.ToList();
+					izvodiNaDan_N.AddRange(
+						izvodi[datumObrade.Year + 1]
+							.Where(x =>
+								!string.IsNullOrEmpty(x.Konto)
+								&& (
+									x.Konto.Substring(0, 3) == "243"
+									|| x.Konto.Substring(0, 3) == "240"
+								)
+								&& !string.IsNullOrWhiteSpace(x.PozivNaBroj)
+								&& x.PozivNaBroj.Length == 12
+								&& Convert.ToInt32(x.PozivNaBroj.Substring(0, 2))
+									== datumObrade.Month
+								&& Convert.ToInt32(x.PozivNaBroj.Substring(2, 2)) == datumObrade.Day
+								&& Convert.ToInt32(x.PozivNaBroj.Substring(4, 3)) == magacinId
+								&& Convert.ToInt32(x.PozivNaBroj.Substring(8, 4))
+									== datumObrade.Date.Year
+							)
+							.ToList()
+					);
 
 					var konto_N = string.Empty;
 					var pozNaBroj_N = string.Empty;
@@ -154,10 +208,10 @@ public class PregledIUplataPazaraManager(
 							dto.Items.Add(item);
 							dto.UkupnaRazlika += item.Razlika;
 							item.Izvodi.AddRange(
-								izvodiNaDan_N.Select(
-									x => new PregledIUplataPazaraResponseItemIzvodDto()
+								izvodiNaDan_N.Select(x =>
+								{
+									return new PregledIUplataPazaraResponseItemIzvodDto()
 									{
-										Datum = datumObrade.Date,
 										BrojIzvoda = x.BrDok,
 										VrDok = x.VrDok,
 										ZiroRacun = x.ZiroRacun,
@@ -166,8 +220,8 @@ public class PregledIUplataPazaraManager(
 										MagacinId = magacinId,
 										Potrazuje = x.Potrazuje ?? 0,
 										Duguje = x.Duguje ?? 0,
-									}
-								)
+									};
+								})
 							);
 						}
 					}
