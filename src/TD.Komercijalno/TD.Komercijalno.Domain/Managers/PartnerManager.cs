@@ -14,9 +14,11 @@ namespace TD.Komercijalno.Domain.Managers;
 
 public class PartnerManager(KomercijalnoDbContext dbContext) : IPartnerManager
 {
+	public static bool IGNORE_VALIDATION = false;
 	public int Create(PartneriCreateRequest request)
 	{
-		request.Validate();
+		if(!IGNORE_VALIDATION)
+			request.Validate();
 
 		var partner = new Partner();
 		partner.InjectFrom(request);
