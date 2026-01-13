@@ -9,4 +9,7 @@
 		<PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="10.3.4" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\TD.Office\TD.Office.Common\TD.Office.Common.Repository\TD.Office.Common.Repository.csproj" />
+	</ItemGroup>
 </Project>
