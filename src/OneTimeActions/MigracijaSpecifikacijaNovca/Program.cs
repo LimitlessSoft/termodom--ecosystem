@@ -1,25 +1,26 @@
 ﻿using FirebirdSql.Data.FirebirdClient;
 using MigracijaSpecifikacijaNovca;
 using Newtonsoft.Json;
+using System.Text;
 
-var pathTdOfficeBaza = "C:\\Poslovanje\\Baze\\TDOffice_v2\\TDOffice_v2_2021.fdb";
+var pathTdOfficeBaza = "C:\\Poslovanje\\Baze\\TDOffice_v2\\TDOffice_v2_2021.FDB";
 Console.WriteLine("Zapocinjem migraciju specifikacije novca...");
-using var fbConn = new FbConnection(pathTdOfficeBaza);
+using var fbConn = new FbConnection($"data source=4monitor; initial catalog = {pathTdOfficeBaza}; user=SYSDBA; password=m");
 fbConn.Open();
 using var fbCommand = new FbCommand("SELECT * FROM SPECIFIKACIJA_NOVCA", fbConn);
 using var fbDataReader = fbCommand.ExecuteReader();
 var oldSpecs = new List<OldSpecifikacijaDto>();
 while (fbDataReader.Read())
 {
-	oldSpecs.Add(
+	var tag = Encoding.UTF8.GetString(((byte[])fbDataReader["Tag"]));
+
+    oldSpecs.Add(
 		new OldSpecifikacijaDto()
 		{
 			Datum = Convert.ToDateTime(fbDataReader["Datum"]),
 			Id = Convert.ToInt32(fbDataReader["Id"]),
 			MagacinId = Convert.ToInt32(fbDataReader["MagacinId"]),
-			Detalji = JsonConvert.DeserializeObject<OldSpecifikacijaDetails>(
-				fbDataReader["Tag"].ToString()
-			),
+			Detalji = JsonConvert.DeserializeObject<OldSpecifikacijaDetails>(tag),
 		}
 	);
 }
