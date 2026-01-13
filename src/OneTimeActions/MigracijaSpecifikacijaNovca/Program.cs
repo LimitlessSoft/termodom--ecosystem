@@ -26,7 +26,7 @@ while (fbDataReader.Read())
 		}
 	);
 }
-PrintSpecifikacijes(oldSpecs);
+//PrintSpecifikacijes(oldSpecs);
 
 // PostgreSQL connection string - update these values for your environment
 var pgConnectionString =
@@ -34,7 +34,7 @@ var pgConnectionString =
 ValidateNoSameSpecificationInOldAndNew(pgConnectionString, oldSpecs);
 
 // PrintSpecifikacijesFromNewDb(pgConnectionString);
-// MigrateSpecifikacijes(oldSpecs, pgConnectionString);
+MigrateSpecifikacijes(oldSpecs, pgConnectionString);
 
 void ValidateNoSameSpecificationInOldAndNew(
 	string connectionString,
@@ -122,7 +122,17 @@ void MigrateSpecifikacijes(List<OldSpecifikacijaDto> list, string connectionStri
 			entity.Cekovi = old.Detalji.Cekovi;
 			entity.Papiri = old.Detalji.Papiri;
 			entity.Troskovi = old.Detalji.Troskovi;
-		}
+			entity.Sasa = old.Detalji.KodSase;
+			entity.Vozaci = old.Detalji.VozaciDuguju;
+
+			entity.KarticeKomentar = old.Detalji.KarticeBeleksa;
+			entity.CekoviKomentar = old.Detalji.CekoviBeleksa;
+			entity.PapiriKomentar = old.Detalji.PapiriBeleksa;
+			entity.SasaKomentar = old.Detalji.KodSaseBeleksa;
+			entity.TroskoviKomentar = old.Detalji.TroskoviBeleksa;
+			entity.VozaciKomentar = old.Detalji.VozaciDugujuBeleksa;
+
+        }
 
 		entitiesToInsert.Add(entity);
 	}

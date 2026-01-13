@@ -24,9 +24,17 @@ public class OldSpecifikacijaDetails
 	public double Kartice { get; set; }
 	public double Cekovi { get; set; }
 	public double Papiri { get; set; }
+	public double KodSase { get; set; }
+	public double VozaciDuguju { get; set; }
 	public double Troskovi { get; set; }
 	public double Storno { get; set; }
-	public string Beleksa { get; set; }
+    public string Beleksa { get; set; }
+    public string KarticeBeleksa { get; set; }
+	public string CekoviBeleksa { get; set; }
+	public string PapiriBeleksa { get; set; }
+	public string TroskoviBeleksa { get; set; }
+	public string VozaciDugujuBeleksa { get; set; }
+	public string KodSaseBeleksa { get; set; }
 }
 
 public class OldSpecifikacijaKurs
