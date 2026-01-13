@@ -183,6 +183,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KopirajPartnereIzBazeUBazu"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsertujTDOfficeV2TDBrainV3BazeConfigurationsNovaGodina", "src\OneTimeActions\InsertujTDOfficeV2TDBrainV3BazeConfigurationsNovaGodina\InsertujTDOfficeV2TDBrainV3BazeConfigurationsNovaGodina.csproj", "{A4A17635-DC8E-42DD-A633-E301904539CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigracijaSpecifikacijaNovca", "src\OneTimeActions\MigracijaSpecifikacijaNovca\MigracijaSpecifikacijaNovca.csproj", "{CDBF8A0E-E7F2-4282-BA54-14FD159591C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -481,6 +483,10 @@ Global
 		{A4A17635-DC8E-42DD-A633-E301904539CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4A17635-DC8E-42DD-A633-E301904539CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4A17635-DC8E-42DD-A633-E301904539CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDBF8A0E-E7F2-4282-BA54-14FD159591C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDBF8A0E-E7F2-4282-BA54-14FD159591C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDBF8A0E-E7F2-4282-BA54-14FD159591C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDBF8A0E-E7F2-4282-BA54-14FD159591C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -568,6 +574,7 @@ Global
 		{C9054919-0520-4B67-B826-B5C02D4CDA62} = {0EF8B7FE-6191-4236-87F9-216C5C64696D}
 		{A86C3FBF-A632-4B0C-AB8D-9B93AEF63B0D} = {0EF8B7FE-6191-4236-87F9-216C5C64696D}
 		{A4A17635-DC8E-42DD-A633-E301904539CA} = {0EF8B7FE-6191-4236-87F9-216C5C64696D}
+		{CDBF8A0E-E7F2-4282-BA54-14FD159591C7} = {0EF8B7FE-6191-4236-87F9-216C5C64696D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B90EFF6F-32AD-4222-BA03-64F608E25823}
