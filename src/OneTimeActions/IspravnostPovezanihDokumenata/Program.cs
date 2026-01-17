@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using NeslaganjaUInternomTransportu;
@@ -153,11 +154,15 @@ void IzlistajOsnovnaNeslaganjaSvihDokumenata()
 	var polazniDokumenti = ctx
 		.Dokumenti.Where(x => x.Flag == 1 && startniVrDok.Contains(x.VrDok))
 		.Select(x => new Tuple<int, int>(x.VrDok, x.BrDok))
-		.Distinct();
+		.Distinct()
+		.ToList();
 
-	foreach (var dok in polazniDokumenti)
+	var c = polazniDokumenti.Count();
+	for (var i = 0; i < c; i++)
+	{
+		Console.Title = $"{i + 1} / {c}";
 		IzlistajNeslaganjaDokumenta(
-			dok,
+			polazniDokumenti[i],
 			false,
 			new WhatToCheckFilter
 			{
@@ -169,6 +174,7 @@ void IzlistajOsnovnaNeslaganjaSvihDokumenata()
 				NabavnaCenaNula = false,
 			}
 		);
+	}
 }
 
 bool IsStandardRoba(int robaId) => sifarnik.Keys.Contains(robaId) && sifarnik[robaId].Vrsta == 1;
@@ -205,17 +211,17 @@ void IzlistajNeslaganjaDokumenta(
 
 	if (dokument.VrdokOut == null || dokument.BrdokOut == null)
 	{
-		Console.WriteLine("Dokument nema OUT!");
+        Console.WriteLine($"Dokument [{dokument.VrDok} {dokument.BrDok}] nema OUT!");
 		return;
 	}
 
 	var izlazniDokument = ctx
-		.Dokumenti.Where(x => x.VrDok == dokument.VrdokOut && x.BrdokOut == dokument.BrdokOut)
+		.Dokumenti.Where(x => x.VrDok == dokument.VrdokOut && x.BrDok == dokument.BrdokOut)
 		.Include(x => x.Stavke)
 		.FirstOrDefault();
 	if (izlazniDokument == null)
 	{
-		Console.WriteLine("Dokument ima upisan OUT ali ja ne mogu da ga pronadjem u bazi!");
+		Console.WriteLine($"Dokument [{dokument.VrDok} {dokument.BrDok}] ima upisan OUT [{dokument.VrdokOut} {dokument.BrdokOut}] ali ja ne mogu da ga pronadjem u bazi!");
 		return;
 	}
 	var originalnoBrojStavki = dokument.Stavke.Count(x => IsStandardRoba(x.RobaId));
