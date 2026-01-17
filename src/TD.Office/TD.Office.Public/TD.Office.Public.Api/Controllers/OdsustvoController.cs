@@ -25,6 +25,7 @@ public class OdsustvoController(IOdsustvoManager odsustvoManager) : ControllerBa
 
 	[HttpPut]
 	[Route("/odsustvo")]
+	[Permissions(Permission.KalendarAktivnostiWrite)]
 	public IActionResult Save([FromBody] SaveOdsustvoRequest request)
 	{
 		odsustvoManager.Save(request);
@@ -33,6 +34,7 @@ public class OdsustvoController(IOdsustvoManager odsustvoManager) : ControllerBa
 
 	[HttpDelete]
 	[Route("/odsustvo/{id}")]
+	[Permissions(Permission.KalendarAktivnostiWrite)]
 	public IActionResult Delete([FromRoute] long id)
 	{
 		odsustvoManager.Delete(id);

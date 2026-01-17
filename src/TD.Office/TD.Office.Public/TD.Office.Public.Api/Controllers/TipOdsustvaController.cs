@@ -19,6 +19,7 @@ public class TipOdsustvaController(ITipOdsustvaManager tipOdsustvaManager) : Con
 
 	[HttpPut]
 	[Route("/tip-odsustva")]
+	[Permissions(Permission.TipOdsustvaWrite)]
 	public IActionResult Save([FromBody] SaveTipOdsustvaRequest request)
 	{
 		tipOdsustvaManager.Save(request);
@@ -27,6 +28,7 @@ public class TipOdsustvaController(ITipOdsustvaManager tipOdsustvaManager) : Con
 
 	[HttpDelete]
 	[Route("/tip-odsustva/{id}")]
+	[Permissions(Permission.TipOdsustvaWrite)]
 	public IActionResult Delete([FromRoute] long id)
 	{
 		tipOdsustvaManager.Delete(id);

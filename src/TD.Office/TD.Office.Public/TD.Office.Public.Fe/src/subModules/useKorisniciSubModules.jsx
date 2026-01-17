@@ -5,8 +5,8 @@ import { useMemo } from 'react'
 import { useSubModules } from '@/hooks/useSubModulesHook'
 
 export const useKorisniciSubModules = () => {
-    const korisniciPermissions = usePermissions(
-        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.NAV_BAR
+    const korisniciListPermissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.KORISNICI_LIST
     )
 
     const kalendarAktivnostiPermissions = usePermissions(
@@ -23,8 +23,8 @@ export const useKorisniciSubModules = () => {
                 href: URL_CONSTANTS.KORISNICI.LISTA,
                 label: 'Lista korisnika',
                 hasPermission: hasPermission(
-                    korisniciPermissions,
-                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS.KORISNICI.READ
+                    korisniciListPermissions,
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS.KORISNICI.LIST_READ
                 ),
             },
             {
@@ -44,7 +44,7 @@ export const useKorisniciSubModules = () => {
                 ),
             },
         ],
-        [korisniciPermissions, kalendarAktivnostiPermissions, tipOdsustvaPermissions]
+        [korisniciListPermissions, kalendarAktivnostiPermissions, tipOdsustvaPermissions]
     )
 
     return useSubModules(subModulesConfig)

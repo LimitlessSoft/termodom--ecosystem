@@ -9,6 +9,7 @@
 			public const string NavBar = "nav-bar";
 			public const string NalogZaPrevoz = "nalog-za-prevoz";
 			public const string Korisnici = "korisnici";
+			public const string KorisniciList = "korisnici-lista";
 			public const string Web = "web";
 			public const string Partneri = "partneri";
 			public const string SpecifikacijaNovca = "specifikacija-novca";

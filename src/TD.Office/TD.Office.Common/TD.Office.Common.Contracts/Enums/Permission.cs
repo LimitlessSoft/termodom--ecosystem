@@ -230,4 +230,10 @@ public enum Permission
 	[PermissionGroup(LegacyConstants.PermissionGroup.TipOdsustva)]
 	[Description("Tipovi odsustva - upravljanje")]
 	TipOdsustvaWrite,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+	[PermissionGroup(LegacyConstants.PermissionGroup.Korisnici)]
+	[PermissionGroup(LegacyConstants.PermissionGroup.KorisniciList)]
+	[Description("Korisnici lista - pregled")]
+	KorisniciListRead,
 }

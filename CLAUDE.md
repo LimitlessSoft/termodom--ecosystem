@@ -459,6 +459,74 @@ TD.Office uses an enum-based permission system with database persistence. When a
 - FE permission hook: `TD.Office.Public.Fe/src/hooks/usePermissionsHook.ts`
 - FE permission helper: `TD.Office.Public.Fe/src/helpers/permissionsHelpers.ts`
 
+### API Endpoint Permission Protection (CRITICAL)
+
+**EVERY controller endpoint MUST be protected with appropriate permissions.** This is a security requirement that must never be skipped.
+
+**Permission levels:**
+- **Class-level `[Permissions]`**: Applied to all endpoints in the controller (typically READ permission)
+- **Method-level `[Permissions]`**: Additional permission for specific operations (typically WRITE permissions)
+
+**IMPORTANT: Write operations (PUT, POST, DELETE) that modify data MUST have separate WRITE permissions, not just READ permissions.**
+
+**Correct pattern:**
+```csharp
+[LSCoreAuth]
+[ApiController]
+[Permissions(Permission.Access, Permission.ModuleRead)]  // Class-level: applies to all endpoints
+public class MyController : ControllerBase
+{
+    [HttpGet]
+    [Route("/my-resource")]
+    public IActionResult GetMultiple() => Ok(manager.GetMultiple());  // Uses class-level READ permission
+
+    [HttpGet]
+    [Route("/my-resource/{Id}")]
+    public IActionResult GetSingle([FromRoute] LSCoreIdRequest request) => Ok(manager.GetSingle(request));  // Uses class-level READ permission
+
+    [HttpPut]
+    [Route("/my-resource")]
+    [Permissions(Permission.ModuleWrite)]  // Method-level: REQUIRES WRITE permission
+    public IActionResult Save([FromBody] SaveRequest request)
+    {
+        manager.Save(request);
+        return Ok();
+    }
+
+    [HttpDelete]
+    [Route("/my-resource/{id}")]
+    [Permissions(Permission.ModuleWrite)]  // Method-level: REQUIRES WRITE permission
+    public IActionResult Delete([FromRoute] long id)
+    {
+        manager.Delete(id);
+        return Ok();
+    }
+}
+```
+
+**Common mistakes to AVOID:**
+```csharp
+// ❌ WRONG - No write permission on PUT/DELETE
+[HttpPut]
+[Route("/my-resource")]
+public IActionResult Save([FromBody] SaveRequest request)  // Anyone with READ can modify data!
+
+// ❌ WRONG - Only class-level READ permission for write operations
+[Permissions(Permission.Access, Permission.ModuleRead)]
+public class MyController
+{
+    [HttpDelete]
+    [Route("/my-resource/{id}")]
+    public IActionResult Delete(long id)  // Only needs READ to delete!
+}
+```
+
+**Checklist when creating controllers:**
+1. ✅ Add `[LSCoreAuth]` attribute to require authentication
+2. ✅ Add class-level `[Permissions(Permission.Access, Permission.ModuleRead)]` for READ operations
+3. ✅ Add method-level `[Permissions(Permission.ModuleWrite)]` to ALL PUT/POST/DELETE methods
+4. ✅ If module has different write levels (e.g., `Write` vs `EditAll`), use appropriate permission for each endpoint
+
 ### Print Pages Pattern
 
 When creating print-optimized pages in Next.js (e.g., `/pages/print/[feature]/[id].jsx`):
