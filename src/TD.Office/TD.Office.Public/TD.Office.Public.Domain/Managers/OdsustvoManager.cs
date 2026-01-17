@@ -38,6 +38,7 @@ public class OdsustvoManager(
 		var currentUser = userRepository.GetCurrentUser();
 		var entity = dbContext.Odsustva
 			.Include(x => x.TipOdsustva)
+			.Include(x => x.OdobrenoByUser)
 			.FirstOrDefault(x => x.Id == request.Id && x.IsActive);
 
 		if (entity == null)
@@ -66,6 +67,9 @@ public class OdsustvoManager(
 
 			if (entity.UserId != currentUser.Id && !hasEditAllPermission)
 				throw new LSCoreForbiddenException();
+
+			if (entity.Status == OdsustvoStatus.Odobreno && !hasEditAllPermission)
+				throw new LSCoreForbiddenException("Odobreno odsustvo se ne može menjati");
 		}
 		else
 		{
@@ -111,5 +115,50 @@ public class OdsustvoManager(
 			throw new LSCoreForbiddenException();
 
 		odsustvoRepository.SoftDelete(id);
+	}
+
+	public void Approve(long id)
+	{
+		var currentUser = userRepository.GetCurrentUser();
+		var hasApprovePermission = userRepository.HasPermission(currentUser.Id, Permission.KalendarAktivnostiApprove);
+
+		if (!hasApprovePermission)
+			throw new LSCoreForbiddenException();
+
+		var entity = odsustvoRepository.Get(id);
+
+		if (entity.Status == OdsustvoStatus.Odobreno)
+			throw new LSCoreBadRequestException("Odsustvo je već odobreno");
+
+		entity.Status = OdsustvoStatus.Odobreno;
+		entity.OdobrenoAt = DateTime.UtcNow;
+		entity.OdobrenoBy = currentUser.Id;
+
+		odsustvoRepository.Update(entity);
+	}
+
+	public void UpdateRealizovano(long id, UpdateRealizovanoRequest request)
+	{
+		var currentUser = userRepository.GetCurrentUser();
+		var entity = odsustvoRepository.Get(id);
+
+		var hasApprovePermission = userRepository.HasPermission(currentUser.Id, Permission.KalendarAktivnostiApprove);
+		var isOwner = entity.UserId == currentUser.Id;
+
+		if (request.RealizovanoKorisnik.HasValue)
+		{
+			if (!isOwner && !hasApprovePermission)
+				throw new LSCoreForbiddenException();
+			entity.RealizovanoKorisnik = request.RealizovanoKorisnik.Value;
+		}
+
+		if (request.RealizovanoOdobravac.HasValue)
+		{
+			if (!hasApprovePermission)
+				throw new LSCoreForbiddenException();
+			entity.RealizovanoOdobravac = request.RealizovanoOdobravac.Value;
+		}
+
+		odsustvoRepository.Update(entity);
 	}
 }

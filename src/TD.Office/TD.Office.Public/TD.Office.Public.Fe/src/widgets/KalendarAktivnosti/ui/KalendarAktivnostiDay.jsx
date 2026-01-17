@@ -1,4 +1,5 @@
 import { Box, Chip, Tooltip, Typography } from '@mui/material'
+import { ODSUSTVO_CONSTANTS } from '@/constants/odsustvo/odsustvoConstants'
 
 const TYPE_COLORS = {
     'Slava': '#ff9800',
@@ -67,40 +68,50 @@ export const KalendarAktivnostiDay = ({ date, odsustva, onCellClick, onOdsustvoC
             >
                 {date.getDate()}
             </Typography>
-            {odsustva.map((o) => (
-                <Tooltip
-                    key={o.id}
-                    title={
-                        <Box>
-                            <Typography variant="body2">{o.userNickname}</Typography>
-                            <Typography variant="caption">{o.tipOdsustvaNaziv}</Typography>
-                            {o.komentar && (
-                                <Typography variant="caption" display="block">
-                                    {o.komentar}
+            {odsustva.map((o) => {
+                const isPending = o.status === ODSUSTVO_CONSTANTS.STATUS.CEKA_ODOBRENJE
+                const isFullyRealized = o.realizovanoKorisnik && o.realizovanoOdobravac
+
+                return (
+                    <Tooltip
+                        key={o.id}
+                        title={
+                            <Box>
+                                <Typography variant="body2">{o.userNickname}</Typography>
+                                <Typography variant="caption">{o.tipOdsustvaNaziv}</Typography>
+                                <Typography variant="caption" display="block" sx={{ fontWeight: 'bold' }}>
+                                    Status: {ODSUSTVO_CONSTANTS.STATUS_LABELS[o.status]}
                                 </Typography>
-                            )}
-                        </Box>
-                    }
-                >
-                    <Chip
-                        label={o.userNickname || o.tipOdsustvaNaziv}
-                        size="small"
-                        onClick={(e) => handleOdsustvoClick(e, o)}
-                        sx={{
-                            bgcolor: getTypeColor(o.tipOdsustvaNaziv),
-                            color: 'white',
-                            fontSize: '0.65rem',
-                            height: 18,
-                            mb: 0.25,
-                            width: '100%',
-                            cursor: 'pointer',
-                            '& .MuiChip-label': {
-                                px: 0.5,
-                            },
-                        }}
-                    />
-                </Tooltip>
-            ))}
+                                {o.komentar && (
+                                    <Typography variant="caption" display="block">
+                                        {o.komentar}
+                                    </Typography>
+                                )}
+                            </Box>
+                        }
+                    >
+                        <Chip
+                            label={o.userNickname || o.tipOdsustvaNaziv}
+                            size="small"
+                            onClick={(e) => handleOdsustvoClick(e, o)}
+                            sx={{
+                                bgcolor: getTypeColor(o.tipOdsustvaNaziv),
+                                color: 'white',
+                                fontSize: '0.65rem',
+                                height: 18,
+                                mb: 0.25,
+                                width: '100%',
+                                cursor: 'pointer',
+                                border: isPending ? '2px dashed rgba(255,255,255,0.5)' : 'none',
+                                opacity: isFullyRealized ? 0.6 : 1,
+                                '& .MuiChip-label': {
+                                    px: 0.5,
+                                },
+                            }}
+                        />
+                    </Tooltip>
+                )
+            })}
         </Box>
     )
 }

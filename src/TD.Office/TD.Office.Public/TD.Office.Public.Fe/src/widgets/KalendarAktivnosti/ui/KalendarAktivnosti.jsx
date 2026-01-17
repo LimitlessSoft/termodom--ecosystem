@@ -45,6 +45,11 @@ export const KalendarAktivnosti = () => {
         PERMISSIONS_CONSTANTS.USER_PERMISSIONS.KALENDAR_AKTIVNOSTI.EDIT_ALL
     )
 
+    const canApprove = hasPermission(
+        permissions,
+        PERMISSIONS_CONSTANTS.USER_PERMISSIONS.KALENDAR_AKTIVNOSTI.APPROVE
+    )
+
     const fetchOdsustva = useCallback(async () => {
         setLoading(true)
         try {
@@ -226,6 +231,7 @@ export const KalendarAktivnosti = () => {
                 initialDate={selectedDate}
                 tipoviOdsustva={tipoviOdsustva}
                 canEditAll={canEditAll}
+                canApprove={canApprove}
             />
         </Box>
     )

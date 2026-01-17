@@ -10,4 +10,6 @@ public interface IOdsustvoManager
 	OdsustvoDto GetSingle(LSCoreIdRequest request);
 	void Save(SaveOdsustvoRequest request);
 	void Delete(long id);
+	void Approve(long id);
+	void UpdateRealizovano(long id, UpdateRealizovanoRequest request);
 }

@@ -40,4 +40,22 @@ public class OdsustvoController(IOdsustvoManager odsustvoManager) : ControllerBa
 		odsustvoManager.Delete(id);
 		return Ok();
 	}
+
+	[HttpPut]
+	[Route("/odsustvo/{id}/approve")]
+	[Permissions(Permission.KalendarAktivnostiApprove)]
+	public IActionResult Approve([FromRoute] long id)
+	{
+		odsustvoManager.Approve(id);
+		return Ok();
+	}
+
+	[HttpPut]
+	[Route("/odsustvo/{id}/realizovano")]
+	[Permissions(Permission.KalendarAktivnostiWrite)]
+	public IActionResult UpdateRealizovano([FromRoute] long id, [FromBody] UpdateRealizovanoRequest request)
+	{
+		odsustvoManager.UpdateRealizovano(id, request);
+		return Ok();
+	}
 }

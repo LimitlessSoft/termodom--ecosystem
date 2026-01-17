@@ -1,3 +1,5 @@
+using TD.Office.Common.Contracts.Enums;
+
 namespace TD.Office.Public.Contracts.Dtos.Odsustvo;
 
 public class OdsustvoDto
@@ -10,4 +12,10 @@ public class OdsustvoDto
 	public DateTime DatumDo { get; set; }
 	public string? Komentar { get; set; }
 	public DateTime CreatedAt { get; set; }
+	public OdsustvoStatus Status { get; set; }
+	public DateTime? OdobrenoAt { get; set; }
+	public long? OdobrenoBy { get; set; }
+	public string OdobrenoByNickname { get; set; } = string.Empty;
+	public bool RealizovanoKorisnik { get; set; }
+	public bool RealizovanoOdobravac { get; set; }
 }
