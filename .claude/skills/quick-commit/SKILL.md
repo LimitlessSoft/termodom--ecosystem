@@ -19,6 +19,7 @@ When the user asks to commit changes with a short message:
    - Uses present tense ("Add" not "Added")
    - Describes what the change does
    - Follows the project's commit message patterns
+   - Never add any other commiter or message containing something like someone else (bot/ai/etc) worked other than user
 4. **Commit**: Add files and commit using the heredoc format:
    ```bash
    git add <files> && git commit -m "$(cat <<'EOF'
