@@ -12,6 +12,7 @@ public class OdsustvoDtoMapper : ILSCoreMapper<OdsustvoEntity, OdsustvoDto>
 		var dto = new OdsustvoDto();
 		dto.InjectFrom(sender);
 		dto.TipOdsustvaNaziv = sender.TipOdsustva?.Naziv ?? string.Empty;
+		dto.OdobrenoByNickname = sender.OdobrenoByUser?.Nickname ?? string.Empty;
 		return dto;
 	}
 }

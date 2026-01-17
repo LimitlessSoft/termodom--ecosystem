@@ -368,6 +368,7 @@ When working with Claude Code on this project:
 2. **Inform Before Committing**: After completing a task with changes, inform the user that changes are ready and wait for their instruction
 3. **Ask if Unclear**: If it's uncertain whether a commit is needed, ask the user for confirmation
 4. **User Controls Commits**: The user decides when and what to commit
+5. **No Claude Attribution**: Never include "Claude" or "Co-Authored-By: Claude" in commit messages
 
 **Examples:**
 

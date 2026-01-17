@@ -222,6 +222,10 @@ public enum Permission
 	[Description("Kalendar aktivnosti - izmena tuđih odsustva")]
 	KalendarAktivnostiEditAll,
 
+	[PermissionGroup(LegacyConstants.PermissionGroup.KalendarAktivnosti)]
+	[Description("Kalendar aktivnosti - odobravanje odsustva")]
+	KalendarAktivnostiApprove,
+
 	[PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
 	[PermissionGroup(LegacyConstants.PermissionGroup.TipOdsustva)]
 	[Description("Tipovi odsustva - pregled")]

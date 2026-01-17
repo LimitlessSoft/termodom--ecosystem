@@ -15,6 +15,7 @@ public class OdsustvoRepository(OfficeDbContext dbContext)
 		var query = dbContext.Odsustva
 			.Include(x => x.User)
 			.Include(x => x.TipOdsustva)
+			.Include(x => x.OdobrenoByUser)
 			.Where(x => x.IsActive);
 
 		if (userId.HasValue)

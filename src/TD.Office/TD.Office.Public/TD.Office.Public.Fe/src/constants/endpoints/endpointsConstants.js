@@ -121,6 +121,8 @@ export const ENDPOINTS_CONSTANTS = {
         GET: (id) => `/odsustvo/${id}`,
         SAVE: '/odsustvo',
         DELETE: (id) => `/odsustvo/${id}`,
+        APPROVE: (id) => `/odsustvo/${id}/approve`,
+        REALIZOVANO: (id) => `/odsustvo/${id}/realizovano`,
     },
     TIP_ODSUSTVA: {
         GET_MULTIPLE: '/tip-odsustva',
