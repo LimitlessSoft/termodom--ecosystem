@@ -12,6 +12,8 @@ namespace TDOffice_v2.Komercijalno
 		public static Dictionary<int, string> CONNECTION_STRING { get; set; } =
 			new Dictionary<int, string>()
 			{
+				// Ne gledaj ovde. Izgleda u TDOffice_v2 bazi...
+				// aaa pokreni TDOffice i tamo kroz neke config settings mozes promeniti... promenjive...
 				{
 					2021,
 					"data source=4monitor; initial catalog = C:\\Poslovanje\\Baze\\2021\\FIRMA2021.FDB; user=SYSDBA; password=m; pooling=True"

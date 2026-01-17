@@ -227,7 +227,10 @@ void IzlistajNeslaganjaDokumenta(
 			.Include(x => x.Stavke)
 			.FirstOrDefault();
 		if (dokumentTransporta == null)
-			throw new NullReferenceException(nameof(dokumentTransporta));
+		{
+            Console.WriteLine($"Stavka internog transporta nije valdina. Iz [{interniTransport.IzVrDok} - {interniTransport.IzBrDok}] U [{interniTransport.UVrDok} {interniTransport.UBrDok}]");
+			continue;
+		}
 
 		// check broj stavki
 		if (whatToCheck.BrojStavki)
@@ -245,6 +248,8 @@ void IzlistajNeslaganjaDokumenta(
 				Console.WriteLine("Neslaganje u broju stavki!");
 				Console.WriteLine($"Izvorni dokument stavki: {originalnoBrojStavki}");
 				Console.WriteLine($"Transportovani dokument stavki: {transportovanoBrojStavki}");
+				Console.WriteLine("Ovde nisam izvrsio analizu cena jer se stavke ne slazu!");
+				Console.WriteLine("Prvo sredi neslaganje stavki pa ponovi akciju!");
 			}
 		}
 

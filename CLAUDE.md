@@ -459,6 +459,80 @@ TD.Office uses an enum-based permission system with database persistence. When a
 - FE permission hook: `TD.Office.Public.Fe/src/hooks/usePermissionsHook.ts`
 - FE permission helper: `TD.Office.Public.Fe/src/helpers/permissionsHelpers.ts`
 
+### Print Pages Pattern
+
+When creating print-optimized pages in Next.js (e.g., `/pages/print/[feature]/[id].jsx`):
+
+1. **Don't reuse editing widgets** - Widget components (in `widgets/`) are designed for interactive editing with MUI inputs, buttons, dialogs. They are too heavy for print pages.
+
+2. **Use lightweight inline components** - Create simple render functions with inline styles or a `printStyles` object:
+   ```javascript
+   const printStyles = {
+       page: { fontFamily: 'Arial', fontSize: '10px', padding: '10mm' },
+       table: { width: '100%', borderCollapse: 'collapse', fontSize: '9px' },
+       // ...
+   }
+
+   const renderSection = () => (
+       <div style={printStyles.section}>
+           <table style={printStyles.table}>...</table>
+       </div>
+   )
+   ```
+
+3. **Use CSS Grid for multi-column layouts** - Fits content on A4:
+   ```javascript
+   columns: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }
+   ```
+
+4. **Handle number formatting safely** - API responses may return string values instead of numbers. Always convert before using `formatNumber`:
+   ```javascript
+   const safeFormat = (value) => {
+       const num = Number(value)
+       return formatNumber(isNaN(num) ? 0 : num)
+   }
+   ```
+
+5. **Print page location**: `src/TD.Office/TD.Office.Public/TD.Office.Public.Fe/src/pages/print/`
+
+### SpecifikacijaNovca Data Structure
+
+Key properties from the API response (`ENDPOINTS_CONSTANTS.SPECIFIKACIJA_NOVCA.GET(id)`):
+
+```javascript
+{
+    id: number,
+    magacinId: string,
+    datumUTC: string,
+    komentar: string,
+    racunar: {
+        gotovinskiRacuni: number,
+        virmanskiRacuni: number,
+        kartice: number,
+        racunarTrazi: string,        // Formatted label (e.g., "123,456.00 RSD")
+        racunarTraziValue: number,   // Numeric value for calculations
+        gotovinskePovratnice: number,
+        virmanskePovratnice: number,
+        ostalePovratnice: number,
+        imaNefiskalizovanih: boolean
+    },
+    poreska: {
+        fiskalizovaniRacuni: number,
+        fiskalizovanePovratnice: number
+    },
+    specifikacijaNovca: {
+        novcanice: [{ key: number, value: number }],  // key = denomination, value = count
+        eur1: { komada: number, kurs: number },
+        eur2: { komada: number, kurs: number },
+        ostalo: [{ key: string, vrednost: number, komentar: string }]
+    }
+}
+```
+
+**Helper functions**: `src/TD.Office/TD.Office.Public/TD.Office.Public.Fe/src/widgets/SpecifikacijaNovca/helpers/SpecifikacijaHelpers.js`
+- `getUkupnoGotovine(specifikacija)` - Calculates total cash from novcanice array
+- `encryptSpecifikacijaNovcaId(id)` / `decryptSpecifikacijaNovcaId(encryptedId)` - ID obfuscation for URLs
+
 ## Important Notes
 
 - **LSCore Framework**: Understanding LSCore patterns is essential. It provides Repository, Validation, Mapper, Auth, and ApiClient abstractions used throughout the codebase.
