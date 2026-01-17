@@ -116,4 +116,15 @@ export const ENDPOINTS_CONSTANTS = {
         POST_ITEM: (id) => `/popisi/${id}/items`,
         DELETE_ITEM: (popisId, itemId) => `/popisi/${popisId}/items/${itemId}`,
     },
+    ODSUSTVO: {
+        CALENDAR: (month, year) => `/odsustvo/calendar?month=${month}&year=${year}`,
+        GET: (id) => `/odsustvo/${id}`,
+        SAVE: '/odsustvo',
+        DELETE: (id) => `/odsustvo/${id}`,
+    },
+    TIP_ODSUSTVA: {
+        GET_MULTIPLE: '/tip-odsustva',
+        SAVE: '/tip-odsustva',
+        DELETE: (id) => `/tip-odsustva/${id}`,
+    },
 }

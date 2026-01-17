@@ -8,7 +8,7 @@ export const KorisniciListRow = (props) => {
     return (
         <KorisniciListRowStyled
             onClick={() => {
-                router.push(`/korisnici/${props.korisnik.id}`)
+                router.push(`/korisnici/lista/${props.korisnik.id}`)
             }}
         >
             <TableCell>{props.korisnik.id}</TableCell>

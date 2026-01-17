@@ -30,6 +30,8 @@ public class OfficeDbContext(
 	public DbSet<NoteEntity> Notes { get; set; }
 	public DbSet<KomercijalnoMagacinFirmaEntity> KomercijalnoMagacinFirma { get; set; }
 	public DbSet<ModuleHelpEntity> ModuleHelps { get; set; }
+	public DbSet<TipOdsustvaEntity> TipoviOdsustva { get; set; }
+	public DbSet<OdsustvoEntity> Odsustva { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
@@ -76,5 +78,7 @@ public class OfficeDbContext(
 			.AddMap(new KomercijalnoPriceKoeficijentEntityMap());
 		modelBuilder.Entity<PopisDokumentEntity>().AddMap(new PopisDokumentEntityMap());
 		modelBuilder.Entity<PopisItemEntity>().AddMap(new PopisItemEntityMap());
+		modelBuilder.Entity<TipOdsustvaEntity>().AddMap(new TipOdsustvaEntityMap());
+		modelBuilder.Entity<OdsustvoEntity>().AddMap(new OdsustvoEntityMap());
 	}
 }

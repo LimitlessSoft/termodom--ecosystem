@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TD.Office.Common.Repository;
@@ -12,9 +13,11 @@ using TD.Office.Common.Repository;
 namespace TD.Office.Common.DbMigrations.Migrations
 {
     [DbContext(typeof(OfficeDbContext))]
-    partial class OfficeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260117130836_AddKalendarAktivnosti")]
+    partial class AddKalendarAktivnosti
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
