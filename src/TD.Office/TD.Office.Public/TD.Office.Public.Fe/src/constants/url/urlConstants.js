@@ -26,7 +26,10 @@ export const URL_CONSTANTS = {
         INDEX: '/web-prodavnica',
     },
     KORISNICI: {
-        INDEX: '/korisnici',
+        INDEX: '/korisnici/lista',
+        LISTA: '/korisnici/lista',
+        KALENDAR_AKTIVNOSTI: '/korisnici/kalendar-aktivnosti',
+        TIPOVI_ODSUSTVA: '/korisnici/tipovi-odsustva',
     },
     OTPREMNICE: {
         MP: '/otpremnice/interne-mp-otpremnice',

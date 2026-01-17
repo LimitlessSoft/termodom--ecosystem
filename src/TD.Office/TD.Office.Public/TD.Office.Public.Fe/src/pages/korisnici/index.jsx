@@ -1,12 +1,15 @@
-import { KorisniciList } from '@/widgets'
-import { Grid } from '@mui/material'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { URL_CONSTANTS } from '@/constants'
 
-const Korisnici = () => {
-    return (
-        <Grid>
-            <KorisniciList />
-        </Grid>
-    )
+const KorisniciIndex = () => {
+    const router = useRouter()
+
+    useEffect(() => {
+        router.replace(URL_CONSTANTS.KORISNICI.LISTA)
+    }, [router])
+
+    return null
 }
 
-export default Korisnici
+export default KorisniciIndex

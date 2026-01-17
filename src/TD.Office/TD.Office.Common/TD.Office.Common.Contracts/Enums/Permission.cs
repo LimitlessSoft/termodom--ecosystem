@@ -208,4 +208,26 @@ public enum Permission
 	[PermissionGroup(LegacyConstants.PermissionGroup.MasovniSMS)]
 	[Description("Masovni SMS - pristup modulu")]
 	MasovniSMSRead,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+	[PermissionGroup(LegacyConstants.PermissionGroup.KalendarAktivnosti)]
+	[Description("Kalendar aktivnosti - pregled")]
+	KalendarAktivnostiRead,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.KalendarAktivnosti)]
+	[Description("Kalendar aktivnosti - unos sopstvenih odsustva")]
+	KalendarAktivnostiWrite,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.KalendarAktivnosti)]
+	[Description("Kalendar aktivnosti - izmena tuđih odsustva")]
+	KalendarAktivnostiEditAll,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+	[PermissionGroup(LegacyConstants.PermissionGroup.TipOdsustva)]
+	[Description("Tipovi odsustva - pregled")]
+	TipOdsustvaRead,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.TipOdsustva)]
+	[Description("Tipovi odsustva - upravljanje")]
+	TipOdsustvaWrite,
 }

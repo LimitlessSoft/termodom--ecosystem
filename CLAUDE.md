@@ -533,6 +533,159 @@ Key properties from the API response (`ENDPOINTS_CONSTANTS.SPECIFIKACIJA_NOVCA.G
 - `getUkupnoGotovine(specifikacija)` - Calculates total cash from novcanice array
 - `encryptSpecifikacijaNovcaId(id)` / `decryptSpecifikacijaNovcaId(encryptedId)` - ID obfuscation for URLs
 
+### LSCore Repository Methods
+
+**SoftDelete - Use the base class method:**
+
+`LSCoreRepositoryBase<T>` already provides a `SoftDelete(long id)` method that sets `IsActive = false` and calls `Update()`. Do NOT create custom SoftDelete methods in repository implementations - they will hide the base method.
+
+```csharp
+// ✅ CORRECT - Use base method directly in manager
+public void Delete(long id)
+{
+    repository.SoftDelete(id);  // Uses LSCoreRepositoryBase.SoftDelete
+}
+
+// ❌ WRONG - Don't create custom SoftDelete in repository
+public class MyRepository : LSCoreRepositoryBase<MyEntity>
+{
+    public void SoftDelete(long id)  // This hides the base method!
+    {
+        var entity = Get(id);
+        entity.IsActive = false;
+        Update(entity);
+    }
+}
+```
+
+**Available base repository methods:**
+- `Get(long id)` - Get entity by ID
+- `GetMultiple()` - Get all active entities
+- `Insert(entity)` - Insert new entity
+- `Update(entity)` - Update existing entity
+- `SoftDelete(long id)` - Set IsActive = false
+- `HardDelete(long id)` - Permanently delete from database
+
+### DTO Mapping Pattern
+
+Use `ILSCoreMapper<TEntity, TDto>` interface for entity-to-DTO mappings. Mappers are placed in `Contracts/DtosMappings/[Feature]/` folder.
+
+**Creating a mapper:**
+```csharp
+// File: TD.Office.Public.Contracts/DtosMappings/MyFeature/MyEntityDtoMapper.cs
+using LSCore.Mapper.Contracts;
+using Omu.ValueInjecter;
+
+public class MyEntityDtoMapper : ILSCoreMapper<MyEntity, MyDto>
+{
+    public MyDto ToMapped(MyEntity sender)
+    {
+        var dto = new MyDto();
+        dto.InjectFrom(sender);  // Auto-maps matching properties
+        // Manually map navigation properties or computed fields
+        dto.RelatedName = sender.RelatedEntity?.Name ?? string.Empty;
+        return dto;
+    }
+}
+```
+
+**Using mappers in managers:**
+```csharp
+using LSCore.Mapper.Domain;
+
+// Single entity
+var dto = entity.ToMapped<MyEntity, MyDto>();
+
+// List of entities
+var dtos = entities.ToMappedList<MyEntity, MyDto>();
+```
+
+### MUI Date Pickers with date-fns v3
+
+When using `@mui/x-date-pickers` with `date-fns` v3.x, use the V3 adapter:
+
+```javascript
+// ✅ CORRECT - For date-fns v3
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
+import { srLatn } from 'date-fns/locale/sr-Latn'
+
+// ❌ WRONG - For date-fns v2 only
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { srLatn } from 'date-fns/locale'
+```
+
+### Frontend Click Handling for Grid/Calendar Components
+
+When a grid cell can contain clickable items (chips, buttons), separate cell clicks from item clicks:
+
+```javascript
+// Day component with separate handlers
+export const CalendarDay = ({ date, items, onCellClick, onItemClick, canEdit }) => {
+    const handleCellClick = () => {
+        if (onCellClick && date && canEdit) {
+            onCellClick(date)  // Create new item
+        }
+    }
+
+    const handleItemClick = (e, item) => {
+        e.stopPropagation()  // Prevent cell click
+        if (onItemClick) {
+            onItemClick(item)  // Edit existing item
+        }
+    }
+
+    return (
+        <Box onClick={handleCellClick}>
+            {items.map((item) => (
+                <Chip
+                    key={item.id}
+                    onClick={(e) => handleItemClick(e, item)}
+                />
+            ))}
+        </Box>
+    )
+}
+```
+
+This pattern ensures:
+- Clicking the cell background creates a new item
+- Clicking an item chip edits that specific item
+- `e.stopPropagation()` prevents the cell click from firing when clicking an item
+
+### TD.Office Database Migrations
+
+For TD.Office.Common migrations, use the DbMigrations project as both project and startup project:
+
+```bash
+# Add migration
+dotnet ef migrations add MigrationName \
+    --project src/TD.Office/TD.Office.Common/TD.Office.Common.DbMigrations \
+    --startup-project src/TD.Office/TD.Office.Common/TD.Office.Common.DbMigrations
+
+# Apply migration
+dotnet ef database update \
+    --project src/TD.Office/TD.Office.Common/TD.Office.Common.DbMigrations \
+    --startup-project src/TD.Office/TD.Office.Common/TD.Office.Common.DbMigrations
+```
+
+**Adding seed data in migrations:**
+```csharp
+protected override void Up(MigrationBuilder migrationBuilder)
+{
+    // Create tables first...
+
+    // Then seed data
+    migrationBuilder.InsertData(
+        table: "MyTable",
+        columns: new[] { "Id", "Name", "IsActive", "CreatedAt", "CreatedBy" },
+        values: new object[,]
+        {
+            { 1L, "Value1", true, DateTime.UtcNow, 0L },
+            { 2L, "Value2", true, DateTime.UtcNow, 0L },
+        });
+}
+```
+
 ## Important Notes
 
 - **LSCore Framework**: Understanding LSCore patterns is essential. It provides Repository, Validation, Mapper, Auth, and ApiClient abstractions used throughout the codebase.

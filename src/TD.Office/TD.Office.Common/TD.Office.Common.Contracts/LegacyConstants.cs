@@ -24,6 +24,8 @@
 				"izvestaj-neispravnih-cena-u-magacinima";
 			public const string RobaPopis = "roba-popis";
 			public const string MasovniSMS = "masovni-sms";
+			public const string KalendarAktivnosti = "kalendar-aktivnosti";
+			public const string TipOdsustva = "tip-odsustva";
 		}
 
 		public static class Jwt
