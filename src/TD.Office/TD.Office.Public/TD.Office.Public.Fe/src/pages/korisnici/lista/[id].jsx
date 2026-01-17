@@ -8,7 +8,7 @@ import { CircularProgress, Grid, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
-import { ENDPOINTS_CONSTANTS } from '@/constants'
+import { ENDPOINTS_CONSTANTS, URL_CONSTANTS } from '@/constants'
 import { toast } from 'react-toastify'
 import korisniciSingularFieldsConfig from '@/data/korisniciSingularFieldsConfig.json'
 
@@ -84,7 +84,7 @@ const KorisniciId = () => {
             <HorizontalActionBar>
                 <HorizontalActionBarButton
                     text="Nazad"
-                    onClick={() => router.push(`/korisnici`)}
+                    onClick={() => router.push(URL_CONSTANTS.KORISNICI.LISTA)}
                 />
                 <HorizontalActionBarButton
                     color={`secondary`}

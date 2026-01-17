@@ -27,6 +27,9 @@ export const URL_CONSTANTS = {
     },
     KORISNICI: {
         INDEX: '/korisnici',
+        LISTA: '/korisnici/lista',
+        KALENDAR_AKTIVNOSTI: '/korisnici/kalendar-aktivnosti',
+        TIPOVI_ODSUSTVA: '/korisnici/tipovi-odsustva',
     },
     OTPREMNICE: {
         MP: '/otpremnice/interne-mp-otpremnice',

@@ -14,6 +14,9 @@ export const PERMISSIONS_CONSTANTS = {
         OTPREMNICE: 'otpremnice',
         ROBA_POPIS: 'roba-popis',
         MASOVNI_SMS: 'masovni-sms',
+        KALENDAR_AKTIVNOSTI: 'kalendar-aktivnosti',
+        TIP_ODSUSTVA: 'tip-odsustva',
+        KORISNICI_LIST: 'korisnici-lista',
     },
     USER_PERMISSIONS: {
         NALOG_ZA_PREVOZ: {
@@ -38,6 +41,7 @@ export const PERMISSIONS_CONSTANTS = {
         },
         KORISNICI: {
             READ: 'KorisniciRead',
+            LIST_READ: 'KorisniciListRead',
         },
         PARTNERI: {
             READ: 'PartneriRead',
@@ -82,6 +86,15 @@ export const PERMISSIONS_CONSTANTS = {
         },
         MASOVNI_SMS: {
             READ: 'MasovniSMSRead',
+        },
+        KALENDAR_AKTIVNOSTI: {
+            READ: 'KalendarAktivnostiRead',
+            WRITE: 'KalendarAktivnostiWrite',
+            EDIT_ALL: 'KalendarAktivnostiEditAll',
+        },
+        TIP_ODSUSTVA: {
+            READ: 'TipOdsustvaRead',
+            WRITE: 'TipOdsustvaWrite',
         },
     },
 }

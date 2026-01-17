@@ -35,3 +35,5 @@ export { KomercijalnoNeispravneCene } from './KomercijalnoNeispravneCene/ui/Kome
 export { Zoomable } from './Zoomable/ui/Zoomable'
 export { PregledIUplataPazara } from './PregledIUplataPazara/ui/PregledIUplataPazara'
 export { PopupBox } from './PopupBox/PopupBox'
+export { KalendarAktivnosti } from './KalendarAktivnosti/ui/KalendarAktivnosti'
+export { TipoviOdsustva } from './TipoviOdsustva/ui/TipoviOdsustva'
