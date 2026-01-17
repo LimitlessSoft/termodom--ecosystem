@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using NeslaganjaUInternomTransportu;
@@ -90,12 +89,12 @@ string FormatRobaPrint(int robaId)
 	sb.AppendLine($"[{roba.KatBr}] {roba.Naziv}");
 	return sb.ToString();
 }
-Tuple<int, int>? IzborDokumenta()
+HashSet<int>? IzborStartnihVrDok()
 {
 	Console.WriteLine();
 	Console.WriteLine("Radi proveru na osnovu dokumenata internog transporta: ");
-	Console.WriteLine("1. Odredjenog dokumenta");
-	Console.WriteLine("2. Svih dokumenata");
+	Console.WriteLine("1. Specificnih VrDok: ");
+	Console.WriteLine($"2. Predefinisano VrDok ({string.Join(", ", startniVrDok)})");
 	opt = string.Empty;
 	while (string.IsNullOrWhiteSpace(opt))
 	{
@@ -103,21 +102,28 @@ Tuple<int, int>? IzborDokumenta()
 		switch (opt)
 		{
 			case "1":
-				int vrDok;
-				int brDok;
-				Console.Write("Unesi vrstu dokumenta: ");
-				while (!int.TryParse(Console.ReadLine(), out vrDok))
+				while (true)
 				{
-					Console.WriteLine("Neispravna vrsta dokumenta!");
-					Console.Write("Unesi vrstu dokumenta: ");
+					Console.Write("Unesi vrste dokumenta sa zarezom izmedju: ");
+					var input = Console.ReadLine();
+					if (string.IsNullOrWhiteSpace(input))
+					{
+						Console.WriteLine("Greska unosa!");
+						continue;
+					}
+					var parts = input.Split(",");
+					var list = new HashSet<int>();
+					foreach (var part in parts)
+					{
+						if (!int.TryParse(part, out var i))
+						{
+							Console.WriteLine("Greska unosa!");
+							continue;
+						}
+						list.Add(i);
+					}
+					return list;
 				}
-				Console.Write("Unesi broj dokumenta: ");
-				while (!int.TryParse(Console.ReadLine(), out brDok))
-				{
-					Console.WriteLine("Neispravna vrsta dokumenta!");
-					Console.Write("Unesi broj dokumenta: ");
-				}
-				return new Tuple<int, int>(vrDok, brDok);
 			case "2":
 				return null;
 			default:
@@ -130,23 +136,10 @@ Tuple<int, int>? IzborDokumenta()
 
 void IzlistajOsnovnaNeslaganja()
 {
-	var dok = IzborDokumenta();
-	if (dok == null)
-		IzlistajOsnovnaNeslaganjaSvihDokumenata();
-	else
-		IzlistajNeslaganjaDokumenta(
-			dok,
-			true,
-			new WhatToCheckFilter
-			{
-				ImaIzlazniDokument = true,
-				BrojStavki = true,
-				Kolicine = true,
-				SveStavkeIste = true,
-				ProdajnaCenaNula = false,
-				NabavnaCenaNula = false,
-			}
-		);
+	var vrDoks = IzborStartnihVrDok();
+	if (vrDoks != null && vrDoks.Any())
+		startniVrDok = vrDoks;
+	IzlistajOsnovnaNeslaganjaSvihDokumenata();
 }
 
 void IzlistajOsnovnaNeslaganjaSvihDokumenata()
@@ -154,15 +147,11 @@ void IzlistajOsnovnaNeslaganjaSvihDokumenata()
 	var polazniDokumenti = ctx
 		.Dokumenti.Where(x => x.Flag == 1 && startniVrDok.Contains(x.VrDok))
 		.Select(x => new Tuple<int, int>(x.VrDok, x.BrDok))
-		.Distinct()
-		.ToList();
+		.Distinct();
 
-	var c = polazniDokumenti.Count();
-	for (var i = 0; i < c; i++)
-	{
-		Console.Title = $"{i + 1} / {c}";
+	foreach (var dok in polazniDokumenti)
 		IzlistajNeslaganjaDokumenta(
-			polazniDokumenti[i],
+			dok,
 			false,
 			new WhatToCheckFilter
 			{
@@ -174,7 +163,6 @@ void IzlistajOsnovnaNeslaganjaSvihDokumenata()
 				NabavnaCenaNula = false,
 			}
 		);
-	}
 }
 
 bool IsStandardRoba(int robaId) => sifarnik.Keys.Contains(robaId) && sifarnik[robaId].Vrsta == 1;
@@ -211,17 +199,17 @@ void IzlistajNeslaganjaDokumenta(
 
 	if (dokument.VrdokOut == null || dokument.BrdokOut == null)
 	{
-        Console.WriteLine($"Dokument [{dokument.VrDok} {dokument.BrDok}] nema OUT!");
+		Console.WriteLine("Dokument nema OUT!");
 		return;
 	}
 
 	var izlazniDokument = ctx
-		.Dokumenti.Where(x => x.VrDok == dokument.VrdokOut && x.BrDok == dokument.BrdokOut)
+		.Dokumenti.Where(x => x.VrDok == dokument.VrdokOut && x.BrdokOut == dokument.BrdokOut)
 		.Include(x => x.Stavke)
 		.FirstOrDefault();
 	if (izlazniDokument == null)
 	{
-		Console.WriteLine($"Dokument [{dokument.VrDok} {dokument.BrDok}] ima upisan OUT [{dokument.VrdokOut} {dokument.BrdokOut}] ali ja ne mogu da ga pronadjem u bazi!");
+		Console.WriteLine("Dokument ima upisan OUT ali ja ne mogu da ga pronadjem u bazi!");
 		return;
 	}
 	var originalnoBrojStavki = dokument.Stavke.Count(x => IsStandardRoba(x.RobaId));
