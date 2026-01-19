@@ -7,6 +7,8 @@ import {
     Paper,
     Typography,
     CircularProgress,
+    useTheme,
+    useMediaQuery,
 } from '@mui/material'
 import { ChevronLeft, ChevronRight, Add } from '@mui/icons-material'
 import { handleApiError, officeApi } from '@/apis/officeApi'
@@ -23,6 +25,9 @@ const MONTHS = [
 ]
 
 export const KalendarAktivnosti = () => {
+    const theme = useTheme()
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
     const [currentDate, setCurrentDate] = useState(new Date())
     const [odsustva, setOdsustva] = useState([])
     const [tipoviOdsustva, setTipoviOdsustva] = useState([])
@@ -162,17 +167,27 @@ export const KalendarAktivnosti = () => {
     const days = getDaysInMonth()
 
     return (
-        <Box sx={{ p: 2 }}>
-            <Paper sx={{ p: 2 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <IconButton onClick={handlePrevMonth}>
+        <Box sx={{ p: isMobile ? 1 : 2 }}>
+            <Paper sx={{ p: isMobile ? 1 : 2 }}>
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
+                    justifyContent: 'space-between',
+                    alignItems: isMobile ? 'stretch' : 'center',
+                    gap: isMobile ? 1 : 0,
+                    mb: 2
+                }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+                        <IconButton onClick={handlePrevMonth} size={isMobile ? 'small' : 'medium'}>
                             <ChevronLeft />
                         </IconButton>
-                        <Typography variant="h5" sx={{ minWidth: 200, textAlign: 'center' }}>
+                        <Typography
+                            variant={isMobile ? 'h6' : 'h5'}
+                            sx={{ minWidth: isMobile ? 150 : 200, textAlign: 'center' }}
+                        >
                             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
                         </Typography>
-                        <IconButton onClick={handleNextMonth}>
+                        <IconButton onClick={handleNextMonth} size={isMobile ? 'small' : 'medium'}>
                             <ChevronRight />
                         </IconButton>
                     </Box>
@@ -181,6 +196,8 @@ export const KalendarAktivnosti = () => {
                             variant="contained"
                             startIcon={<Add />}
                             onClick={handleAddNew}
+                            size={isMobile ? 'small' : 'medium'}
+                            fullWidth={isMobile}
                         >
                             Novo odsustvo
                         </Button>
@@ -192,34 +209,44 @@ export const KalendarAktivnosti = () => {
                         <CircularProgress />
                     </Box>
                 ) : (
-                    <Grid container spacing={0.5}>
-                        {DAYS_OF_WEEK.map((day) => (
-                            <Grid item xs={12 / 7} key={day}>
+                    <Box sx={{
+                        overflowX: isMobile ? 'auto' : 'visible',
+                        WebkitOverflowScrolling: 'touch',
+                    }}>
+                        <Box sx={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(7, 1fr)',
+                            gap: 0.5,
+                            minWidth: isMobile ? 500 : 'auto',
+                        }}>
+                            {DAYS_OF_WEEK.map((day) => (
                                 <Box
+                                    key={day}
                                     sx={{
-                                        p: 1,
+                                        p: isMobile ? 0.5 : 1,
                                         textAlign: 'center',
                                         fontWeight: 'bold',
                                         bgcolor: 'primary.main',
                                         color: 'primary.contrastText',
+                                        fontSize: isMobile ? '0.75rem' : '0.875rem',
                                     }}
                                 >
                                     {day}
                                 </Box>
-                            </Grid>
-                        ))}
-                        {days.map((date, index) => (
-                            <Grid item xs={12 / 7} key={index}>
+                            ))}
+                            {days.map((date, index) => (
                                 <KalendarAktivnostiDay
+                                    key={index}
                                     date={date}
                                     odsustva={getOdsustvaForDate(date)}
                                     onCellClick={handleCellClick}
                                     onOdsustvoClick={handleOdsustvoClick}
                                     canEdit={canWrite || canEditAll}
+                                    isMobile={isMobile}
                                 />
-                            </Grid>
-                        ))}
-                    </Grid>
+                            ))}
+                        </Box>
+                    </Box>
                 )}
             </Paper>
 

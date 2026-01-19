@@ -12,7 +12,7 @@ const getTypeColor = (tipNaziv) => {
     return TYPE_COLORS[tipNaziv] || '#2196f3'
 }
 
-export const KalendarAktivnostiDay = ({ date, odsustva, onCellClick, onOdsustvoClick, canEdit }) => {
+export const KalendarAktivnostiDay = ({ date, odsustva, onCellClick, onOdsustvoClick, canEdit, isMobile }) => {
     const isToday = date && new Date().toDateString() === date.toDateString()
     const hasOdsustva = odsustva && odsustva.length > 0
 
@@ -33,7 +33,7 @@ export const KalendarAktivnostiDay = ({ date, odsustva, onCellClick, onOdsustvoC
         return (
             <Box
                 sx={{
-                    minHeight: 80,
+                    minHeight: isMobile ? 60 : 80,
                     bgcolor: 'grey.100',
                     borderRadius: 1,
                 }}
@@ -45,8 +45,8 @@ export const KalendarAktivnostiDay = ({ date, odsustva, onCellClick, onOdsustvoC
         <Box
             onClick={handleCellClick}
             sx={{
-                minHeight: 80,
-                p: 0.5,
+                minHeight: isMobile ? 60 : 80,
+                p: isMobile ? 0.25 : 0.5,
                 bgcolor: isToday ? 'primary.light' : 'background.paper',
                 border: '1px solid',
                 borderColor: isToday ? 'primary.main' : 'grey.300',
@@ -63,7 +63,8 @@ export const KalendarAktivnostiDay = ({ date, odsustva, onCellClick, onOdsustvoC
                 sx={{
                     fontWeight: isToday ? 'bold' : 'normal',
                     color: isToday ? 'primary.contrastText' : 'text.primary',
-                    mb: 0.5,
+                    mb: 0.25,
+                    fontSize: isMobile ? '0.7rem' : '0.875rem',
                 }}
             >
                 {date.getDate()}
@@ -97,15 +98,15 @@ export const KalendarAktivnostiDay = ({ date, odsustva, onCellClick, onOdsustvoC
                             sx={{
                                 bgcolor: getTypeColor(o.tipOdsustvaNaziv),
                                 color: 'white',
-                                fontSize: '0.65rem',
-                                height: 18,
+                                fontSize: isMobile ? '0.55rem' : '0.65rem',
+                                height: isMobile ? 16 : 18,
                                 mb: 0.25,
                                 width: '100%',
                                 cursor: 'pointer',
                                 border: isPending ? '2px dashed rgba(255,255,255,0.5)' : 'none',
                                 opacity: isFullyRealized ? 0.6 : 1,
                                 '& .MuiChip-label': {
-                                    px: 0.5,
+                                    px: isMobile ? 0.25 : 0.5,
                                 },
                             }}
                         />
