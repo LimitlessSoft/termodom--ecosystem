@@ -37,3 +37,4 @@ export { PregledIUplataPazara } from './PregledIUplataPazara/ui/PregledIUplataPa
 export { PopupBox } from './PopupBox/PopupBox'
 export { KalendarAktivnosti } from './KalendarAktivnosti/ui/KalendarAktivnosti'
 export { TipoviOdsustva } from './TipoviOdsustva/ui/TipoviOdsustva'
+export { TipoviKorisnika } from './TipoviKorisnika/ui/TipoviKorisnika'

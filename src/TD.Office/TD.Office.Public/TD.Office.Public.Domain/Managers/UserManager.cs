@@ -50,11 +50,17 @@ public class UserManager(
 			: userRepository.GetCurrentUser().ToMapped<UserEntity, UserMeDto>();
 
 	public UserDto GetSingle(LSCoreIdRequest request) =>
-		userRepository.Get(request.Id).ToMapped<UserEntity, UserDto>();
+		userRepository
+			.GetMultiple()
+			.Include(x => x.TipKorisnika)
+			.FirstOrDefault(x => x.Id == request.Id)
+			?.ToMapped<UserEntity, UserDto>()
+			?? throw new LSCoreNotFoundException();
 
 	public LSCoreSortedAndPagedResponse<UserDto> GetMultiple(UsersGetMultipleRequest request) =>
 		userRepository
 			.GetMultiple()
+			.Include(x => x.TipKorisnika)
 			.Where(x => x.IsActive)
 			.ToSortedAndPagedResponse<UserEntity, UsersSortColumnCodes.Users, UserDto>(
 				request,
@@ -73,7 +79,8 @@ public class UserManager(
 			Username = request.Username,
 			Password = BCrypt.Net.BCrypt.EnhancedHashPassword(request.Password),
 			Nickname = request.Nickname,
-			Type = UserType.User
+			Type = UserType.User,
+			TipKorisnikaId = request.TipKorisnikaId
 		};
 
 		userRepository.Insert(entity);
@@ -193,6 +200,13 @@ public class UserManager(
 	{
 		var user = userRepository.Get(request.Id);
 		user.VPMagacinId = request.VPMagacinId;
+		userRepository.Update(user);
+	}
+
+	public void UpdateTipKorisnikaId(UpdateTipKorisnikaIdRequest request)
+	{
+		var user = userRepository.Get(request.Id);
+		user.TipKorisnikaId = request.TipKorisnikaId;
 		userRepository.Update(user);
 	}
 }

@@ -15,6 +15,9 @@ public class UserDtoMapping : ILSCoreMapper<UserEntity, UserDto>
 			MaxRabatMPDokumenti = sender.MaxRabatMPDokumenti,
 			MaxRabatVPDokumenti = sender.MaxRabatVPDokumenti,
 			StoreId = sender.StoreId,
-			VpMagacinId = sender.VPMagacinId
+			VpMagacinId = sender.VPMagacinId,
+			TipKorisnikaId = sender.TipKorisnikaId,
+			TipKorisnikaNaziv = sender.TipKorisnika?.Naziv,
+			TipKorisnikaBoja = sender.TipKorisnika?.Boja
 		};
 }

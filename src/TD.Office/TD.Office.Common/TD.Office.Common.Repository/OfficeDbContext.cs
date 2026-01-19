@@ -32,6 +32,7 @@ public class OfficeDbContext(
 	public DbSet<ModuleHelpEntity> ModuleHelps { get; set; }
 	public DbSet<TipOdsustvaEntity> TipoviOdsustva { get; set; }
 	public DbSet<OdsustvoEntity> Odsustva { get; set; }
+	public DbSet<TipKorisnikaEntity> TipoviKorisnika { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
@@ -80,5 +81,6 @@ public class OfficeDbContext(
 		modelBuilder.Entity<PopisItemEntity>().AddMap(new PopisItemEntityMap());
 		modelBuilder.Entity<TipOdsustvaEntity>().AddMap(new TipOdsustvaEntityMap());
 		modelBuilder.Entity<OdsustvoEntity>().AddMap(new OdsustvoEntityMap());
+		modelBuilder.Entity<TipKorisnikaEntity>().AddMap(new TipKorisnikaEntityMap());
 	}
 }

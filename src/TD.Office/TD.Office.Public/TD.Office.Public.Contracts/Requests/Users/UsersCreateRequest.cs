@@ -5,5 +5,6 @@ namespace TD.Office.Public.Contracts.Requests.Users
 		public string Username { get; set; }
 		public string Password { get; set; }
 		public string Nickname { get; set; }
+		public long? TipKorisnikaId { get; set; }
 	}
 }

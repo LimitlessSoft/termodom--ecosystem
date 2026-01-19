@@ -24,4 +24,5 @@ public interface IUserManager
 	void UpdateMaxRabatVpDokumenti(UpdateMaxRabatVPDokumentiRequest request);
 	void UpdateStoreId(UpdateStoreIdRequest request);
 	void UpdateVPMagacinId(UpdateVPMagacinIdRequest request);
+	void UpdateTipKorisnikaId(UpdateTipKorisnikaIdRequest request);
 }

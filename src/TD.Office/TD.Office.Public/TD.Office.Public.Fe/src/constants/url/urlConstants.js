@@ -30,6 +30,7 @@ export const URL_CONSTANTS = {
         LISTA: '/korisnici/lista',
         KALENDAR_AKTIVNOSTI: '/korisnici/kalendar-aktivnosti',
         TIPOVI_ODSUSTVA: '/korisnici/tipovi-odsustva',
+        TIPOVI_KORISNIKA: '/korisnici/tipovi-korisnika',
     },
     OTPREMNICE: {
         MP: '/otpremnice/interne-mp-otpremnice',

@@ -70,6 +70,7 @@ export const ENDPOINTS_CONSTANTS = {
             `/users/${id}/max-rabat-vp-dokumenti`,
         UPDATE_STORE_ID: (id) => `/users/${id}/store-id`,
         UPDATE_VP_STORE_ID: (id) => `/users/${id}/vp-magacin-id`,
+        UPDATE_TIP_KORISNIKA_ID: (id) => `/users/${id}/tip-korisnika-id`,
     },
     MASS_SMS: {
         QUEUE_COUNT: `/mass-sms/queue-count`,
@@ -128,5 +129,10 @@ export const ENDPOINTS_CONSTANTS = {
         GET_MULTIPLE: '/tip-odsustva',
         SAVE: '/tip-odsustva',
         DELETE: (id) => `/tip-odsustva/${id}`,
+    },
+    TIP_KORISNIKA: {
+        GET_MULTIPLE: '/tip-korisnika',
+        SAVE: '/tip-korisnika',
+        DELETE: (id) => `/tip-korisnika/${id}`,
     },
 }

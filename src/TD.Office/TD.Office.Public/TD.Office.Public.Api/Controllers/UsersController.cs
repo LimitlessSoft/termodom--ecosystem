@@ -159,4 +159,18 @@ public class UsersController(
 		userManager.UpdateVPMagacinId(request);
 		return Ok();
 	}
+
+	[HttpPut]
+	[LSCoreAuth]
+	[Route("/users/{Id}/tip-korisnika-id")]
+	[Permissions(Permission.Access, Permission.KorisniciListRead)]
+	public IActionResult UpdateTipKorisnikaId(
+		[FromRoute] LSCoreIdRequest idRequest,
+		[FromBody] UpdateTipKorisnikaIdRequest request
+	)
+	{
+		request.Id = idRequest.Id;
+		userManager.UpdateTipKorisnikaId(request);
+		return Ok();
+	}
 }

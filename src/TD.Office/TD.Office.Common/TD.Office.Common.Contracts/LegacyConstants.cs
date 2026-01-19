@@ -27,6 +27,7 @@
 			public const string MasovniSMS = "masovni-sms";
 			public const string KalendarAktivnosti = "kalendar-aktivnosti";
 			public const string TipOdsustva = "tip-odsustva";
+			public const string TipKorisnika = "tip-korisnika";
 		}
 
 		public static class Jwt

@@ -40,6 +40,15 @@ const KorisniciId = () => {
             .catch((err) => handleApiError(err))
     }, [id])
 
+    const handleUpdateTipKorisnika = (tipKorisnikaId, naziv, boja) => {
+        setData((prevData) => ({
+            ...prevData,
+            tipKorisnikaId,
+            tipKorisnikaNaziv: naziv,
+            tipKorisnikaBoja: boja,
+        }))
+    }
+
     const handleSaveUserData = (fieldKey, value, params, label) => {
         const field = korisniciSingularFieldsConfig.FIELDS[fieldKey]
 
@@ -100,6 +109,7 @@ const KorisniciId = () => {
                 <KorisniciSingular
                     user={data}
                     onSaveUserData={handleSaveUserData}
+                    onUpdateTipKorisnika={handleUpdateTipKorisnika}
                 />
             )}
         </Grid>
