@@ -17,6 +17,10 @@ export const useKorisniciSubModules = () => {
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.TIP_ODSUSTVA
     )
 
+    const tipKorisnikaPermissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.TIP_KORISNIKA
+    )
+
     const subModulesConfig = useMemo(
         () => [
             {
@@ -43,8 +47,16 @@ export const useKorisniciSubModules = () => {
                     PERMISSIONS_CONSTANTS.USER_PERMISSIONS.TIP_ODSUSTVA.READ
                 ),
             },
+            {
+                href: URL_CONSTANTS.KORISNICI.TIPOVI_KORISNIKA,
+                label: 'Tipovi korisnika',
+                hasPermission: hasPermission(
+                    tipKorisnikaPermissions,
+                    PERMISSIONS_CONSTANTS.USER_PERMISSIONS.TIP_KORISNIKA.READ
+                ),
+            },
         ],
-        [korisniciListPermissions, kalendarAktivnostiPermissions, tipOdsustvaPermissions]
+        [korisniciListPermissions, kalendarAktivnostiPermissions, tipOdsustvaPermissions, tipKorisnikaPermissions]
     )
 
     return useSubModules(subModulesConfig)

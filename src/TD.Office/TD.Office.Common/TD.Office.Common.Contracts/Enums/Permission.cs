@@ -240,4 +240,14 @@ public enum Permission
 	[PermissionGroup(LegacyConstants.PermissionGroup.KorisniciList)]
 	[Description("Korisnici lista - pregled")]
 	KorisniciListRead,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+	[PermissionGroup(LegacyConstants.PermissionGroup.Korisnici)]
+	[PermissionGroup(LegacyConstants.PermissionGroup.TipKorisnika)]
+	[Description("Tipovi korisnika - pregled")]
+	TipKorisnikaRead,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.TipKorisnika)]
+	[Description("Tipovi korisnika - upravljanje")]
+	TipKorisnikaWrite,
 }

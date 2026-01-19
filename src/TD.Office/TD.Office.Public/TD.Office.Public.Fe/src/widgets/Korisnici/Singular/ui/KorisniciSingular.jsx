@@ -1,9 +1,10 @@
 import { KorisniciSingularDataField } from './KorisniciSingularDataField'
 import { Grid } from '@mui/material'
 import { KorisniciSingularPermissions } from './KorisniciSingularPermissions'
+import { KorisniciSingularTipKorisnika } from './KorisniciSingularTipKorisnika'
 import korisniciSingularFieldsConfig from '@/data/korisniciSingularFieldsConfig.json'
 
-export const KorisniciSingular = ({ user, onSaveUserData }) => (
+export const KorisniciSingular = ({ user, onSaveUserData, onUpdateTipKorisnika }) => (
     <Grid container p={2} maxWidth={520} gap={2}>
         {Object.entries(korisniciSingularFieldsConfig.FIELDS).map(
             ([fieldKey, { KEY, LABEL, TYPE, VALIDATION, EDITABLE }]) => {
@@ -36,6 +37,13 @@ export const KorisniciSingular = ({ user, onSaveUserData }) => (
                 )
             }
         )}
+        <Grid item xs={12}>
+            <KorisniciSingularTipKorisnika
+                userId={user.id}
+                currentTipKorisnikaId={user.tipKorisnikaId}
+                onUpdate={onUpdateTipKorisnika}
+            />
+        </Grid>
         <KorisniciSingularPermissions userId={user.id} />
     </Grid>
 )

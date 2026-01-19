@@ -68,6 +68,9 @@ export const KorisniciSingularPermissions = (props) => {
                                             )
                                     )
                                 })
+                                .sort((a, b) =>
+                                    a.description.localeCompare(b.description)
+                                )
                                 .map((permission) => (
                                     <FormControlLabel
                                         key={permission.id}

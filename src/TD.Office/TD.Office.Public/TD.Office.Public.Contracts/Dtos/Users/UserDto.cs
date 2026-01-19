@@ -9,4 +9,7 @@ public class UserDto
 	public decimal MaxRabatVPDokumenti { get; set; }
 	public int? StoreId { get; set; }
 	public int? VpMagacinId { get; set; }
+	public long? TipKorisnikaId { get; set; }
+	public string? TipKorisnikaNaziv { get; set; }
+	public string? TipKorisnikaBoja { get; set; }
 }

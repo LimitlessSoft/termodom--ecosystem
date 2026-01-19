@@ -17,6 +17,7 @@ export const PERMISSIONS_CONSTANTS = {
         KALENDAR_AKTIVNOSTI: 'kalendar-aktivnosti',
         TIP_ODSUSTVA: 'tip-odsustva',
         KORISNICI_LIST: 'korisnici-lista',
+        TIP_KORISNIKA: 'tip-korisnika',
     },
     USER_PERMISSIONS: {
         NALOG_ZA_PREVOZ: {
@@ -96,6 +97,10 @@ export const PERMISSIONS_CONSTANTS = {
         TIP_ODSUSTVA: {
             READ: 'TipOdsustvaRead',
             WRITE: 'TipOdsustvaWrite',
+        },
+        TIP_KORISNIKA: {
+            READ: 'TipKorisnikaRead',
+            WRITE: 'TipKorisnikaWrite',
         },
     },
 }

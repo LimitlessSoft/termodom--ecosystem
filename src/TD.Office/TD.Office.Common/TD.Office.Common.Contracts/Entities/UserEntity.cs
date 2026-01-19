@@ -18,6 +18,8 @@ public class UserEntity : LSCoreEntity, ILSCoreAuthUserPassEntity<string>
 	public decimal MaxRabatVPDokumenti { get; set; }
 	public int? KomercijalnoNalogId { get; set; }
 	public long? LastNoteId { get; set; }
+	public long? TipKorisnikaId { get; set; }
+	public TipKorisnikaEntity? TipKorisnika { get; set; }
 
 	[NotMapped]
 	public List<UserPermissionEntity>? Permissions { get; set; }

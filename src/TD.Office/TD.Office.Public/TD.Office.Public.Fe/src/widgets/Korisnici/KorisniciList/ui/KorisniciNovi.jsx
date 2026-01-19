@@ -6,13 +6,17 @@ import {
     Grid,
     Paper,
     TextField,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
 } from '@mui/material'
 import { ArrowDownwardRounded } from '@mui/icons-material'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 
-export const KorisniciNovi = () => {
+export const KorisniciNovi = ({ tipoviKorisnika = [] }) => {
     const [isUpdating, setIsUpdating] = useState(false)
     const [request, setRequest] = useState({})
 
@@ -67,6 +71,28 @@ export const KorisniciNovi = () => {
                                 }))
                             }}
                         />
+                    </Grid>
+                    <Grid item sm={12}>
+                        <FormControl fullWidth disabled={isUpdating}>
+                            <InputLabel>Tip korisnika</InputLabel>
+                            <Select
+                                value={request.tipKorisnikaId || ''}
+                                label="Tip korisnika"
+                                onChange={(e) => {
+                                    setRequest((prev) => ({
+                                        ...prev,
+                                        tipKorisnikaId: e.target.value || null,
+                                    }))
+                                }}
+                            >
+                                <MenuItem value="">Bez tipa</MenuItem>
+                                {tipoviKorisnika.map((tip) => (
+                                    <MenuItem key={tip.id} value={tip.id}>
+                                        {tip.naziv}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     </Grid>
                     <Grid item sm={12}>
                         <Button
