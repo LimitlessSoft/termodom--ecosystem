@@ -1,32 +1,48 @@
 import React from 'react'
-import { Badge, Stack, Typography } from '@mui/material'
+import { Badge, Box, Stack, Typography, useMediaQuery, useTheme } from '@mui/material'
 import { useRouter } from 'next/router'
 import { LockPerson } from '@mui/icons-material'
 import { SubModuleButtonStyled } from '../styled/SubModuleButtonStyled'
-import Grid2 from '@mui/material/Unstable_Grid2'
 
 const SubModuleLayout = ({ subModules, children }) => {
     const router = useRouter()
+    const theme = useTheme()
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
     const hasMoreThanOneSubmodule = subModules.length > 1
 
     return (
-        <Stack gap={hasMoreThanOneSubmodule && 2} px={4}>
+        <Stack gap={hasMoreThanOneSubmodule ? (isMobile ? 1 : 2) : 0} px={isMobile ? 1 : 4}>
             {subModules && hasMoreThanOneSubmodule ? (
                 <>
-                    <Grid2 container direction={`row`} gap={2}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: isMobile ? 0.5 : 2,
+                            overflowX: 'auto',
+                            pb: isMobile ? 0.5 : 0,
+                            WebkitOverflowScrolling: 'touch',
+                            '&::-webkit-scrollbar': {
+                                height: isMobile ? 4 : 'auto',
+                            },
+                        }}
+                    >
                         {subModules.map((module, index) => {
                             const currentlyActive =
                                 router.pathname === module.href
                             const noPermission = !module.hasPermission
 
                             return (
-                                <Grid2 key={index}>
+                                <Box key={index} sx={{ flexShrink: 0 }}>
                                     <Badge
                                         color="default"
                                         badgeContent={
                                             noPermission && (
-                                                <LockPerson color="warning" />
+                                                <LockPerson
+                                                    color="warning"
+                                                    sx={{ fontSize: isMobile ? 16 : 24 }}
+                                                />
                                             )
                                         }
                                     >
@@ -40,6 +56,7 @@ const SubModuleLayout = ({ subModules, children }) => {
                                                     ? `outlined`
                                                     : `contained`
                                             }
+                                            size={isMobile ? 'small' : 'medium'}
                                             disabled={
                                                 noPermission || currentlyActive
                                             }
@@ -47,15 +64,18 @@ const SubModuleLayout = ({ subModules, children }) => {
                                                 router.push(module.href)
                                             }
                                         >
-                                            <Typography>
+                                            <Typography
+                                                variant={isMobile ? 'caption' : 'body1'}
+                                                sx={{ whiteSpace: 'nowrap' }}
+                                            >
                                                 {module.label}
                                             </Typography>
                                         </SubModuleButtonStyled>
                                     </Badge>
-                                </Grid2>
+                                </Box>
                             )
                         })}
-                    </Grid2>
+                    </Box>
                     {children}
                 </>
             ) : (

@@ -40,7 +40,7 @@ export const Layout = (props) => {
                             position={`fixed`}
                             top={0}
                             zIndex={999999}
-                            height={`7vh`}
+                            height={56}
                             bgcolor={`#1976d2`}
                             width={`100vw`}
                             alignItems={`center`}
