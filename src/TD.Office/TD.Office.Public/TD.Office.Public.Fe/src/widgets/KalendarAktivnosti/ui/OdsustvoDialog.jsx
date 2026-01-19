@@ -33,6 +33,11 @@ const formatDate = (dateString) => {
     return format(new Date(dateString), 'dd.MM.yyyy HH:mm')
 }
 
+const toLocalISOString = (date) => {
+    if (!date) return null
+    return format(date, "yyyy-MM-dd'T'HH:mm:ss")
+}
+
 export const OdsustvoDialog = ({
     open,
     onClose,
@@ -89,8 +94,8 @@ export const OdsustvoDialog = ({
             await officeApi.put(ENDPOINTS_CONSTANTS.ODSUSTVO.SAVE, {
                 id: odsustvo?.id || null,
                 tipOdsustvaId,
-                datumOd: datumOd.toISOString(),
-                datumDo: datumDo.toISOString(),
+                datumOd: toLocalISOString(datumOd),
+                datumDo: toLocalISOString(datumDo),
                 komentar: komentar || null,
                 userId: odsustvo?.userId || null,
             })
