@@ -68,6 +68,12 @@ public class OdsustvoManager(
 		return entities.ToMappedList<OdsustvoEntity, OdsustvoCalendarDto>();
 	}
 
+	public List<OdsustvoCalendarDto> GetPending()
+	{
+		var entities = odsustvoRepository.GetPending();
+		return entities.ToMappedList<OdsustvoEntity, OdsustvoCalendarDto>();
+	}
+
 	public OdsustvoDto GetSingle(LSCoreIdRequest request)
 	{
 		var currentUser = userRepository.GetCurrentUser();

@@ -25,6 +25,12 @@ public class OdsustvoController(IOdsustvoManager odsustvoManager) : ControllerBa
 		Ok(odsustvoManager.GetYearList(request));
 
 	[HttpGet]
+	[Route("/odsustvo/pending")]
+	[Permissions(Permission.KalendarAktivnostiApprove)]
+	public IActionResult GetPending() =>
+		Ok(odsustvoManager.GetPending());
+
+	[HttpGet]
 	[Route("/odsustvo/{Id}")]
 	public IActionResult GetSingle([FromRoute] LSCoreIdRequest request) =>
 		Ok(odsustvoManager.GetSingle(request));
