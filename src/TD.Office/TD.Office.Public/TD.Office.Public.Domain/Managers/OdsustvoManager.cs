@@ -27,13 +27,18 @@ public class OdsustvoManager(
 		var startDate = new DateTime(request.Year, request.Month, 1);
 		var endDate = startDate.AddMonths(1).AddDays(-1);
 
-		// Users with EditAll see all
+		// Users with EditAll see all (or filter by specific user if requested)
 		// Users with StoreId see users from the same store
 		// Users without StoreId see only their own
 		int? storeId = null;
 		long? userId = null;
 
-		if (!hasEditAllPermission)
+		if (hasEditAllPermission && request.UserId.HasValue)
+		{
+			// Admin filtering by specific user
+			userId = request.UserId.Value;
+		}
+		else if (!hasEditAllPermission)
 		{
 			if (currentUser.StoreId.HasValue)
 			{
@@ -46,6 +51,19 @@ public class OdsustvoManager(
 		}
 
 		var entities = odsustvoRepository.GetByDateRange(startDate, endDate, storeId, userId);
+
+		return entities.ToMappedList<OdsustvoEntity, OdsustvoCalendarDto>();
+	}
+
+	public List<OdsustvoCalendarDto> GetYearList(GetOdsustvoYearListRequest request)
+	{
+		var currentUser = userRepository.GetCurrentUser();
+		var hasEditAllPermission = userRepository.HasPermission(currentUser.Id, Permission.KalendarAktivnostiEditAll);
+
+		if (!hasEditAllPermission)
+			throw new LSCoreForbiddenException();
+
+		var entities = odsustvoRepository.GetByYearAndUser(request.Year, request.UserId);
 
 		return entities.ToMappedList<OdsustvoEntity, OdsustvoCalendarDto>();
 	}

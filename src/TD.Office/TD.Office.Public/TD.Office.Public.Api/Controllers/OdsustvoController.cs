@@ -19,6 +19,12 @@ public class OdsustvoController(IOdsustvoManager odsustvoManager) : ControllerBa
 		Ok(odsustvoManager.GetCalendar(request));
 
 	[HttpGet]
+	[Route("/odsustvo/year-list")]
+	[Permissions(Permission.KalendarAktivnostiEditAll)]
+	public IActionResult GetYearList([FromQuery] GetOdsustvoYearListRequest request) =>
+		Ok(odsustvoManager.GetYearList(request));
+
+	[HttpGet]
 	[Route("/odsustvo/{Id}")]
 	public IActionResult GetSingle([FromRoute] LSCoreIdRequest request) =>
 		Ok(odsustvoManager.GetSingle(request));
