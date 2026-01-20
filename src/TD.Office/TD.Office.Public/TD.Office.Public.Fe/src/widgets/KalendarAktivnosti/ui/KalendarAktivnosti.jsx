@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
+    Autocomplete,
     Box,
     Button,
-    Grid,
     IconButton,
     Paper,
+    TextField,
     Typography,
     CircularProgress,
     useTheme,
@@ -17,6 +18,7 @@ import { usePermissions } from '@/hooks/usePermissionsHook'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { OdsustvoDialog } from './OdsustvoDialog'
 import { KalendarAktivnostiDay } from './KalendarAktivnostiDay'
+import { KalendarAktivnostiYearTable } from './KalendarAktivnostiYearTable'
 
 const DAYS_OF_WEEK = ['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned']
 const MONTHS = [
@@ -45,6 +47,11 @@ export const KalendarAktivnosti = () => {
     const [dialogOpen, setDialogOpen] = useState(false)
     const [selectedOdsustvo, setSelectedOdsustvo] = useState(null)
     const [selectedDate, setSelectedDate] = useState(null)
+
+    const [users, setUsers] = useState([])
+    const [selectedUser, setSelectedUser] = useState(null)
+    const [yearData, setYearData] = useState([])
+    const [loadingYearData, setLoadingYearData] = useState(false)
 
     const permissions = usePermissions(
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.KALENDAR_AKTIVNOSTI
@@ -75,8 +82,9 @@ export const KalendarAktivnosti = () => {
         try {
             const month = currentDate.getMonth() + 1
             const year = currentDate.getFullYear()
+            const userId = selectedUser?.id || null
             const response = await officeApi.get(
-                ENDPOINTS_CONSTANTS.ODSUSTVO.CALENDAR(month, year)
+                ENDPOINTS_CONSTANTS.ODSUSTVO.CALENDAR(month, year, userId)
             )
             setOdsustva(response.data)
         } catch (err) {
@@ -84,7 +92,7 @@ export const KalendarAktivnosti = () => {
         } finally {
             setLoading(false)
         }
-    }, [currentDate])
+    }, [currentDate, selectedUser])
 
     const fetchTipoviOdsustva = useCallback(async () => {
         try {
@@ -97,6 +105,37 @@ export const KalendarAktivnosti = () => {
         }
     }, [])
 
+    const fetchUsers = useCallback(async () => {
+        if (!canEditAll) return
+        try {
+            const response = await officeApi.get(
+                ENDPOINTS_CONSTANTS.USERS.GET_MULTIPLE(100)
+            )
+            setUsers(response.data.payload || [])
+        } catch (err) {
+            handleApiError(err)
+        }
+    }, [canEditAll])
+
+    const fetchYearData = useCallback(async () => {
+        if (!selectedUser) {
+            setYearData([])
+            return
+        }
+        setLoadingYearData(true)
+        try {
+            const year = currentDate.getFullYear()
+            const response = await officeApi.get(
+                ENDPOINTS_CONSTANTS.ODSUSTVO.YEAR_LIST(year, selectedUser.id)
+            )
+            setYearData(response.data)
+        } catch (err) {
+            handleApiError(err)
+        } finally {
+            setLoadingYearData(false)
+        }
+    }, [selectedUser, currentDate])
+
     useEffect(() => {
         fetchOdsustva()
     }, [fetchOdsustva])
@@ -104,6 +143,14 @@ export const KalendarAktivnosti = () => {
     useEffect(() => {
         fetchTipoviOdsustva()
     }, [fetchTipoviOdsustva])
+
+    useEffect(() => {
+        fetchUsers()
+    }, [fetchUsers])
+
+    useEffect(() => {
+        fetchYearData()
+    }, [fetchYearData])
 
     const handlePrevMonth = () => {
         setCurrentDate(
@@ -145,6 +192,18 @@ export const KalendarAktivnosti = () => {
     const handleDialogSave = async () => {
         handleDialogClose()
         await fetchOdsustva()
+        if (selectedUser) {
+            await fetchYearData()
+        }
+    }
+
+    const handleYearTableRowClick = (odsustvo) => {
+        setSelectedOdsustvo(odsustvo)
+        setDialogOpen(true)
+    }
+
+    const handleUserChange = (event, newValue) => {
+        setSelectedUser(newValue)
     }
 
     const getDaysInMonth = () => {
@@ -194,7 +253,7 @@ export const KalendarAktivnosti = () => {
                         flexDirection: isMobile ? 'column' : 'row',
                         justifyContent: 'space-between',
                         alignItems: isMobile ? 'stretch' : 'center',
-                        gap: isMobile ? 1 : 0,
+                        gap: isMobile ? 1 : 2,
                         mb: 2,
                     }}
                 >
@@ -229,17 +288,43 @@ export const KalendarAktivnosti = () => {
                             <ChevronRight />
                         </IconButton>
                     </Box>
-                    {(canWrite || canEditAll) && (
-                        <Button
-                            variant="contained"
-                            startIcon={<Add />}
-                            onClick={handleAddNew}
-                            size={isMobile ? 'small' : 'medium'}
-                            fullWidth={isMobile}
-                        >
-                            Najavi odsustvo
-                        </Button>
-                    )}
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            flexDirection: isMobile ? 'column' : 'row',
+                        }}
+                    >
+                        {canEditAll && (
+                            <Autocomplete
+                                value={selectedUser}
+                                onChange={handleUserChange}
+                                options={users}
+                                getOptionLabel={(option) => option.nickname || option.username}
+                                isOptionEqualToValue={(option, value) => option.id === value?.id}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Filtriraj po korisniku"
+                                        size="small"
+                                    />
+                                )}
+                                sx={{ minWidth: isMobile ? '100%' : 250 }}
+                            />
+                        )}
+                        {(canWrite || canEditAll) && (
+                            <Button
+                                variant="contained"
+                                startIcon={<Add />}
+                                onClick={handleAddNew}
+                                size={isMobile ? 'small' : 'medium'}
+                                fullWidth={isMobile}
+                            >
+                                Najavi odsustvo
+                            </Button>
+                        )}
+                    </Box>
                 </Box>
 
                 {loading ? (
@@ -293,6 +378,15 @@ export const KalendarAktivnosti = () => {
                             ))}
                         </Box>
                     </Box>
+                )}
+
+                {selectedUser && (
+                    <KalendarAktivnostiYearTable
+                        data={yearData}
+                        loading={loadingYearData}
+                        onRowClick={handleYearTableRowClick}
+                        userName={selectedUser.nickname || selectedUser.username}
+                    />
                 )}
             </Paper>
 

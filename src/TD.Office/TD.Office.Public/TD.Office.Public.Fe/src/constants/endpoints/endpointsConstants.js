@@ -63,6 +63,7 @@ export const ENDPOINTS_CONSTANTS = {
             `/proracuni/${id}/forward-to-komercijalno`,
     },
     USERS: {
+        GET_MULTIPLE: (pageSize = 100) => `/users?pageSize=${pageSize}`,
         UPDATE_NICKNAME: (id) => `/users/${id}/nickname`,
         UPDATE_MAX_RABAT_MP_DOKUMENTI: (id) =>
             `/users/${id}/max-rabat-mp-dokumenti`,
@@ -118,7 +119,12 @@ export const ENDPOINTS_CONSTANTS = {
         DELETE_ITEM: (popisId, itemId) => `/popisi/${popisId}/items/${itemId}`,
     },
     ODSUSTVO: {
-        CALENDAR: (month, year) => `/odsustvo/calendar?month=${month}&year=${year}`,
+        CALENDAR: (month, year, userId) => {
+            let url = `/odsustvo/calendar?month=${month}&year=${year}`
+            if (userId) url += `&userId=${userId}`
+            return url
+        },
+        YEAR_LIST: (year, userId) => `/odsustvo/year-list?year=${year}&userId=${userId}`,
         GET: (id) => `/odsustvo/${id}`,
         SAVE: '/odsustvo',
         DELETE: (id) => `/odsustvo/${id}`,
