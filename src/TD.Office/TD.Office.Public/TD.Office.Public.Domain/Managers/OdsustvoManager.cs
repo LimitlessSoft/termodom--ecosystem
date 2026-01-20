@@ -27,8 +27,25 @@ public class OdsustvoManager(
 		var startDate = new DateTime(request.Year, request.Month, 1);
 		var endDate = startDate.AddMonths(1).AddDays(-1);
 
-		var userId = hasEditAllPermission ? (long?)null : currentUser.Id;
-		var entities = odsustvoRepository.GetByDateRange(startDate, endDate, userId);
+		// Users with EditAll see all
+		// Users with StoreId see users from the same store
+		// Users without StoreId see only their own
+		int? storeId = null;
+		long? userId = null;
+
+		if (!hasEditAllPermission)
+		{
+			if (currentUser.StoreId.HasValue)
+			{
+				storeId = currentUser.StoreId;
+			}
+			else
+			{
+				userId = currentUser.Id;
+			}
+		}
+
+		var entities = odsustvoRepository.GetByDateRange(startDate, endDate, storeId, userId);
 
 		return entities.ToMappedList<OdsustvoEntity, OdsustvoCalendarDto>();
 	}

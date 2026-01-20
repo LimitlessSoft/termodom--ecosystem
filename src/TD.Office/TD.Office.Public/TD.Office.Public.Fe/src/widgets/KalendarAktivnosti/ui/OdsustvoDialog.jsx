@@ -17,7 +17,9 @@ import {
     FormControlLabel,
     Checkbox,
     Divider,
+    IconButton,
 } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
@@ -47,6 +49,7 @@ export const OdsustvoDialog = ({
     tipoviOdsustva,
     canEditAll,
     canApprove,
+    canDelete,
 }) => {
     const [tipOdsustvaId, setTipOdsustvaId] = useState('')
     const [datumOd, setDatumOd] = useState(null)
@@ -184,13 +187,24 @@ export const OdsustvoDialog = ({
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>
+            <DialogTitle sx={{ display: 'flex', alignItems: 'center', pr: 6 }}>
                 {isEditing ? 'Izmeni odsustvo' : 'Najavi odsustvo'}
                 {isEditing && odsustvo.userNickname && (
                     <Box component="span" sx={{ fontWeight: 'normal', ml: 1 }}>
                         - {odsustvo.userNickname}
                     </Box>
                 )}
+                <IconButton
+                    onClick={onClose}
+                    disabled={saving || deleting || approving}
+                    sx={{
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                    }}
+                >
+                    <CloseIcon />
+                </IconButton>
             </DialogTitle>
             <DialogContent>
                 <Box
@@ -370,8 +384,7 @@ export const OdsustvoDialog = ({
                 </Box>
             </DialogContent>
             <DialogActions sx={{ px: 3, pb: 2 }}>
-                {/* Hidden for now - keep for later use */}
-                {false && isEditing && (
+                {canDelete && isEditing && (
                     <Button
                         onClick={handleDelete}
                         color="error"
