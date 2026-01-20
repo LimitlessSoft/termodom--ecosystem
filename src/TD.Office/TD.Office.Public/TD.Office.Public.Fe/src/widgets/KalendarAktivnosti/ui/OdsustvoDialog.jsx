@@ -292,7 +292,8 @@ export const OdsustvoDialog = ({
                 </Box>
             </DialogContent>
             <DialogActions sx={{ px: 3, pb: 2 }}>
-                {isEditing && (
+                {/* Hidden for now - keep for later use */}
+                {false && isEditing && (
                     <Button
                         onClick={handleDelete}
                         color="error"
