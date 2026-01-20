@@ -1,5 +1,6 @@
 export const PERMISSIONS_CONSTANTS = {
     PERMISSIONS_GROUPS: {
+        DASHBOARD: 'dashboard',
         NALOG_ZA_PREVOZ: 'nalog-za-prevoz',
         NAV_BAR: 'nav-bar',
         PARTNERI: 'partneri',
@@ -18,8 +19,12 @@ export const PERMISSIONS_CONSTANTS = {
         TIP_ODSUSTVA: 'tip-odsustva',
         KORISNICI_LIST: 'korisnici-lista',
         TIP_KORISNIKA: 'tip-korisnika',
+        MODULE_HELP: 'module-help',
     },
     USER_PERMISSIONS: {
+        DASHBOARD: {
+            READ: 'DashboardRead',
+        },
         NALOG_ZA_PREVOZ: {
             READ: 'NalogZaPrevozRead',
             NEW: 'NalogZaPrevozNovi',
@@ -101,6 +106,9 @@ export const PERMISSIONS_CONSTANTS = {
         TIP_KORISNIKA: {
             READ: 'TipKorisnikaRead',
             WRITE: 'TipKorisnikaWrite',
+        },
+        MODULE_HELP: {
+            SYSTEM_WRITE: 'ModuleHelpSystemWrite',
         },
     },
 }

@@ -1,4 +1,5 @@
 export const URL_CONSTANTS = {
+    NEMA_PRISTUPA: '/nema-pristupa',
     IZVESTAJI: {
         INDEX: '/izvestaji',
         IZVESTAJ_UKUPNE_KOLICINE_PO_ROBI_U_FILTRIRANIM_DOKUMENTIMA:

@@ -402,6 +402,25 @@ TD.Office uses an enum-based permission system with database persistence. When a
    ```
 
 2. **Permission Enum** - `src/TD.Office/TD.Office.Common/TD.Office.Common.Contracts/Enums/Permission.cs`
+
+   **CRITICAL: Always add new permissions at the END of the enum!**
+
+   The `Permission` enum is integer-backed. Each value gets an implicit integer (0, 1, 2, ...). The database stores permissions as integers via `UserPermissionEntity`. If you insert a new permission in the middle, all subsequent values shift, corrupting existing user permissions in the database.
+
+   ```csharp
+   // WRONG - inserting in the middle shifts all values and breaks existing permissions!
+   Access,           // = 0
+   MojModulRead,     // = 1 (inserted here)
+   NalogZaPrevozRead // = 2 (was 1, now broken!)
+
+   // CORRECT - always add at the END
+   Access,           // = 0
+   NalogZaPrevozRead // = 1 (unchanged)
+   // ... all existing permissions ...
+   TipKorisnikaWrite,
+   MojModulRead,     // = N (new, safe)
+   ```
+
    ```csharp
    // Add to NavBar group for navigation visibility
    // Add to module-specific group for granular control

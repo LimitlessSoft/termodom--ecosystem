@@ -7,6 +7,7 @@
 		public static class PermissionGroup
 		{
 			public const string NavBar = "nav-bar";
+			public const string Dashboard = "dashboard";
 			public const string NalogZaPrevoz = "nalog-za-prevoz";
 			public const string Korisnici = "korisnici";
 			public const string KorisniciList = "korisnici-lista";
@@ -28,6 +29,7 @@
 			public const string KalendarAktivnosti = "kalendar-aktivnosti";
 			public const string TipOdsustva = "tip-odsustva";
 			public const string TipKorisnika = "tip-korisnika";
+			public const string ModuleHelp = "module-help";
 		}
 
 		public static class Jwt
