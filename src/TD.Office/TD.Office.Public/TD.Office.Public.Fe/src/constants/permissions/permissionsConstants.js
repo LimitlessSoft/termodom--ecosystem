@@ -19,6 +19,7 @@ export const PERMISSIONS_CONSTANTS = {
         TIP_ODSUSTVA: 'tip-odsustva',
         KORISNICI_LIST: 'korisnici-lista',
         TIP_KORISNIKA: 'tip-korisnika',
+        MODULE_HELP: 'module-help',
     },
     USER_PERMISSIONS: {
         DASHBOARD: {
@@ -105,6 +106,9 @@ export const PERMISSIONS_CONSTANTS = {
         TIP_KORISNIKA: {
             READ: 'TipKorisnikaRead',
             WRITE: 'TipKorisnikaWrite',
+        },
+        MODULE_HELP: {
+            SYSTEM_WRITE: 'ModuleHelpSystemWrite',
         },
     },
 }

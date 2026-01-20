@@ -255,4 +255,8 @@ public enum Permission
 	[PermissionGroup(LegacyConstants.PermissionGroup.Dashboard)]
 	[Description("Kontrolna tabla - pregled")]
 	DashboardRead,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.ModuleHelp)]
+	[Description("Pomoć modula - izmena FAQ")]
+	ModuleHelpSystemWrite,
 }

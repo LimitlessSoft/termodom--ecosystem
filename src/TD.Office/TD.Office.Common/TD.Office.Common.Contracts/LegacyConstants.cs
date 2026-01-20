@@ -29,6 +29,7 @@
 			public const string KalendarAktivnosti = "kalendar-aktivnosti";
 			public const string TipOdsustva = "tip-odsustva";
 			public const string TipKorisnika = "tip-korisnika";
+			public const string ModuleHelp = "module-help";
 		}
 
 		public static class Jwt

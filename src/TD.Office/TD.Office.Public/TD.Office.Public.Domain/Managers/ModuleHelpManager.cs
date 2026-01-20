@@ -2,6 +2,7 @@ using LSCore.Auth.Contracts;
 using LSCore.Exceptions;
 using TD.Office.Common.Contracts.Dtos.ModuleHelp;
 using TD.Office.Common.Contracts.Entities;
+using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Contracts.IManagers;
 using TD.Office.Common.Contracts.IRepositories;
 using TD.Office.Common.Contracts.Requests.ModuleHelp;
@@ -29,7 +30,8 @@ public class ModuleHelpManager(
 			UserText = userHelp?.Text ?? string.Empty,
 			SystemText = systemHelp?.Text ?? string.Empty,
 			UserHelpId = userHelp?.Id,
-			SystemHelpId = systemHelp?.Id
+			SystemHelpId = systemHelp?.Id,
+			CanEditSystemText = userRepository.HasPermission(currentUser.Id, Permission.ModuleHelpSystemWrite)
 		};
 	}
 
@@ -39,7 +41,12 @@ public class ModuleHelpManager(
 			throw new LSCoreUnauthenticatedException();
 
 		var currentUser = userRepository.GetCurrentUser();
-		var entity = moduleHelpRepository.GetOrDefault(request.Module, currentUser.Id);
+
+		if (request.IsSystemText && !userRepository.HasPermission(currentUser.Id, Permission.ModuleHelpSystemWrite))
+			throw new LSCoreForbiddenException();
+
+		var createdBy = request.IsSystemText ? 0 : currentUser.Id;
+		var entity = moduleHelpRepository.GetOrDefault(request.Module, createdBy);
 
 		if (entity == null)
 			moduleHelpRepository.Insert(
@@ -47,7 +54,7 @@ public class ModuleHelpManager(
 				{
 					ModuleType = request.Module,
 					Text = request.Text,
-					CreatedBy = currentUser.Id
+					CreatedBy = createdBy
 				}
 			);
 		else

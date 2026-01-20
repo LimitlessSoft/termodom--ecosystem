@@ -6,4 +6,5 @@ public class ModuleHelpDto
 	public long? UserHelpId { get; set; }
 	public string SystemText { get; set; }
 	public long? SystemHelpId { get; set; }
+	public bool CanEditSystemText { get; set; }
 }

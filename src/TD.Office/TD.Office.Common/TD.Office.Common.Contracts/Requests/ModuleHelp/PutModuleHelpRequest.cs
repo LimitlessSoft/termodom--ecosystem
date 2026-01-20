@@ -7,4 +7,5 @@ public class PutModuleHelpRequest
 	public long? Id { get; set; }
 	public ModuleType Module { get; set; }
 	public string Text { get; set; }
+	public bool IsSystemText { get; set; }
 }
