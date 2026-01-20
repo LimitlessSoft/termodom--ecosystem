@@ -10,7 +10,7 @@ public class OdsustvoRepository(OfficeDbContext dbContext)
 	: LSCoreRepositoryBase<OdsustvoEntity>(dbContext),
 		IOdsustvoRepository
 {
-	public List<OdsustvoEntity> GetByDateRange(DateTime startDate, DateTime endDate, long? userId = null)
+	public List<OdsustvoEntity> GetByDateRange(DateTime startDate, DateTime endDate, int? storeId = null, long? userId = null)
 	{
 		var query = dbContext.Odsustva
 			.Include(x => x.User)
@@ -18,8 +18,14 @@ public class OdsustvoRepository(OfficeDbContext dbContext)
 			.Include(x => x.OdobrenoByUser)
 			.Where(x => x.IsActive);
 
-		if (userId.HasValue)
+		if (storeId.HasValue)
 		{
+			// Filter by store - show all users from the same store
+			query = query.Where(x => x.User != null && x.User.StoreId == storeId.Value);
+		}
+		else if (userId.HasValue)
+		{
+			// No store - show only own odsustva
 			query = query.Where(x => x.UserId == userId.Value);
 		}
 
