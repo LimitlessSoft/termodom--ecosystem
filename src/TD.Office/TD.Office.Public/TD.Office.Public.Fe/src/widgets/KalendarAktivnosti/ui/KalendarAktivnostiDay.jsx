@@ -1,15 +1,24 @@
 import { Box, Chip, Tooltip, Typography } from '@mui/material'
 import { ODSUSTVO_CONSTANTS } from '@/constants/odsustvo/odsustvoConstants'
 
-const TYPE_COLORS = {
-    'Slava': '#ff9800',
-    'Odmor': '#4caf50',
-    'Sahrana': '#9e9e9e',
-    'Ostalo': '#2196f3',
+// Status-based colors for calendar items
+const STATUS_COLORS = {
+    PENDING: '#ffc107',    // Yellow for pending approval
+    APPROVED: '#4caf50',   // Green for approved (not realized)
+    REALIZED: '#2196f3',   // Blue for realized
 }
 
-const getTypeColor = (tipNaziv) => {
-    return TYPE_COLORS[tipNaziv] || '#2196f3'
+const getOdsustvoColor = (odsustvo) => {
+    const isPending = odsustvo.status === ODSUSTVO_CONSTANTS.STATUS.CEKA_ODOBRENJE
+    const isRealized = odsustvo.realizovanoKorisnik && odsustvo.realizovanoOdobravac
+
+    if (isPending) {
+        return STATUS_COLORS.PENDING
+    }
+    if (isRealized) {
+        return STATUS_COLORS.REALIZED
+    }
+    return STATUS_COLORS.APPROVED
 }
 
 export const KalendarAktivnostiDay = ({ date, odsustva, onCellClick, onOdsustvoClick, canEdit, isMobile }) => {
@@ -71,7 +80,7 @@ export const KalendarAktivnostiDay = ({ date, odsustva, onCellClick, onOdsustvoC
             </Typography>
             {odsustva.map((o) => {
                 const isPending = o.status === ODSUSTVO_CONSTANTS.STATUS.CEKA_ODOBRENJE
-                const isFullyRealized = o.realizovanoKorisnik && o.realizovanoOdobravac
+                const isRealized = o.realizovanoKorisnik && o.realizovanoOdobravac
 
                 return (
                     <Tooltip
@@ -96,15 +105,14 @@ export const KalendarAktivnostiDay = ({ date, odsustva, onCellClick, onOdsustvoC
                             size="small"
                             onClick={(e) => handleOdsustvoClick(e, o)}
                             sx={{
-                                bgcolor: getTypeColor(o.tipOdsustvaNaziv),
+                                bgcolor: getOdsustvoColor(o),
                                 color: 'white',
                                 fontSize: isMobile ? '0.55rem' : '0.65rem',
                                 height: isMobile ? 16 : 18,
                                 mb: 0.25,
                                 width: '100%',
                                 cursor: 'pointer',
-                                border: isPending ? '2px dashed rgba(255,255,255,0.5)' : 'none',
-                                opacity: isFullyRealized ? 0.6 : 1,
+                                opacity: isRealized ? 0.6 : 1,
                                 '& .MuiChip-label': {
                                     px: isMobile ? 0.25 : 0.5,
                                 },
