@@ -7,6 +7,7 @@
 		public static class PermissionGroup
 		{
 			public const string NavBar = "nav-bar";
+			public const string Dashboard = "dashboard";
 			public const string NalogZaPrevoz = "nalog-za-prevoz";
 			public const string Korisnici = "korisnici";
 			public const string KorisniciList = "korisnici-lista";

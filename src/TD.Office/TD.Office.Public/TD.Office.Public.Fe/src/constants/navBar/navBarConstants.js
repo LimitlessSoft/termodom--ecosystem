@@ -34,6 +34,10 @@ export const NAV_BAR_CONSTANTS = {
         {
             label: NAV_BAR_CONSTANTS.MODULE_LABELS.KONTROLNA_TABLA,
             href: '/',
+            hasPermission: hasPermission(
+                permissions,
+                PERMISSIONS_CONSTANTS.USER_PERMISSIONS.DASHBOARD.READ
+            ),
             icon: <Home />,
         },
         {
