@@ -7,4 +7,5 @@ public interface IOdsustvoRepository : ILSCoreRepositoryBase<OdsustvoEntity>
 {
 	List<OdsustvoEntity> GetByDateRange(DateTime startDate, DateTime endDate, int? storeId = null, long? userId = null);
 	List<OdsustvoEntity> GetByYearAndUser(int year, long userId);
+	List<OdsustvoEntity> GetPending();
 }

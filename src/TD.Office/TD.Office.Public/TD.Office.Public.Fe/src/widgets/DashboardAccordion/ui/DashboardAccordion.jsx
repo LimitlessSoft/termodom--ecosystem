@@ -17,9 +17,11 @@ export const DashboardAccordion = ({
     component,
     badgeCount,
     disabled,
+    defaultExpanded = false,
+    highlighted = false,
 }) => {
-    const [expanded, setExpanded] = useState(false)
-    const [comp, setComp] = useState(null)
+    const [expanded, setExpanded] = useState(defaultExpanded)
+    const [comp, setComp] = useState(defaultExpanded ? component : null)
 
     useEffect(() => {
         if (!component) return
@@ -33,6 +35,13 @@ export const DashboardAccordion = ({
             disabled={disabled}
             expanded={expanded === true}
             onChange={() => setExpanded(!expanded)}
+            sx={highlighted ? {
+                border: '2px solid',
+                borderColor: 'warning.main',
+                '& .MuiAccordionSummary-root': {
+                    bgcolor: 'warning.light',
+                },
+            } : undefined}
         >
             <AccordionSummary
                 expandIcon={

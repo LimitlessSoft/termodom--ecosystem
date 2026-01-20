@@ -1,6 +1,7 @@
 using LSCore.Repository;
 using Microsoft.EntityFrameworkCore;
 using TD.Office.Common.Contracts.Entities;
+using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
 
@@ -48,6 +49,17 @@ public class OdsustvoRepository(OfficeDbContext dbContext)
 			.Where(x => x.IsActive)
 			.Where(x => x.UserId == userId)
 			.Where(x => x.DatumOd <= endDate && x.DatumDo >= startDate)
+			.OrderBy(x => x.DatumOd)
+			.ToList();
+	}
+
+	public List<OdsustvoEntity> GetPending()
+	{
+		return dbContext.Odsustva
+			.Include(x => x.User)
+			.Include(x => x.TipOdsustva)
+			.Where(x => x.IsActive)
+			.Where(x => x.Status == OdsustvoStatus.CekaOdobrenje)
 			.OrderBy(x => x.DatumOd)
 			.ToList();
 	}

@@ -6,6 +6,7 @@ import {
     KomercijalnoNeispravneCene,
     Notes,
     PartneriSkoroKreirani,
+    PendingOdsustva,
 } from '@/widgets'
 import { DashboardAccordion } from '@/widgets/DashboardAccordion/ui/DashboardAccordion'
 import {
@@ -24,12 +25,26 @@ const Home = () => {
     const permissions = usePermissions(
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.NAV_BAR
     )
+    const kalendarPermissions = usePermissions(
+        PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.KALENDAR_AKTIVNOSTI
+    )
 
     const [
         komercijalnoNeisparvneCeneCount,
         setKomercijalnoNeisparvneCeneCount,
     ] = useState(null)
+    const [pendingOdsustvaCount, setPendingOdsustvaCount] = useState(null)
     const [permissionsChecked, setPermissionsChecked] = useState(false)
+
+    const canViewKalendarAktivnosti = hasPermission(
+        kalendarPermissions,
+        PERMISSIONS_CONSTANTS.USER_PERMISSIONS.KALENDAR_AKTIVNOSTI.READ
+    )
+    const canApproveOdsustva = hasPermission(
+        kalendarPermissions,
+        PERMISSIONS_CONSTANTS.USER_PERMISSIONS.KALENDAR_AKTIVNOSTI.APPROVE
+    )
+    const showPendingOdsustva = canViewKalendarAktivnosti && canApproveOdsustva
 
     useEffect(() => {
         if (!permissions || permissions.length === 0) return
@@ -71,6 +86,15 @@ const Home = () => {
             .catch(handleApiError)
     }, [permissionsChecked])
 
+    useEffect(() => {
+        if (!permissionsChecked || !showPendingOdsustva) return
+
+        officeApi
+            .get(ENDPOINTS_CONSTANTS.ODSUSTVO.PENDING)
+            .then((res) => setPendingOdsustvaCount(res.data?.length || 0))
+            .catch(handleApiError)
+    }, [permissionsChecked, showPendingOdsustva])
+
     if (!user?.isLogged || !permissionsChecked) {
         return <CircularProgress />
     }
@@ -79,6 +103,16 @@ const Home = () => {
         <Grid container spacing={2} p={2}>
             <Grid item xs={4}>
                 <Stack gap={1}>
+                    {showPendingOdsustva && (
+                        <DashboardAccordion
+                            disabled={pendingOdsustvaCount === null}
+                            badgeCount={pendingOdsustvaCount}
+                            caption={'Zahtevi za odsustvo na cekanju'}
+                            component={<PendingOdsustva />}
+                            defaultExpanded
+                            highlighted
+                        />
+                    )}
                     <DashboardAccordion
                         disabled={false}
                         badgeCount={null}

@@ -125,6 +125,7 @@ export const ENDPOINTS_CONSTANTS = {
             return url
         },
         YEAR_LIST: (year, userId) => `/odsustvo/year-list?year=${year}&userId=${userId}`,
+        PENDING: '/odsustvo/pending',
         GET: (id) => `/odsustvo/${id}`,
         SAVE: '/odsustvo',
         DELETE: (id) => `/odsustvo/${id}`,
