@@ -98,6 +98,7 @@ export const PERMISSIONS_CONSTANTS = {
             WRITE: 'KalendarAktivnostiWrite',
             EDIT_ALL: 'KalendarAktivnostiEditAll',
             APPROVE: 'KalendarAktivnostiApprove',
+            DELETE: 'KalendarAktivnostiDelete',
         },
         TIP_ODSUSTVA: {
             READ: 'TipOdsustvaRead',

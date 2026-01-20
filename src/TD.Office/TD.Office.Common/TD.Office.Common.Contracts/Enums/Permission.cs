@@ -259,4 +259,8 @@ public enum Permission
 	[PermissionGroup(LegacyConstants.PermissionGroup.ModuleHelp)]
 	[Description("Pomoć modula - izmena FAQ")]
 	ModuleHelpSystemWrite,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.KalendarAktivnosti)]
+	[Description("Kalendar aktivnosti - brisanje odsustva")]
+	KalendarAktivnostiDelete,
 }

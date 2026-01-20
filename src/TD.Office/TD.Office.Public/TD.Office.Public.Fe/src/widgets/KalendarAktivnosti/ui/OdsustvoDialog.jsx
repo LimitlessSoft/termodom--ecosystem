@@ -47,6 +47,7 @@ export const OdsustvoDialog = ({
     tipoviOdsustva,
     canEditAll,
     canApprove,
+    canDelete,
 }) => {
     const [tipOdsustvaId, setTipOdsustvaId] = useState('')
     const [datumOd, setDatumOd] = useState(null)
@@ -370,8 +371,7 @@ export const OdsustvoDialog = ({
                 </Box>
             </DialogContent>
             <DialogActions sx={{ px: 3, pb: 2 }}>
-                {/* Hidden for now - keep for later use */}
-                {false && isEditing && (
+                {canDelete && isEditing && (
                     <Button
                         onClick={handleDelete}
                         color="error"
