@@ -20,8 +20,18 @@ import { KalendarAktivnostiDay } from './KalendarAktivnostiDay'
 
 const DAYS_OF_WEEK = ['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned']
 const MONTHS = [
-    'Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun',
-    'Jul', 'Avgust', 'Septembar', 'Oktobar', 'Novembar', 'Decembar'
+    'Januar',
+    'Februar',
+    'Mart',
+    'April',
+    'Maj',
+    'Jun',
+    'Jul',
+    'Avgust',
+    'Septembar',
+    'Oktobar',
+    'Novembar',
+    'Decembar',
 ]
 
 export const KalendarAktivnosti = () => {
@@ -91,11 +101,15 @@ export const KalendarAktivnosti = () => {
     }, [fetchTipoviOdsustva])
 
     const handlePrevMonth = () => {
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))
+        setCurrentDate(
+            new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+        )
     }
 
     const handleNextMonth = () => {
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
+        setCurrentDate(
+            new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+        )
     }
 
     const handleCellClick = (date) => {
@@ -169,25 +183,44 @@ export const KalendarAktivnosti = () => {
     return (
         <Box sx={{ p: isMobile ? 1 : 2 }}>
             <Paper sx={{ p: isMobile ? 1 : 2 }}>
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: isMobile ? 'column' : 'row',
-                    justifyContent: 'space-between',
-                    alignItems: isMobile ? 'stretch' : 'center',
-                    gap: isMobile ? 1 : 0,
-                    mb: 2
-                }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-                        <IconButton onClick={handlePrevMonth} size={isMobile ? 'small' : 'medium'}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: isMobile ? 'column' : 'row',
+                        justifyContent: 'space-between',
+                        alignItems: isMobile ? 'stretch' : 'center',
+                        gap: isMobile ? 1 : 0,
+                        mb: 2,
+                    }}
+                >
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 1,
+                        }}
+                    >
+                        <IconButton
+                            onClick={handlePrevMonth}
+                            size={isMobile ? 'small' : 'medium'}
+                        >
                             <ChevronLeft />
                         </IconButton>
                         <Typography
                             variant={isMobile ? 'h6' : 'h5'}
-                            sx={{ minWidth: isMobile ? 150 : 200, textAlign: 'center' }}
+                            sx={{
+                                minWidth: isMobile ? 150 : 200,
+                                textAlign: 'center',
+                            }}
                         >
-                            {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
+                            {MONTHS[currentDate.getMonth()]}{' '}
+                            {currentDate.getFullYear()}
                         </Typography>
-                        <IconButton onClick={handleNextMonth} size={isMobile ? 'small' : 'medium'}>
+                        <IconButton
+                            onClick={handleNextMonth}
+                            size={isMobile ? 'small' : 'medium'}
+                        >
                             <ChevronRight />
                         </IconButton>
                     </Box>
@@ -199,26 +232,32 @@ export const KalendarAktivnosti = () => {
                             size={isMobile ? 'small' : 'medium'}
                             fullWidth={isMobile}
                         >
-                            Novo odsustvo
+                            Najavi odsustvo
                         </Button>
                     )}
                 </Box>
 
                 {loading ? (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+                    <Box
+                        sx={{ display: 'flex', justifyContent: 'center', p: 4 }}
+                    >
                         <CircularProgress />
                     </Box>
                 ) : (
-                    <Box sx={{
-                        overflowX: isMobile ? 'auto' : 'visible',
-                        WebkitOverflowScrolling: 'touch',
-                    }}>
-                        <Box sx={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(7, 1fr)',
-                            gap: 0.5,
-                            minWidth: isMobile ? 500 : 'auto',
-                        }}>
+                    <Box
+                        sx={{
+                            overflowX: isMobile ? 'auto' : 'visible',
+                            WebkitOverflowScrolling: 'touch',
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(7, 1fr)',
+                                gap: 0.5,
+                                minWidth: isMobile ? 500 : 'auto',
+                            }}
+                        >
                             {DAYS_OF_WEEK.map((day) => (
                                 <Box
                                     key={day}
@@ -228,7 +267,9 @@ export const KalendarAktivnosti = () => {
                                         fontWeight: 'bold',
                                         bgcolor: 'primary.main',
                                         color: 'primary.contrastText',
-                                        fontSize: isMobile ? '0.75rem' : '0.875rem',
+                                        fontSize: isMobile
+                                            ? '0.75rem'
+                                            : '0.875rem',
                                     }}
                                 >
                                     {day}

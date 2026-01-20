@@ -11,6 +11,10 @@ const moduleHelpConstants = {
         id: 0,
         url: '/novac/pregled-i-uplata-pazara',
     },
+    KORISNICI_KALENDAR_AKTIVNOSTI: {
+        id: 1,
+        url: '/korisnici/kalendar-aktivnosti',
+    },
 }
 
 export default moduleHelpConstants

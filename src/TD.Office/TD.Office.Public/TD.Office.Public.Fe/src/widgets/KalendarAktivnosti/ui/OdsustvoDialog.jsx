@@ -113,7 +113,9 @@ export const OdsustvoDialog = ({
 
         setDeleting(true)
         try {
-            await officeApi.delete(ENDPOINTS_CONSTANTS.ODSUSTVO.DELETE(odsustvo.id))
+            await officeApi.delete(
+                ENDPOINTS_CONSTANTS.ODSUSTVO.DELETE(odsustvo.id)
+            )
             toast.success('Odsustvo obrisano')
             onSave()
         } catch (err) {
@@ -128,7 +130,9 @@ export const OdsustvoDialog = ({
 
         setApproving(true)
         try {
-            await officeApi.put(ENDPOINTS_CONSTANTS.ODSUSTVO.APPROVE(odsustvo.id))
+            await officeApi.put(
+                ENDPOINTS_CONSTANTS.ODSUSTVO.APPROVE(odsustvo.id)
+            )
             toast.success('Odsustvo odobreno')
             onSave()
         } catch (err) {
@@ -142,9 +146,12 @@ export const OdsustvoDialog = ({
         const newValue = e.target.checked
         setRealizovanoKorisnik(newValue)
         try {
-            await officeApi.put(ENDPOINTS_CONSTANTS.ODSUSTVO.REALIZOVANO(odsustvo.id), {
-                realizovanoKorisnik: newValue,
-            })
+            await officeApi.put(
+                ENDPOINTS_CONSTANTS.ODSUSTVO.REALIZOVANO(odsustvo.id),
+                {
+                    realizovanoKorisnik: newValue,
+                }
+            )
         } catch (err) {
             handleApiError(err)
             setRealizovanoKorisnik(!newValue)
@@ -155,9 +162,12 @@ export const OdsustvoDialog = ({
         const newValue = e.target.checked
         setRealizovanoOdobravac(newValue)
         try {
-            await officeApi.put(ENDPOINTS_CONSTANTS.ODSUSTVO.REALIZOVANO(odsustvo.id), {
-                realizovanoOdobravac: newValue,
-            })
+            await officeApi.put(
+                ENDPOINTS_CONSTANTS.ODSUSTVO.REALIZOVANO(odsustvo.id),
+                {
+                    realizovanoOdobravac: newValue,
+                }
+            )
         } catch (err) {
             handleApiError(err)
             setRealizovanoOdobravac(!newValue)
@@ -166,13 +176,14 @@ export const OdsustvoDialog = ({
 
     const isEditing = !!odsustvo
     const isApproved = odsustvo?.status === ODSUSTVO_CONSTANTS.STATUS.ODOBRENO
-    const isPending = odsustvo?.status === ODSUSTVO_CONSTANTS.STATUS.CEKA_ODOBRENJE
+    const isPending =
+        odsustvo?.status === ODSUSTVO_CONSTANTS.STATUS.CEKA_ODOBRENJE
     const canEditFields = !isEditing || !isApproved || canEditAll
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>
-                {isEditing ? 'Izmeni odsustvo' : 'Novo odsustvo'}
+                {isEditing ? 'Izmeni odsustvo' : 'Najavi odsustvo'}
                 {isEditing && odsustvo.userNickname && (
                     <Box component="span" sx={{ fontWeight: 'normal', ml: 1 }}>
                         - {odsustvo.userNickname}
@@ -180,30 +191,68 @@ export const OdsustvoDialog = ({
                 )}
             </DialogTitle>
             <DialogContent>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                        mt: 1,
+                    }}
+                >
                     {isEditing && (
                         <>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-                                <Typography variant="body2" color="text.secondary">
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1,
+                                    flexWrap: 'wrap',
+                                }}
+                            >
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                >
                                     Status:
                                 </Typography>
                                 <Chip
-                                    label={ODSUSTVO_CONSTANTS.STATUS_LABELS[odsustvo.status]}
+                                    label={
+                                        ODSUSTVO_CONSTANTS.STATUS_LABELS[
+                                            odsustvo.status
+                                        ]
+                                    }
                                     size="small"
                                     sx={{
-                                        bgcolor: ODSUSTVO_CONSTANTS.STATUS_COLORS[odsustvo.status],
+                                        bgcolor:
+                                            ODSUSTVO_CONSTANTS.STATUS_COLORS[
+                                                odsustvo.status
+                                            ],
                                         color: 'white',
                                     }}
                                 />
                             </Box>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                                <Typography variant="caption" color="text.secondary">
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 0.5,
+                                }}
+                            >
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
                                     Kreirano: {formatDate(odsustvo.createdAt)}
                                 </Typography>
                                 {isApproved && odsustvo.odobrenoAt && (
-                                    <Typography variant="caption" color="text.secondary">
-                                        Odobreno: {formatDate(odsustvo.odobrenoAt)}
-                                        {odsustvo.odobrenoByNickname && ` (${odsustvo.odobrenoByNickname})`}
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                    >
+                                        Odobreno:{' '}
+                                        {formatDate(odsustvo.odobrenoAt)}
+                                        {odsustvo.odobrenoByNickname &&
+                                            ` (${odsustvo.odobrenoByNickname})`}
                                     </Typography>
                                 )}
                             </Box>
@@ -227,7 +276,10 @@ export const OdsustvoDialog = ({
                         </Select>
                     </FormControl>
 
-                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={srLatn}>
+                    <LocalizationProvider
+                        dateAdapter={AdapterDateFns}
+                        adapterLocale={srLatn}
+                    >
                         <DatePicker
                             label="Datum od"
                             value={datumOd}
@@ -262,16 +314,29 @@ export const OdsustvoDialog = ({
                     {isEditing && (
                         <>
                             <Divider />
-                            <Typography variant="subtitle2" color="text.secondary">
+                            <Typography
+                                variant="subtitle2"
+                                color="text.secondary"
+                            >
                                 Realizovano
                             </Typography>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 1,
+                                }}
+                            >
                                 <FormControlLabel
                                     control={
                                         <Checkbox
                                             checked={realizovanoKorisnik}
-                                            onChange={handleRealizovanoKorisnikChange}
-                                            disabled={saving || deleting || approving}
+                                            onChange={
+                                                handleRealizovanoKorisnikChange
+                                            }
+                                            disabled={
+                                                saving || deleting || approving
+                                            }
                                         />
                                     }
                                     label="Realizovano (korisnik)"
@@ -280,8 +345,15 @@ export const OdsustvoDialog = ({
                                     control={
                                         <Checkbox
                                             checked={realizovanoOdobravac}
-                                            onChange={handleRealizovanoOdobravacChange}
-                                            disabled={!canApprove || saving || deleting || approving}
+                                            onChange={
+                                                handleRealizovanoOdobravacChange
+                                            }
+                                            disabled={
+                                                !canApprove ||
+                                                saving ||
+                                                deleting ||
+                                                approving
+                                            }
                                         />
                                     }
                                     label="Realizovano (odobravac)"
@@ -313,7 +385,10 @@ export const OdsustvoDialog = ({
                         {approving ? <CircularProgress size={20} /> : 'Odobri'}
                     </Button>
                 )}
-                <Button onClick={onClose} disabled={saving || deleting || approving}>
+                <Button
+                    onClick={onClose}
+                    disabled={saving || deleting || approving}
+                >
                     Odustani
                 </Button>
                 {canEditFields && (
