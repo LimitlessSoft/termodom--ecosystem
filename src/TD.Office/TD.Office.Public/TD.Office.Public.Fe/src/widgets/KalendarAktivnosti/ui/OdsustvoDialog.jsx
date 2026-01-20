@@ -178,7 +178,9 @@ export const OdsustvoDialog = ({
     const isApproved = odsustvo?.status === ODSUSTVO_CONSTANTS.STATUS.ODOBRENO
     const isPending =
         odsustvo?.status === ODSUSTVO_CONSTANTS.STATUS.CEKA_ODOBRENJE
-    const canEditFields = !isEditing || !isApproved || canEditAll
+    // Only users with EditAll permission can edit existing odsustva
+    // Once created, even the owner cannot edit their own odsustvo
+    const canEditFields = !isEditing || canEditAll
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -335,7 +337,10 @@ export const OdsustvoDialog = ({
                                                 handleRealizovanoKorisnikChange
                                             }
                                             disabled={
-                                                saving || deleting || approving
+                                                !isApproved ||
+                                                saving ||
+                                                deleting ||
+                                                approving
                                             }
                                         />
                                     }
@@ -349,6 +354,7 @@ export const OdsustvoDialog = ({
                                                 handleRealizovanoOdobravacChange
                                             }
                                             disabled={
+                                                !isApproved ||
                                                 !canApprove ||
                                                 saving ||
                                                 deleting ||

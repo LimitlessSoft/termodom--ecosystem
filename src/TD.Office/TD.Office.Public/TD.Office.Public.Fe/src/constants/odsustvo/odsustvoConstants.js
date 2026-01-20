@@ -8,7 +8,8 @@ export const ODSUSTVO_CONSTANTS = {
         1: 'Odobreno',
     },
     STATUS_COLORS: {
-        0: '#ff9800',
-        1: '#4caf50',
+        0: '#ffc107',  // Yellow for pending
+        1: '#4caf50',  // Green for approved
     },
+    REALIZED_COLOR: '#2196f3',  // Blue for realized
 }

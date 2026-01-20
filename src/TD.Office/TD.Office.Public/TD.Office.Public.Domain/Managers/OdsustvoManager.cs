@@ -65,11 +65,10 @@ public class OdsustvoManager(
 		{
 			entity = odsustvoRepository.Get(request.Id.Value);
 
-			if (entity.UserId != currentUser.Id && !hasEditAllPermission)
-				throw new LSCoreForbiddenException();
-
-			if (entity.Status == OdsustvoStatus.Odobreno && !hasEditAllPermission)
-				throw new LSCoreForbiddenException("Odobreno odsustvo se ne može menjati");
+			// Only users with EditAll permission can modify existing odsustva
+			// Once created, even the owner cannot edit their own odsustvo
+			if (!hasEditAllPermission)
+				throw new LSCoreForbiddenException("Samo korisnici sa pravom izmene mogu menjati odsustva");
 		}
 		else
 		{
@@ -141,6 +140,10 @@ public class OdsustvoManager(
 	{
 		var currentUser = userRepository.GetCurrentUser();
 		var entity = odsustvoRepository.Get(id);
+
+		// Realizovano can only be changed after odsustvo is approved
+		if (entity.Status != OdsustvoStatus.Odobreno)
+			throw new LSCoreBadRequestException("Realizovano se može menjati samo nakon odobrenja odsustva");
 
 		var hasApprovePermission = userRepository.HasPermission(currentUser.Id, Permission.KalendarAktivnostiApprove);
 		var isOwner = entity.UserId == currentUser.Id;
