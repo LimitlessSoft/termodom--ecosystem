@@ -8,13 +8,6 @@ import {
 export const metadata = {
     title: DefaultMetadataTitle,
     description: DefaultMetadataDescription,
-    icons: {
-        icon: [
-            { url: '/favicon.ico', sizes: 'any' },
-            { url: '/termodom_logo.svg', type: 'image/svg+xml' },
-        ],
-        apple: '/Termodom_Logo.png',
-    },
     openGraph: {
         title: DefaultMetadataTitle,
         description: DefaultMetadataDescription,
