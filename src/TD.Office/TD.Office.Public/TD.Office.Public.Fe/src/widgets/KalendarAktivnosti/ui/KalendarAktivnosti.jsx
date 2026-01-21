@@ -348,23 +348,26 @@ export const KalendarAktivnosti = () => {
                                 minWidth: isMobile ? 500 : 'auto',
                             }}
                         >
-                            {DAYS_OF_WEEK.map((day) => (
-                                <Box
-                                    key={day}
-                                    sx={{
-                                        p: isMobile ? 0.5 : 1,
-                                        textAlign: 'center',
-                                        fontWeight: 'bold',
-                                        bgcolor: 'primary.main',
-                                        color: 'primary.contrastText',
-                                        fontSize: isMobile
-                                            ? '0.75rem'
-                                            : '0.875rem',
-                                    }}
-                                >
-                                    {day}
-                                </Box>
-                            ))}
+                            {DAYS_OF_WEEK.map((day, index) => {
+                                const isSundayHeader = index === 6
+                                return (
+                                    <Box
+                                        key={day}
+                                        sx={{
+                                            p: isMobile ? 0.5 : 1,
+                                            textAlign: 'center',
+                                            fontWeight: 'bold',
+                                            bgcolor: isSundayHeader ? 'grey.400' : 'primary.main',
+                                            color: isSundayHeader ? 'text.disabled' : 'primary.contrastText',
+                                            fontSize: isMobile
+                                                ? '0.75rem'
+                                                : '0.875rem',
+                                        }}
+                                    >
+                                        {day}
+                                    </Box>
+                                )
+                            })}
                             {days.map((date, index) => (
                                 <KalendarAktivnostiDay
                                     key={index}

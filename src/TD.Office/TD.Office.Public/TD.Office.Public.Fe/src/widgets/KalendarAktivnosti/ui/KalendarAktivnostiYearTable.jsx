@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Box, Chip, Paper, Typography } from '@mui/material'
 import { StripedDataGrid } from '@/widgets/StripedDataGrid'
 import { ODSUSTVO_CONSTANTS } from '@/constants/odsustvo/odsustvoConstants'
-import { format, differenceInCalendarDays } from 'date-fns'
+import { format } from 'date-fns'
 
 const STATUS_COLORS = {
     PENDING: '#ffc107',
@@ -43,7 +43,23 @@ const formatDate = (dateString) => {
 
 const calculateDays = (datumOd, datumDo) => {
     if (!datumOd || !datumDo) return 0
-    return differenceInCalendarDays(new Date(datumDo), new Date(datumOd)) + 1
+
+    const startDate = new Date(datumOd)
+    const endDate = new Date(datumDo)
+    startDate.setHours(0, 0, 0, 0)
+    endDate.setHours(0, 0, 0, 0)
+
+    let count = 0
+    const currentDate = new Date(startDate)
+
+    while (currentDate <= endDate) {
+        if (currentDate.getDay() !== 0) {
+            count++
+        }
+        currentDate.setDate(currentDate.getDate() + 1)
+    }
+
+    return count
 }
 
 export const KalendarAktivnostiYearTable = ({ data, loading, onRowClick, userName }) => {

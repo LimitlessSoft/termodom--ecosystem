@@ -23,17 +23,18 @@ const getOdsustvoColor = (odsustvo) => {
 
 export const KalendarAktivnostiDay = ({ date, odsustva, onCellClick, onOdsustvoClick, canEdit, isMobile }) => {
     const isToday = date && new Date().toDateString() === date.toDateString()
+    const isSunday = date && date.getDay() === 0
     const hasOdsustva = odsustva && odsustva.length > 0
 
     const handleCellClick = () => {
-        if (onCellClick && date && canEdit) {
+        if (onCellClick && date && canEdit && !isSunday) {
             onCellClick(date)
         }
     }
 
     const handleOdsustvoClick = (e, odsustvo) => {
         e.stopPropagation()
-        if (onOdsustvoClick) {
+        if (onOdsustvoClick && !isSunday) {
             onOdsustvoClick(odsustvo)
         }
     }
@@ -47,6 +48,34 @@ export const KalendarAktivnostiDay = ({ date, odsustva, onCellClick, onOdsustvoC
                     borderRadius: 1,
                 }}
             />
+        )
+    }
+
+    if (isSunday) {
+        return (
+            <Box
+                sx={{
+                    minHeight: isMobile ? 60 : 80,
+                    p: isMobile ? 0.25 : 0.5,
+                    bgcolor: 'grey.300',
+                    border: '1px solid',
+                    borderColor: 'grey.400',
+                    borderRadius: 1,
+                    cursor: 'default',
+                }}
+            >
+                <Typography
+                    variant="body2"
+                    sx={{
+                        fontWeight: 'normal',
+                        color: 'text.disabled',
+                        mb: 0.25,
+                        fontSize: isMobile ? '0.7rem' : '0.875rem',
+                    }}
+                >
+                    {date.getDate()}
+                </Typography>
+            </Box>
         )
     }
 
