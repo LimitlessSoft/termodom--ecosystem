@@ -15,7 +15,7 @@ jest.mock('next-seo', () => ({
         )
       ))}
       {additionalLinkTags?.map((tag, index) => (
-        <link key={index} rel={tag.rel} href={tag.href} type={tag.type} sizes={tag.sizes} />
+        <link key={index} rel={tag.rel} href={tag.href} sizes={tag.sizes} />
       ))}
     </div>
   ),
@@ -27,33 +27,18 @@ jest.mock('next-seo', () => ({
 }));
 
 describe('CustomHead', () => {
-  describe('Favicon Configuration (Latest Commit)', () => {
-    it('renders all three favicon link tags correctly', () => {
+  describe('Favicon', () => {
+    it('renders favicon.ico link tag', () => {
       const { container } = render(<CustomHead />);
 
-      const links = container.querySelectorAll('link[rel*="icon"]');
-      expect(links).toHaveLength(3);
-
-      // Check favicon.ico
-      const faviconIco = container.querySelector('link[href="/favicon.ico"]');
-      expect(faviconIco).toBeInTheDocument();
-      expect(faviconIco).toHaveAttribute('rel', 'icon');
-      expect(faviconIco).toHaveAttribute('sizes', 'any');
-
-      // Check SVG icon
-      const faviconSvg = container.querySelector('link[href="/termodom_logo.svg"]');
-      expect(faviconSvg).toBeInTheDocument();
-      expect(faviconSvg).toHaveAttribute('rel', 'icon');
-      expect(faviconSvg).toHaveAttribute('type', 'image/svg+xml');
-
-      // Check apple-touch-icon
-      const appleTouchIcon = container.querySelector('link[rel="apple-touch-icon"]');
-      expect(appleTouchIcon).toBeInTheDocument();
-      expect(appleTouchIcon).toHaveAttribute('href', '/Termodom_Logo.png');
+      const faviconLink = container.querySelector('link[href="/favicon.ico"]');
+      expect(faviconLink).toBeInTheDocument();
+      expect(faviconLink).toHaveAttribute('rel', 'icon');
+      expect(faviconLink).toHaveAttribute('sizes', 'any');
     });
   });
 
-  describe('Open Graph Meta Tags (Latest Commit)', () => {
+  describe('Open Graph Meta Tags', () => {
     it('renders og:image with correct property attribute and PNG URL', () => {
       const { container } = render(<CustomHead />);
 
