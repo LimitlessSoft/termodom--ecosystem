@@ -193,7 +193,7 @@ const DiscountLabel = ({ discount }) => {
                 color: discount - 19.98 > 0 ? `red` : `black`,
             }}
         >
-            -{discount}%
+            {discount}%
         </Typography>
     )
 }
