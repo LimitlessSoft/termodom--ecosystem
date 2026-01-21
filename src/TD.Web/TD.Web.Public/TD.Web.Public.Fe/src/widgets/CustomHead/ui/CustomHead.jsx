@@ -86,15 +86,6 @@ export const CustomHead = (props) => {
                         href: `/favicon.ico`,
                         sizes: 'any',
                     },
-                    {
-                        rel: 'icon',
-                        href: '/termodom_logo.svg',
-                        type: 'image/svg+xml',
-                    },
-                    {
-                        rel: 'apple-touch-icon',
-                        href: '/Termodom_Logo.png',
-                    }
                 ]}
             />
             {props.structuredData && (
