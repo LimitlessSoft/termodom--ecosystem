@@ -62,9 +62,26 @@ export async function getServerSideProps(context) {
     }
 }
 
+const SESSION_STORAGE_KEY = 'td-web-product-list-url'
+
 const ProizvodiSrc = ({ product }) => {
     const zOverlay = useZOverlay()
     const router = useRouter()
+
+    const handleBackClick = () => {
+        // Try to get stored listing URL with filters from sessionStorage
+        const storedUrl =
+            typeof window !== 'undefined'
+                ? sessionStorage.getItem(SESSION_STORAGE_KEY)
+                : null
+
+        if (storedUrl) {
+            router.push(storedUrl)
+        } else {
+            // Fallback to home if no stored URL
+            router.push('/')
+        }
+    }
 
     const [baseQuantity, setBaseQuantity] = useState(1)
     const [alternateQuantity, setAlternateQuantity] = useState(
@@ -118,12 +135,7 @@ const ProizvodiSrc = ({ product }) => {
             />
             <Stack p={2}>
                 <Stack direction={`row`} m={2}>
-                    <Button
-                        variant={`contained`}
-                        onClick={() => {
-                            router.push('/')
-                        }}
-                    >
+                    <Button variant={`contained`} onClick={handleBackClick}>
                         Nazad
                     </Button>
                 </Stack>

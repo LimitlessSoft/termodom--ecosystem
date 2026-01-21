@@ -13,12 +13,25 @@ import { OneTimePrice } from './OneTimePrice'
 import { UserPrice } from './UserPrice'
 import { ProizvodiListItemTitleStyled } from './ProizvodiListItemTitleStyled'
 import NextLink from 'next/link'
+import { useRouter } from 'next/router'
 import { ClassificationCircleStyled } from '../../styled/ClassificationCircleStyled'
 import { CardStyled } from '../styled/CardStyled'
 import { useZOverlay } from '@/zStore'
 
+const SESSION_STORAGE_KEY = 'td-web-product-list-url'
+
 const ProizvodCard = (props: any) => {
     const zOverlay = useZOverlay()
+    const router = useRouter()
+
+    const handleClick = () => {
+        // Save current URL with filters to sessionStorage for back navigation
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem(SESSION_STORAGE_KEY, router.asPath)
+        }
+        zOverlay.show()
+    }
+
     return (
         <ProizvodiListItemStyled item>
             <ClassificationCircleStyled
@@ -30,9 +43,7 @@ const ProizvodCard = (props: any) => {
                 sx={{
                     textDecoration: 'none',
                 }}
-                onClick={() => {
-                    zOverlay.show()
-                }}
+                onClick={handleClick}
             >
                 <CardStyled classification={props.proizvod.classification}>
                     <CardActionArea>
