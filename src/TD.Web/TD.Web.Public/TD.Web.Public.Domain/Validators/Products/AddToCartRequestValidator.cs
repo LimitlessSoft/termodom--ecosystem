@@ -37,11 +37,14 @@ public class AddToCartRequestValidator : LSCoreValidatorBase<AddToCartRequest>
 						.Create<WebDbContext>()
 						.Products.FirstOrDefault(x => x.IsActive && x.Id == request.Id);
 					if (product == null)
+					{
 						context.AddFailure(OrderItemsValidationCodes.OIVC_001.GetDescription());
+						return;
+					}
 
 					if (
-						product!.OneAlternatePackageEquals != null
-						&& request.Quantity % product!.OneAlternatePackageEquals != 0
+						product.OneAlternatePackageEquals is > 0
+						&& request.Quantity % product.OneAlternatePackageEquals != 0
 					)
 						context.AddFailure(OrderItemsValidationCodes.OIVC_003.GetDescription());
 				}
