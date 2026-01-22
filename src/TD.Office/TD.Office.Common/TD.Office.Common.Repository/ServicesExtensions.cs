@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using TD.Office.Common.Contracts.IRepositories;
 
 namespace TD.Office.Common.Repository;
 
@@ -14,5 +15,6 @@ public static class ServicesExtensions
 					options.UseInternalServiceProvider(serviceProvider);
 				}
 			);
+		serviceCollection.AddSingleton<IOfficeDbContextFactory, OfficeDbContextFactory>();
 	}
 }

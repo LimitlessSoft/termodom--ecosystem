@@ -1,5 +1,6 @@
 import { URL_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import {
+    BugReport,
     Description,
     Home,
     Inventory,
@@ -28,6 +29,7 @@ export const NAV_BAR_CONSTANTS = {
         IZVESTAJI: 'Izveštaji',
         KORISNICI: 'Korisnici',
         KONTROLNA_TABLA: 'Kontrolna tabla',
+        TICKETS: 'Tiketi',
         ODJAVI_SE: 'Odjavi se',
     },
     MODULES: (permissions) => [
@@ -132,6 +134,15 @@ export const NAV_BAR_CONSTANTS = {
                 PERMISSIONS_CONSTANTS.USER_PERMISSIONS.KORISNICI.READ
             ),
             icon: <Person />,
+        },
+        {
+            label: NAV_BAR_CONSTANTS.MODULE_LABELS.TICKETS,
+            href: URL_CONSTANTS.TICKETS.INDEX,
+            hasPermission: hasPermission(
+                permissions,
+                PERMISSIONS_CONSTANTS.USER_PERMISSIONS.TICKETS.READ
+            ),
+            icon: <BugReport />,
         },
         {
             label: NAV_BAR_CONSTANTS.MODULE_LABELS.ODJAVI_SE,

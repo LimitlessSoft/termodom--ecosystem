@@ -30,6 +30,7 @@
 			public const string TipOdsustva = "tip-odsustva";
 			public const string TipKorisnika = "tip-korisnika";
 			public const string ModuleHelp = "module-help";
+			public const string Tickets = "tickets";
 		}
 
 		public static class Jwt

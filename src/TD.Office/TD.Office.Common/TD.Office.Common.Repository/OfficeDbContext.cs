@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TD.Office.Common.Contracts.Entities;
+using TD.Office.Common.Contracts.IRepositories;
 using TD.Office.Common.Repository.EntityMappings;
 
 namespace TD.Office.Common.Repository;
@@ -9,7 +10,7 @@ namespace TD.Office.Common.Repository;
 public class OfficeDbContext(
 	DbContextOptions<OfficeDbContext> options,
 	IConfigurationRoot configurationRoot
-) : LSCoreDbContext<OfficeDbContext>(options)
+) : LSCoreDbContext<OfficeDbContext>(options), IOfficeDbContext
 {
 	public DbSet<KomercijalnoPriceKoeficijentEntity> KomercijalnoPriceKoeficijenti { get; set; }
 	public DbSet<UserEntity> Users { get; set; }
@@ -33,6 +34,7 @@ public class OfficeDbContext(
 	public DbSet<TipOdsustvaEntity> TipoviOdsustva { get; set; }
 	public DbSet<OdsustvoEntity> Odsustva { get; set; }
 	public DbSet<TipKorisnikaEntity> TipoviKorisnika { get; set; }
+	public DbSet<TicketEntity> Tickets { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
@@ -82,5 +84,6 @@ public class OfficeDbContext(
 		modelBuilder.Entity<TipOdsustvaEntity>().AddMap(new TipOdsustvaEntityMap());
 		modelBuilder.Entity<OdsustvoEntity>().AddMap(new OdsustvoEntityMap());
 		modelBuilder.Entity<TipKorisnikaEntity>().AddMap(new TipKorisnikaEntityMap());
+		modelBuilder.Entity<TicketEntity>().AddMap(new TicketEntityMap());
 	}
 }

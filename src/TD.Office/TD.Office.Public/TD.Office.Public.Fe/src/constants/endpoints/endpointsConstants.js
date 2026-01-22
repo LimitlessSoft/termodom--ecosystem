@@ -142,4 +142,13 @@ export const ENDPOINTS_CONSTANTS = {
         SAVE: '/tip-korisnika',
         DELETE: (id) => `/tip-korisnika/${id}`,
     },
+    TICKETS: {
+        GET_MULTIPLE: '/tickets',
+        GET: (id) => `/tickets/${id}`,
+        SAVE: '/tickets',
+        DELETE: (id) => `/tickets/${id}`,
+        UPDATE_PRIORITY: (id) => `/tickets/${id}/priority`,
+        UPDATE_STATUS: (id) => `/tickets/${id}/status`,
+        UPDATE_DEVELOPER_NOTES: (id) => `/tickets/${id}/developer-notes`,
+    },
 }

@@ -1,0 +1,22 @@
+using TD.Office.Common.Contracts.Enums;
+
+namespace TD.Office.Public.Contracts.Dtos.Ticket;
+
+public class TicketDto
+{
+	public long Id { get; set; }
+	public string Title { get; set; } = string.Empty;
+	public string Description { get; set; } = string.Empty;
+	public TicketType Type { get; set; }
+	public TicketStatus Status { get; set; }
+	public TicketPriority Priority { get; set; }
+	public long SubmittedByUserId { get; set; }
+	public string SubmittedByUserNickname { get; set; } = string.Empty;
+	public string? DeveloperNotes { get; set; }
+	public DateTime? ResolvedAt { get; set; }
+	public long? ResolvedByUserId { get; set; }
+	public string ResolvedByUserNickname { get; set; } = string.Empty;
+	public string? ResolutionNotes { get; set; }
+	public DateTime CreatedAt { get; set; }
+	public DateTime UpdatedAt { get; set; }
+}

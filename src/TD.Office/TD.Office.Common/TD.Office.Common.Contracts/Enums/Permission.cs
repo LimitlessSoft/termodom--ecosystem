@@ -263,4 +263,29 @@ public enum Permission
 	[PermissionGroup(LegacyConstants.PermissionGroup.KalendarAktivnosti)]
 	[Description("Kalendar aktivnosti - brisanje odsustva")]
 	KalendarAktivnostiDelete,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+	[PermissionGroup(LegacyConstants.PermissionGroup.Tickets)]
+	[Description("Tiketi - pregled")]
+	TicketsRead,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.Tickets)]
+	[Description("Tiketi - kreiranje bug prijave")]
+	TicketsCreateBug,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.Tickets)]
+	[Description("Tiketi - kreiranje zahteva za funkcionalnost")]
+	TicketsCreateFeature,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.Tickets)]
+	[Description("Tiketi - upravljanje prioritetom")]
+	TicketsManagePriority,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.Tickets)]
+	[Description("Tiketi - upravljanje statusom")]
+	TicketsManageStatus,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.Tickets)]
+	[Description("Tiketi - developer napomene")]
+	TicketsDeveloperNotes,
 }
