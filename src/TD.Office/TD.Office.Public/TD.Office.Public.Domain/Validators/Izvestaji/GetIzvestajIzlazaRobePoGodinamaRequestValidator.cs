@@ -11,7 +11,7 @@ public class GetIzvestajIzlazaRobePoGodinamaRequestValidator
 	: LSCoreValidatorBase<GetIzvestajIzlazaRobePoGodinamaRequest>
 {
 	public GetIzvestajIzlazaRobePoGodinamaRequestValidator(
-		IMagacinCentarRepository magacinCentarRepository
+		IOfficeDbContextFactory dbContextFactory
 	)
 	{
 		RuleFor(x => x.Magacin)
@@ -19,9 +19,10 @@ public class GetIzvestajIzlazaRobePoGodinamaRequestValidator
 			.Custom(
 				(x, context) =>
 				{
+					using var db = dbContextFactory.Create();
 					foreach (
 						var magacin in x.Where(m =>
-							magacinCentarRepository.GetOrDefaultByMagaicnId(m) == null
+							!db.MagacinCentri.Any(mc => mc.IsActive && mc.MagacinIds.Contains(m))
 						)
 					)
 						context.AddFailure(

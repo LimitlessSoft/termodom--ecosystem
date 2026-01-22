@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TD.Office.Common.Contracts.Entities;
+using TD.Office.Common.Contracts.IRepositories;
 using TD.Office.Common.Repository.EntityMappings;
 
 namespace TD.Office.Common.Repository;
@@ -9,7 +10,7 @@ namespace TD.Office.Common.Repository;
 public class OfficeDbContext(
 	DbContextOptions<OfficeDbContext> options,
 	IConfigurationRoot configurationRoot
-) : LSCoreDbContext<OfficeDbContext>(options)
+) : LSCoreDbContext<OfficeDbContext>(options), IOfficeDbContext
 {
 	public DbSet<KomercijalnoPriceKoeficijentEntity> KomercijalnoPriceKoeficijenti { get; set; }
 	public DbSet<UserEntity> Users { get; set; }
