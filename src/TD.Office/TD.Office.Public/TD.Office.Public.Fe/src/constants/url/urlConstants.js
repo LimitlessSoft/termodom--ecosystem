@@ -43,4 +43,7 @@ export const URL_CONSTANTS = {
     ROBA: {
         POPIS: '/roba/popis',
     },
+    TICKETS: {
+        INDEX: '/tickets',
+    },
 }

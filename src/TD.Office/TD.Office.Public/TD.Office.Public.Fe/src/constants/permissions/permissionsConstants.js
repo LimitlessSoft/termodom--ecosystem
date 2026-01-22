@@ -20,6 +20,7 @@ export const PERMISSIONS_CONSTANTS = {
         KORISNICI_LIST: 'korisnici-lista',
         TIP_KORISNIKA: 'tip-korisnika',
         MODULE_HELP: 'module-help',
+        TICKETS: 'tickets',
     },
     USER_PERMISSIONS: {
         DASHBOARD: {
@@ -110,6 +111,14 @@ export const PERMISSIONS_CONSTANTS = {
         },
         MODULE_HELP: {
             SYSTEM_WRITE: 'ModuleHelpSystemWrite',
+        },
+        TICKETS: {
+            READ: 'TicketsRead',
+            CREATE_BUG: 'TicketsCreateBug',
+            CREATE_FEATURE: 'TicketsCreateFeature',
+            MANAGE_PRIORITY: 'TicketsManagePriority',
+            MANAGE_STATUS: 'TicketsManageStatus',
+            DEVELOPER_NOTES: 'TicketsDeveloperNotes',
         },
     },
 }
