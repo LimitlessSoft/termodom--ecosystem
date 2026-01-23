@@ -15,6 +15,7 @@ import { ChevronLeft, ChevronRight, Add } from '@mui/icons-material'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import { usePermissions } from '@/hooks/usePermissionsHook'
+import { useUser } from '@/hooks/useUserHook'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { OdsustvoDialog } from './OdsustvoDialog'
 import { KalendarAktivnostiDay } from './KalendarAktivnostiDay'
@@ -39,6 +40,7 @@ const MONTHS = [
 export const KalendarAktivnosti = () => {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+    const user = useUser()
 
     const [currentDate, setCurrentDate] = useState(new Date())
     const [odsustva, setOdsustva] = useState([])
@@ -400,6 +402,8 @@ export const KalendarAktivnosti = () => {
                 canEditAll={canEditAll}
                 canApprove={canApprove}
                 canDelete={canDelete}
+                users={users}
+                currentUser={user.data}
             />
         </Box>
     )

@@ -15,7 +15,9 @@ public class UserMeDtoMapping : ILSCoreMapper<UserEntity, UserMeDto>
 					? null
 					: new UserMeDataDto
 					{
+						Id = sender.Id,
 						Username = sender.Username,
+						Nickname = sender.Nickname,
 						StoreId = sender.StoreId,
 						VpStoreId = sender.VPMagacinId,
 						IsAdmin = sender.Type == UserType.SuperAdministrator,

@@ -25,8 +25,10 @@ namespace TD.Office.Public.Domain.Validators.Odsustvo
 				.WithMessage("Datum do mora biti veći ili jednak datumu od");
 
 			RuleFor(x => x.Komentar)
+				.NotEmpty()
+				.WithMessage("Opis je obavezno polje")
 				.MaximumLength(500)
-				.WithMessage("Komentar ne sme biti duži od 500 karaktera");
+				.WithMessage("Opis ne sme biti duži od 500 karaktera");
 		}
 	}
 }

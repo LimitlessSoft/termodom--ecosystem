@@ -122,7 +122,7 @@ export const KalendarAktivnostiYearTable = ({ data, loading, onRowClick, userNam
         },
         {
             field: 'komentar',
-            headerName: 'Komentar',
+            headerName: 'Opis',
             flex: 1,
             minWidth: 200,
             hideable: false,
