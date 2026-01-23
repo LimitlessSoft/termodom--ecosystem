@@ -82,7 +82,7 @@ export const OdsustvoDialog = ({
     }, [open, odsustvo, initialDate, tipoviOdsustva])
 
     const handleSave = async () => {
-        if (!tipOdsustvaId || !datumOd || !datumDo) {
+        if (!tipOdsustvaId || !datumOd || !datumDo || !komentar?.trim()) {
             toast.error('Molimo popunite sva obavezna polja')
             return
         }
@@ -318,12 +318,13 @@ export const OdsustvoDialog = ({
                     </LocalizationProvider>
 
                     <TextField
-                        label="Komentar"
+                        label="Opis"
                         value={komentar}
                         onChange={(e) => setKomentar(e.target.value)}
                         multiline
                         rows={3}
                         fullWidth
+                        required
                         disabled={!canEditFields}
                     />
 
