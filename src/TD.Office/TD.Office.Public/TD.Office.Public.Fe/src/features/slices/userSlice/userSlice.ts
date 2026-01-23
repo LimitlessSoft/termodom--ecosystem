@@ -3,7 +3,9 @@ import { handleApiError, officeApi } from '@/apis/officeApi'
 import { RootState } from '@/store'
 
 interface UserData {
+    id: number
     username: string
+    nickname?: string
     storeId?: number
 }
 

@@ -18,6 +18,7 @@ import {
     Checkbox,
     Divider,
     IconButton,
+    Autocomplete,
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
@@ -50,6 +51,8 @@ export const OdsustvoDialog = ({
     canEditAll,
     canApprove,
     canDelete,
+    users,
+    currentUser,
 }) => {
     const [tipOdsustvaId, setTipOdsustvaId] = useState('')
     const [datumOd, setDatumOd] = useState(null)
@@ -60,6 +63,7 @@ export const OdsustvoDialog = ({
     const [approving, setApproving] = useState(false)
     const [realizovanoKorisnik, setRealizovanoKorisnik] = useState(false)
     const [realizovanoOdobravac, setRealizovanoOdobravac] = useState(false)
+    const [selectedUser, setSelectedUser] = useState(null)
 
     useEffect(() => {
         if (open) {
@@ -70,6 +74,9 @@ export const OdsustvoDialog = ({
                 setKomentar(odsustvo.komentar || '')
                 setRealizovanoKorisnik(odsustvo.realizovanoKorisnik || false)
                 setRealizovanoOdobravac(odsustvo.realizovanoOdobravac || false)
+                // For editing, find the user from the users list
+                const odsustvoUser = users?.find((u) => u.id === odsustvo.userId)
+                setSelectedUser(odsustvoUser || null)
             } else {
                 setTipOdsustvaId(tipoviOdsustva[0]?.id || '')
                 setDatumOd(initialDate || new Date())
@@ -77,13 +84,26 @@ export const OdsustvoDialog = ({
                 setKomentar('')
                 setRealizovanoKorisnik(false)
                 setRealizovanoOdobravac(false)
+                // For new odsustvo, default to current user
+                if (currentUser && canEditAll && users?.length > 0) {
+                    const current = users.find((u) => u.id === currentUser.id)
+                    setSelectedUser(current || null)
+                } else {
+                    setSelectedUser(null)
+                }
             }
         }
-    }, [open, odsustvo, initialDate, tipoviOdsustva])
+    }, [open, odsustvo, initialDate, tipoviOdsustva, users, currentUser, canEditAll])
 
     const handleSave = async () => {
         if (!tipOdsustvaId || !datumOd || !datumDo || !komentar?.trim()) {
             toast.error('Molimo popunite sva obavezna polja')
+            return
+        }
+
+        // For new odsustvo with canEditAll, user must be selected
+        if (!isEditing && canEditAll && !selectedUser) {
+            toast.error('Molimo izaberite korisnika')
             return
         }
 
@@ -94,13 +114,18 @@ export const OdsustvoDialog = ({
 
         setSaving(true)
         try {
+            // For new odsustvo: use selectedUser if canEditAll, otherwise null (backend defaults to current user)
+            // For existing odsustvo: use selectedUser if canEditAll, otherwise keep original userId
+            const userId = canEditAll
+                ? selectedUser?.id || null
+                : odsustvo?.userId || null
             await officeApi.put(ENDPOINTS_CONSTANTS.ODSUSTVO.SAVE, {
                 id: odsustvo?.id || null,
                 tipOdsustvaId,
                 datumOd: toLocalISOString(datumOd),
                 datumDo: toLocalISOString(datumDo),
                 komentar: komentar || null,
-                userId: odsustvo?.userId || null,
+                userId,
             })
             toast.success(odsustvo ? 'Odsustvo azurirano' : 'Odsustvo dodato')
             onSave()
@@ -274,6 +299,38 @@ export const OdsustvoDialog = ({
                             </Box>
                             <Divider />
                         </>
+                    )}
+
+                    {/* User selection - only for new odsustvo (create mode) */}
+                    {!isEditing && (
+                        canEditAll ? (
+                            <Autocomplete
+                                value={selectedUser}
+                                onChange={(e, newValue) => setSelectedUser(newValue)}
+                                options={users || []}
+                                getOptionLabel={(option) =>
+                                    option.nickname || option.username || ''
+                                }
+                                isOptionEqualToValue={(option, value) =>
+                                    option?.id === value?.id
+                                }
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Korisnik"
+                                        required
+                                    />
+                                )}
+                                fullWidth
+                            />
+                        ) : (
+                            <TextField
+                                label="Korisnik"
+                                value={currentUser?.nickname || currentUser?.username || ''}
+                                fullWidth
+                                disabled
+                            />
+                        )
                     )}
 
                     <FormControl fullWidth>
