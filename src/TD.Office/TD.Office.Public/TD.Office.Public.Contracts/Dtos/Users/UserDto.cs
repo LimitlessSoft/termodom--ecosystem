@@ -12,4 +12,5 @@ public class UserDto
 	public long? TipKorisnikaId { get; set; }
 	public string? TipKorisnikaNaziv { get; set; }
 	public string? TipKorisnikaBoja { get; set; }
+	public int? PpidZaNarudzbenicu { get; set; }
 }

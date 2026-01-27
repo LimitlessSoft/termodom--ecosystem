@@ -209,4 +209,11 @@ public class UserManager(
 		user.TipKorisnikaId = request.TipKorisnikaId;
 		userRepository.Update(user);
 	}
+
+	public void UpdatePPIDZaNarudzbenicu(UpdatePPIDZaNarudzbenicuRequest request)
+	{
+		var user = userRepository.Get(request.Id);
+		user.PPIDZaNarudzbenicu = request.PPIDZaNarudzbenicu;
+		userRepository.Update(user);
+	}
 }

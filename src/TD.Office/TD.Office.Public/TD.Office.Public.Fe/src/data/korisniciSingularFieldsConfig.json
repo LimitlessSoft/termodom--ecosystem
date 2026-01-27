@@ -48,6 +48,13 @@
             "TYPE": "number",
             "VALIDATION": "integer",
             "EDITABLE": true
+        },
+        "PPID_ZA_NARUDZBENICU": {
+            "KEY": "ppidZaNarudzbenicu",
+            "LABEL": "PPID Za Narudzbenicu",
+            "TYPE": "number",
+            "VALIDATION": "integer",
+            "EDITABLE": true
         }
     }
 }

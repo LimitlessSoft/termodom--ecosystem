@@ -173,4 +173,18 @@ public class UsersController(
 		userManager.UpdateTipKorisnikaId(request);
 		return Ok();
 	}
+
+	[HttpPut]
+	[LSCoreAuth]
+	[Route("/users/{Id}/ppid-za-narudzbenicu")]
+	[Permissions(Permission.Access, Permission.KorisniciListRead)]
+	public IActionResult UpdatePPIDZaNarudzbenicu(
+		[FromRoute] LSCoreIdRequest idRequest,
+		[FromBody] UpdatePPIDZaNarudzbenicuRequest request
+	)
+	{
+		request.Id = idRequest.Id;
+		userManager.UpdatePPIDZaNarudzbenicu(request);
+		return Ok();
+	}
 }

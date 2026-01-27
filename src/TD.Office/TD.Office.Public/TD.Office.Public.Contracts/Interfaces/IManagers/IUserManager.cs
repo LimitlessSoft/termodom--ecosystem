@@ -25,4 +25,5 @@ public interface IUserManager
 	void UpdateStoreId(UpdateStoreIdRequest request);
 	void UpdateVPMagacinId(UpdateVPMagacinIdRequest request);
 	void UpdateTipKorisnikaId(UpdateTipKorisnikaIdRequest request);
+	void UpdatePPIDZaNarudzbenicu(UpdatePPIDZaNarudzbenicuRequest request);
 }
