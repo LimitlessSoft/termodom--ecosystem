@@ -132,7 +132,8 @@ public class PopisManager(
 
 	async Task<DokumentDto> CreateKomercijalnoNarudzbenicaAsync(
 		TDKomercijalnoClient client,
-		int magacinId
+		int magacinId,
+		int ppid
 	)
 	{
 		try
@@ -157,6 +158,7 @@ public class PopisManager(
 					Popust1Procenat = 0,
 					Popust2Procenat = 0,
 					Popust3Procenat = 0,
+					PPID = ppid,
 				}
 			);
 		}
@@ -175,6 +177,8 @@ public class PopisManager(
 			throw new LSCoreForbiddenException();
 		if (currentUser.StoreId == null)
 			throw new LSCoreBadRequestException("Korisnik nema dodeljen magacin.");
+		if (request.Type == PopisDokumentType.ZaNabavku && currentUser.PPIDZaNarudzbenicu == null)
+			throw new LSCoreBadRequestException("Korisnik nema dodeljen PPID za narudzbenicu.");
 		var magacinId = currentUser.StoreId.Value;
 		var komercijalnoMagacinFirma = komercijalnoMagacinFirmaRepository.GetByMagacinId(magacinId);
 		var client = komercijalnoClientFactory.Create(
@@ -185,7 +189,7 @@ public class PopisManager(
 		var komercijalnoPopis = await CreateKomercijalnoPopisAsync(client, magacinId, request.Time);
 		DokumentDto? komercijalnoNarudzbenica = null;
 		if (request.Type == PopisDokumentType.ZaNabavku)
-			komercijalnoNarudzbenica = await CreateKomercijalnoNarudzbenicaAsync(client, magacinId);
+			komercijalnoNarudzbenica = await CreateKomercijalnoNarudzbenicaAsync(client, magacinId, currentUser.PPIDZaNarudzbenicu!.Value);
 		repository.Insert(
 			new PopisDokumentEntity
 			{
