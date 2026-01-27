@@ -20,6 +20,7 @@ public class UserEntity : LSCoreEntity, ILSCoreAuthUserPassEntity<string>
 	public long? LastNoteId { get; set; }
 	public long? TipKorisnikaId { get; set; }
 	public TipKorisnikaEntity? TipKorisnika { get; set; }
+	public int? PPIDZaNarudzbenicu { get; set; }
 
 	[NotMapped]
 	public List<UserPermissionEntity>? Permissions { get; set; }
