@@ -10,6 +10,7 @@ public interface ITicketManager
 	LSCoreSortedAndPagedResponse<TicketListDto> GetMultiple(GetMultipleTicketsRequest request);
 	TicketDto GetSingle(LSCoreIdRequest request);
 	List<TicketDto> GetRecentlySolved();
+	List<TicketDto> GetInProgress();
 	void Save(SaveTicketRequest request);
 	void Delete(long id);
 	void UpdatePriority(long id, UpdateTicketPriorityRequest request);

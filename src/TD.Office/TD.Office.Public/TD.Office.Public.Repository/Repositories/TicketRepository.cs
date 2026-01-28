@@ -50,4 +50,14 @@ public class TicketRepository(OfficeDbContext dbContext)
 			.Take(limit)
 			.ToList();
 	}
+
+	public List<TicketEntity> GetInProgress(int limit)
+	{
+		return dbContext.Tickets
+			.Include(x => x.SubmittedByUser)
+			.Where(x => x.IsActive && x.Status == TicketStatus.InProgress)
+			.OrderByDescending(x => x.UpdatedAt)
+			.Take(limit)
+			.ToList();
+	}
 }
