@@ -23,6 +23,11 @@ public class TicketsController(ITicketManager ticketManager) : ControllerBase
 	public IActionResult GetSingle([FromRoute] LSCoreIdRequest request) =>
 		Ok(ticketManager.GetSingle(request));
 
+	[HttpGet]
+	[Route("/tickets/recently-solved")]
+	public IActionResult GetRecentlySolved() =>
+		Ok(ticketManager.GetRecentlySolved());
+
 	[HttpPut]
 	[Route("/tickets")]
 	[Permissions(Permission.TicketsCreateBug)]

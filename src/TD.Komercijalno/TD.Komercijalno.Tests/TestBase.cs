@@ -23,13 +23,15 @@ public abstract class TestBase
 		builder.Services.AddScoped<DbContext>(_ => new KomercijalnoDbContext(options));
 		builder.Services.AddLogging();
 
+		IHost host;
+		// Lock to prevent parallel test execution from causing collection modification errors
+		// in LSCore's static assembly scanning during initialization
 		lock (Lock)
 		{
 			builder.AddLSCoreDependencyInjection("TD.Komercijalno");
+			host = builder.Build();
+			host.UseLSCoreDependencyInjection();
 		}
-
-		var host = builder.Build();
-		host.UseLSCoreDependencyInjection();
 
 		_dbContext = new KomercijalnoDbContext(options);
 	}

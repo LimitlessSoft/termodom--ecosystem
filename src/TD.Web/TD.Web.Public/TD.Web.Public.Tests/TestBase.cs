@@ -39,11 +39,6 @@ public abstract class TestBase
 
 		builder.Services.AddMemoryCache();
 
-		lock (Lock)
-		{
-			builder.AddLSCoreDependencyInjection("TD.Web.Public");
-		}
-
 		// Register missing common dependencies
 		var dbContextFactoryMock = new Mock<IWebDbContextFactory>();
 		dbContextFactoryMock.Setup(f => f.Create<WebDbContext>()).Returns(webDbContext);
@@ -77,8 +72,15 @@ public abstract class TestBase
 			new Mock<LSCore.Auth.Contracts.LSCoreAuthContextEntity<string>>().Object
 		);
 
-		var host = builder.Build();
-		host.UseLSCoreDependencyInjection();
+		IHost host;
+		// Lock to prevent parallel test execution from causing collection modification errors
+		// in LSCore's static assembly scanning during initialization
+		lock (Lock)
+		{
+			builder.AddLSCoreDependencyInjection("TD.Web.Public");
+			host = builder.Build();
+			host.UseLSCoreDependencyInjection();
+		}
 
 		_dbContext = webDbContext;
 	}

@@ -1,11 +1,13 @@
+using LSCore.SortAndPage.Contracts;
 using TD.Office.Common.Contracts.Enums;
+using TD.Office.Public.Contracts.Enums.SortColumnCodes;
 
 namespace TD.Office.Public.Contracts.Requests.Ticket;
 
-public class GetMultipleTicketsRequest
+public class GetMultipleTicketsRequest : LSCoreSortableAndPageableRequest<TicketsSortColumnCodes.Tickets>
 {
-	public TicketType? Type { get; set; }
-	public TicketStatus? Status { get; set; }
-	public TicketPriority? Priority { get; set; }
+	public List<TicketType>? Types { get; set; }
+	public List<TicketStatus>? Statuses { get; set; }
+	public List<TicketPriority>? Priorities { get; set; }
 	public long? SubmittedByUserId { get; set; }
 }
