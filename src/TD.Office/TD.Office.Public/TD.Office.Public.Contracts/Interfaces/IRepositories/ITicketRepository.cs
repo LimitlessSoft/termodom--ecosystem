@@ -8,4 +8,5 @@ public interface ITicketRepository : ILSCoreRepositoryBase<TicketEntity>
 {
 	IQueryable<TicketEntity> GetFiltered(List<TicketType>? types, List<TicketStatus>? statuses, List<TicketPriority>? priorities, long? submittedByUserId);
 	List<TicketEntity> GetRecentlySolved(int limit);
+	List<TicketEntity> GetInProgress(int limit);
 }

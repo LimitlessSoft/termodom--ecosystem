@@ -55,6 +55,12 @@ public class TicketManager(
 		return entities.ToMappedList<TicketEntity, TicketDto>();
 	}
 
+	public List<TicketDto> GetInProgress()
+	{
+		var entities = ticketRepository.GetInProgress(5);
+		return entities.ToMappedList<TicketEntity, TicketDto>();
+	}
+
 	public void Save(SaveTicketRequest request)
 	{
 		var currentUser = userRepository.GetCurrentUser();

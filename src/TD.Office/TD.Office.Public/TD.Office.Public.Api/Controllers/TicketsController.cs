@@ -28,6 +28,11 @@ public class TicketsController(ITicketManager ticketManager) : ControllerBase
 	public IActionResult GetRecentlySolved() =>
 		Ok(ticketManager.GetRecentlySolved());
 
+	[HttpGet]
+	[Route("/tickets/in-progress")]
+	public IActionResult GetInProgress() =>
+		Ok(ticketManager.GetInProgress());
+
 	[HttpPut]
 	[Route("/tickets")]
 	[Permissions(Permission.TicketsCreateBug)]

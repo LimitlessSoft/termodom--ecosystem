@@ -147,6 +147,7 @@ export const ENDPOINTS_CONSTANTS = {
         GET_MULTIPLE: '/tickets',
         GET: (id) => `/tickets/${id}`,
         GET_RECENTLY_SOLVED: '/tickets/recently-solved',
+        GET_IN_PROGRESS: '/tickets/in-progress',
         SAVE: '/tickets',
         DELETE: (id) => `/tickets/${id}`,
         UPDATE_PRIORITY: (id) => `/tickets/${id}/priority`,

@@ -53,6 +53,7 @@ const TICKET_PRIORITIES = {
 export const Tickets = () => {
     const [tickets, setTickets] = useState([])
     const [recentlySolved, setRecentlySolved] = useState([])
+    const [inProgress, setInProgress] = useState([])
     const [loading, setLoading] = useState(true)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [detailsDialogOpen, setDetailsDialogOpen] = useState(false)
@@ -127,6 +128,17 @@ export const Tickets = () => {
         }
     }, [])
 
+    const fetchInProgress = useCallback(async () => {
+        try {
+            const response = await officeApi.get(
+                ENDPOINTS_CONSTANTS.TICKETS.GET_IN_PROGRESS
+            )
+            setInProgress(response.data)
+        } catch (err) {
+            handleApiError(err)
+        }
+    }, [])
+
     const fetchTickets = useCallback(async () => {
         setLoading(true)
         try {
@@ -159,14 +171,24 @@ export const Tickets = () => {
     useEffect(() => {
         fetchTickets()
         fetchRecentlySolved()
-    }, [fetchTickets, fetchRecentlySolved])
+        fetchInProgress()
+    }, [fetchTickets, fetchRecentlySolved, fetchInProgress])
 
-    const handleOpenDialog = (ticket = null) => {
+    const handleOpenDialog = async (ticket = null) => {
         if (ticket) {
-            setSelectedTicket(ticket)
-            setTitle(ticket.title)
-            setDescription(ticket.description)
-            setType(ticket.type)
+            try {
+                const response = await officeApi.get(
+                    ENDPOINTS_CONSTANTS.TICKETS.GET(ticket.id)
+                )
+                const fullTicket = response.data
+                setSelectedTicket(fullTicket)
+                setTitle(fullTicket.title)
+                setDescription(fullTicket.description)
+                setType(fullTicket.type)
+            } catch (err) {
+                handleApiError(err)
+                return
+            }
         } else {
             setSelectedTicket(null)
             setTitle('')
@@ -263,6 +285,7 @@ export const Tickets = () => {
             toast.success('Status ažuriran')
             await fetchTickets()
             await fetchRecentlySolved()
+            await fetchInProgress()
             if (detailsDialogOpen) {
                 const response = await officeApi.get(
                     ENDPOINTS_CONSTANTS.TICKETS.GET(id)
@@ -363,6 +386,72 @@ export const Tickets = () => {
                                     sx={{ whiteSpace: 'nowrap' }}
                                 >
                                     {formatRelativeTime(ticket.resolvedAt)}
+                                </Typography>
+                            </Box>
+                        ))}
+                    </Box>
+                )}
+            </Paper>
+
+            {/* In Progress Panel */}
+            <Paper sx={{ p: 2, mb: 2, bgcolor: 'info.50' }}>
+                <Typography
+                    variant="subtitle1"
+                    sx={{ fontWeight: 'bold', mb: 1 }}
+                >
+                    Trenutno se radi na
+                </Typography>
+                {inProgress.length === 0 ? (
+                    <Typography variant="body2" color="text.secondary">
+                        Nema tiketa u toku
+                    </Typography>
+                ) : (
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 1,
+                        }}
+                    >
+                        {inProgress.map((ticket) => (
+                            <Box
+                                key={ticket.id}
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1,
+                                    p: 1,
+                                    bgcolor: 'background.paper',
+                                    borderRadius: 1,
+                                    cursor: 'pointer',
+                                    '&:hover': { bgcolor: 'action.hover' },
+                                }}
+                                onClick={() => handleViewDetails(ticket.id)}
+                            >
+                                <Chip
+                                    label={TICKET_TYPES[ticket.type]?.label}
+                                    color={TICKET_TYPES[ticket.type]?.color}
+                                    size="small"
+                                />
+                                <Typography
+                                    variant="body2"
+                                    sx={{ flex: 1, fontWeight: 500 }}
+                                >
+                                    {ticket.title}
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{ whiteSpace: 'nowrap' }}
+                                >
+                                    Prijavio: {ticket.submittedByUserNickname}
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{ whiteSpace: 'nowrap' }}
+                                >
+                                    {formatRelativeTime(ticket.updatedAt)}
                                 </Typography>
                             </Box>
                         ))}
