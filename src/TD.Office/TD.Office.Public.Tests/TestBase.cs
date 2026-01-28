@@ -17,7 +17,8 @@ namespace TD.Office.Public.Tests;
 
 public abstract class TestBase
 {
-	protected static readonly object Lock = new();
+	private static readonly object Lock = new();
+
 	protected readonly OfficeDbContext _dbContext;
 
 	protected TestBase()
@@ -61,10 +62,6 @@ public abstract class TestBase
 		);
 		builder.Services.AddSingleton(new Mock<IUserRepository>().Object);
 
-		// Re-enable LSCore dependency injection for mapper registration
-		// This scans TD.Office assemblies for ILSCoreMapper implementations
-		builder.AddLSCoreDependencyInjection("TD.Office");
-
 		builder.Services.AddSingleton(configurationMock.Object);
 		builder.Services.AddSingleton(new Mock<ITDKomercijalnoClientFactory>().Object);
 		builder.Services.AddSingleton(
@@ -75,8 +72,17 @@ public abstract class TestBase
 			).Object
 		);
 
-		var host = builder.Build();
-		host.UseLSCoreDependencyInjection();
+		IHost host;
+		// Lock to prevent parallel test execution from causing collection modification errors
+		// in LSCore's static assembly scanning during initialization
+		lock (Lock)
+		{
+			// Re-enable LSCore dependency injection for mapper registration
+			// This scans TD.Office assemblies for ILSCoreMapper implementations
+			builder.AddLSCoreDependencyInjection("TD.Office");
+			host = builder.Build();
+			host.UseLSCoreDependencyInjection();
+		}
 
 		_dbContext = officeDbContext;
 	}
