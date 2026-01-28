@@ -1,12 +1,15 @@
 using LSCore.Common.Contracts;
 using LSCore.Exceptions;
 using LSCore.Mapper.Domain;
+using LSCore.SortAndPage.Contracts;
+using LSCore.SortAndPage.Domain;
 using LSCore.Validation.Domain;
 using Microsoft.EntityFrameworkCore;
 using TD.Office.Common.Contracts.Entities;
 using TD.Office.Common.Contracts.Enums;
 using TD.Office.Common.Repository;
 using TD.Office.Public.Contracts.Dtos.Ticket;
+using TD.Office.Public.Contracts.Enums.SortColumnCodes;
 using TD.Office.Public.Contracts.Interfaces.IManagers;
 using TD.Office.Public.Contracts.Interfaces.IRepositories;
 using TD.Office.Public.Contracts.Requests.Ticket;
@@ -19,15 +22,18 @@ public class TicketManager(
 	OfficeDbContext dbContext
 ) : ITicketManager
 {
-	public List<TicketListDto> GetMultiple(GetMultipleTicketsRequest request)
+	public LSCoreSortedAndPagedResponse<TicketListDto> GetMultiple(GetMultipleTicketsRequest request)
 	{
-		var entities = ticketRepository.GetFiltered(
-			request.Type,
-			request.Status,
-			request.Priority,
-			request.SubmittedByUserId);
-
-		return entities.ToMappedList<TicketEntity, TicketListDto>();
+		return ticketRepository
+			.GetFiltered(
+				request.Types,
+				request.Statuses,
+				request.Priorities,
+				request.SubmittedByUserId)
+			.ToSortedAndPagedResponse<TicketEntity, TicketsSortColumnCodes.Tickets, TicketListDto>(
+				request,
+				TicketsSortColumnCodes.TicketsSortRules,
+				x => x.ToMapped<TicketEntity, TicketListDto>());
 	}
 
 	public TicketDto GetSingle(LSCoreIdRequest request)
@@ -41,6 +47,12 @@ public class TicketManager(
 			throw new LSCoreNotFoundException();
 
 		return entity.ToMapped<TicketEntity, TicketDto>();
+	}
+
+	public List<TicketDto> GetRecentlySolved()
+	{
+		var entities = ticketRepository.GetRecentlySolved(5);
+		return entities.ToMappedList<TicketEntity, TicketDto>();
 	}
 
 	public void Save(SaveTicketRequest request)
