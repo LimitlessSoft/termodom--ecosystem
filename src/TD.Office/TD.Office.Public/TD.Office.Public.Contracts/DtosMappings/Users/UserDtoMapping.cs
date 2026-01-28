@@ -18,6 +18,7 @@ public class UserDtoMapping : ILSCoreMapper<UserEntity, UserDto>
 			VpMagacinId = sender.VPMagacinId,
 			TipKorisnikaId = sender.TipKorisnikaId,
 			TipKorisnikaNaziv = sender.TipKorisnika?.Naziv,
-			TipKorisnikaBoja = sender.TipKorisnika?.Boja
+			TipKorisnikaBoja = sender.TipKorisnika?.Boja,
+			PpidZaNarudzbenicu = sender.PPIDZaNarudzbenicu
 		};
 }
