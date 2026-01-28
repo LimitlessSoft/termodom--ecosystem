@@ -174,12 +174,21 @@ export const Tickets = () => {
         fetchInProgress()
     }, [fetchTickets, fetchRecentlySolved, fetchInProgress])
 
-    const handleOpenDialog = (ticket = null) => {
+    const handleOpenDialog = async (ticket = null) => {
         if (ticket) {
-            setSelectedTicket(ticket)
-            setTitle(ticket.title)
-            setDescription(ticket.description)
-            setType(ticket.type)
+            try {
+                const response = await officeApi.get(
+                    ENDPOINTS_CONSTANTS.TICKETS.GET(ticket.id)
+                )
+                const fullTicket = response.data
+                setSelectedTicket(fullTicket)
+                setTitle(fullTicket.title)
+                setDescription(fullTicket.description)
+                setType(fullTicket.type)
+            } catch (err) {
+                handleApiError(err)
+                return
+            }
         } else {
             setSelectedTicket(null)
             setTitle('')
