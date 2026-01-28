@@ -31,3 +31,11 @@ jobs:
 
       - name: Run tests
         run: npm run test:ci
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: TD.Web.Admin.FE Test Results
+          path: 'src/TD.Web/TD.Web.Admin/TD.Web.Admin.Fe/junit.xml'
+          reporter: jest-junit
