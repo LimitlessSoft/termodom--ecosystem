@@ -42,8 +42,9 @@ export const ProizvodiProductsFilter = ({
                 setStatuses(Object.values(getStatuses()))
                 setAvailableStatuses(Object.values(getStatuses()))
             } else {
-                setStatuses(statuses.filter((s) => s !== 0 && s !== 5))
-                setAvailableStatuses(statuses.filter((s) => s !== 0 && s !== 5))
+                // Non-EDIT_ALL users can see all statuses except Sakriven (5)
+                setStatuses(statuses.filter((s) => s !== 5))
+                setAvailableStatuses(statuses.filter((s) => s !== 5))
             }
             return
         }

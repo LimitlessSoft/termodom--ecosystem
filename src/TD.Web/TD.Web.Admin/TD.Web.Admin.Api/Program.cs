@@ -14,6 +14,7 @@ using StackExchange.Redis;
 using TD.Common.Vault.DependencyInjection;
 using TD.Komercijalno.Client;
 using TD.Office.Public.Client;
+using TD.Web.Admin.Api.Middlewares;
 using TD.Web.Admin.Contracts.Vault;
 using TD.Web.Common.Contracts.Configurations;
 using TD.Web.Common.Contracts.Helpers;
@@ -27,12 +28,13 @@ var builder = WebApplication.CreateBuilder(args);
 AddCommon(builder);
 AddCors(builder);
 AddRedis(builder);
+builder.Services.AddSingleton<ApiKeysConfiguration>();
 builder.AddLSCoreDependencyInjection("TD.Web");
 builder.AddLSCoreAuthKey(
 	new LSCoreAuthKeyConfiguration()
 	{
 		ValidKeys = [.. builder.Configuration["API_KEYS"]!.Split(',')],
-		BreakOnFailedAuth = false
+		BreakOnFailedAuth = false,
 	}
 );
 builder.Services.AddSingleton<ITDKomercijalnoClientFactory, TDKomercijalnoClientFactory>();
@@ -49,6 +51,7 @@ app.UseLSCoreDependencyInjection();
 
 app.UseLSCoreAuthKey();
 app.UseLSCoreAuthUserPass<string>();
+app.UseMiddleware<WebAdminAuthorizationMiddleware>();
 app.MapControllers();
 app.Run();
 
@@ -99,7 +102,7 @@ static void AddMinio(WebApplicationBuilder builder)
 			Host = builder.Configuration["MINIO_HOST"]!,
 			AccessKey = builder.Configuration["MINIO_ACCESS_KEY"]!,
 			SecretKey = builder.Configuration["MINIO_SECRET_KEY"]!,
-			Port = builder.Configuration["MINIO_PORT"]!
+			Port = builder.Configuration["MINIO_PORT"]!,
 		}
 	);
 }
@@ -110,9 +113,9 @@ static void AddRedis(WebApplicationBuilder builder)
 		InstanceName = "web-" + builder.Configuration[Constants.DeployVariable] + "-",
 		ConfigurationOptions = new ConfigurationOptions()
 		{
-			EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 }, },
-			SyncTimeout = 30 * 1000
-		}
+			EndPoints = new EndPointCollection() { { "85.90.245.17", 6379 } },
+			SyncTimeout = 30 * 1000,
+		},
 	};
 	builder.Services.AddStackExchangeRedisCache(x =>
 	{
@@ -134,7 +137,7 @@ LSCoreApiClientRestConfiguration<TDKomercijalnoClient> LoadTDKomerijalnoDefaultC
 			DateTime.UtcNow.Year,
 			environment,
 			TDKomercijalnoFirma.TCMDZ
-		)
+		),
 	};
 	return configuration;
 }
@@ -143,7 +146,7 @@ LSCoreApiClientRestConfiguration<TDOfficeClient> LoadTDOfficeClientConfiguration
 	var configuration = new LSCoreApiClientRestConfiguration<TDOfficeClient>
 	{
 		BaseUrl = builder.Configuration["OFFICE_API_BASE_URL"]!,
-		LSCoreApiKey = builder.Configuration["OFFICE_API_KEY"]
+		LSCoreApiKey = builder.Configuration["OFFICE_API_KEY"],
 	};
 	return configuration;
 }

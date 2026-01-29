@@ -1,4 +1,5 @@
-﻿using LSCore.Auth.Contracts;
+using LSCore.Auth.Contracts;
+using LSCore.Common.Extensions;
 using LSCore.Exceptions;
 using LSCore.Mapper.Domain;
 using LSCore.SortAndPage.Contracts;
@@ -406,16 +407,25 @@ public class UserManager(
 	/// </summary>
 	/// <param name="permission"></param>
 	/// <returns></returns>
-	/// <exception cref="NotImplementedException"></exception>
-	public bool HasPermission(Permission permission) =>
-		contextEntity.IsAuthenticated
-		&& (
-			repository
-				.GetMultiple()
-				.Include(x => x.Permissions)
-				.FirstOrDefault(x => x.IsActive && x.Username == contextEntity.Identifier)
-				?.Permissions.Any(x => x.IsActive && x.Permission == permission) ?? false
-		);
+	public bool HasPermission(Permission permission)
+	{
+		if (!contextEntity.IsAuthenticated)
+			return false;
+
+		var user = repository
+			.GetMultiple()
+			.Include(x => x.Permissions)
+			.FirstOrDefault(x => x.IsActive && x.Username == contextEntity.Identifier);
+
+		if (user == null)
+			return false;
+
+		// SuperAdmin has all permissions
+		if (user.Type == UserType.SuperAdmin)
+			return true;
+
+		return user.Permissions?.Any(x => x.IsActive && x.Permission == permission) ?? false;
+	}
 
 	public List<long> GetManagingProductsGroups(string username) =>
 		repository
@@ -436,6 +446,7 @@ public class UserManager(
 			throw new LSCoreNotFoundException();
 
 		user.ManaginProductGroups ??= [];
+		user.ManaginProductGroups.Clear();
 
 		user.ManaginProductGroups.AddRange(
 			productGroupRepository
@@ -447,6 +458,103 @@ public class UserManager(
 		repository.Update(user);
 	}
 
+	public List<long> GetManagingProducts(string username) =>
+		repository
+			.GetMultiple()
+			.Where(x => x.IsActive && x.Username == username)
+			.Include(x => x.ManagingProducts)
+			.SelectMany(x => x.ManagingProducts!.Select(z => z.Id))
+			.ToList();
+
+	public void SetManagingProducts(string username, List<long> productIds)
+	{
+		var user = repository
+			.GetMultiple()
+			.Include(x => x.ManagingProducts)
+			.FirstOrDefault(x => x.Username == username);
+
+		if (user == null)
+			throw new LSCoreNotFoundException();
+
+		user.ManagingProducts ??= [];
+		user.ManagingProducts.Clear();
+
+		user.ManagingProducts.AddRange(
+			productRepository
+				.GetMultiple()
+				.Where(x => productIds.Any(y => y == x.Id))
+				.ToList()
+		);
+
+		repository.Update(user);
+	}
+
 	public List<string> GetPhoneNumbers() =>
 		repository.GetMultiple().Select(x => x.Mobile).ToList();
+
+	public List<UserPermissionDto> GetUserPermissions(string username)
+	{
+		var user = repository
+			.GetMultiple()
+			.Include(x => x.Permissions)
+			.FirstOrDefault(x => x.Username == username);
+
+		if (user == null)
+			throw new LSCoreNotFoundException();
+
+		var allPermissions = Enum.GetValues<Permission>();
+		var isSuperAdmin = user.Type == UserType.SuperAdmin;
+
+		return allPermissions
+			.Select(p => new UserPermissionDto
+			{
+				Id = (long)p,
+				Name = p.ToString(),
+				Description = p.GetDescription() ?? p.ToString(),
+				// SuperAdmin has all permissions
+				IsGranted = isSuperAdmin || (user.Permissions?.Any(up => up.IsActive && up.Permission == p) ?? false)
+			})
+			.ToList();
+	}
+
+	public void SetUserPermissions(string username, List<Permission> permissions)
+	{
+		var user = repository
+			.GetMultiple()
+			.Include(x => x.Permissions)
+			.FirstOrDefault(x => x.Username == username);
+
+		if (user == null)
+			throw new LSCoreNotFoundException();
+
+		user.Permissions ??= [];
+
+		// Deactivate all existing permissions
+		foreach (var existingPermission in user.Permissions)
+		{
+			existingPermission.IsActive = false;
+		}
+
+		// Add or reactivate permissions
+		foreach (var permission in permissions)
+		{
+			var existing = user.Permissions.FirstOrDefault(p => p.Permission == permission);
+			if (existing != null)
+			{
+				existing.IsActive = true;
+			}
+			else
+			{
+				user.Permissions.Add(new UserPermissionEntity
+				{
+					UserId = user.Id,
+					Permission = permission,
+					IsActive = true,
+					CreatedAt = DateTime.UtcNow
+				});
+			}
+		}
+
+		repository.Update(user);
+	}
 }

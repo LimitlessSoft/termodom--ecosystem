@@ -12,7 +12,7 @@ namespace TD.Web.Admin.Api.Controllers;
 
 [ApiController]
 [LSCoreAuth]
-[Permissions(Permission.Access)]
+[Permissions(Permission.Access, Permission.Admin_Blogs_Access)]
 public class BlogsController(IBlogManager blogManager) : ControllerBase
 {
 	[HttpGet]
@@ -28,11 +28,13 @@ public class BlogsController(IBlogManager blogManager) : ControllerBase
 
 	[HttpPut]
 	[Route("/blogs")]
+	[Permissions(Permission.Admin_Blogs_Write)]
 	public long Save([FromBody] BlogsSaveRequest request) =>
 		blogManager.Save(request);
 
 	[HttpDelete]
 	[Route("/blogs/{id}")]
+	[Permissions(Permission.Admin_Blogs_Write)]
 	public IActionResult Delete([FromRoute] long id)
 	{
 		blogManager.Delete(new LSCoreIdRequest { Id = id });
@@ -41,6 +43,7 @@ public class BlogsController(IBlogManager blogManager) : ControllerBase
 
 	[HttpPut]
 	[Route("/blogs/{id}/publish")]
+	[Permissions(Permission.Admin_Blogs_Write)]
 	public IActionResult Publish([FromRoute] long id)
 	{
 		blogManager.Publish(new LSCoreIdRequest { Id = id });
@@ -49,6 +52,7 @@ public class BlogsController(IBlogManager blogManager) : ControllerBase
 
 	[HttpPut]
 	[Route("/blogs/{id}/unpublish")]
+	[Permissions(Permission.Admin_Blogs_Write)]
 	public IActionResult Unpublish([FromRoute] long id)
 	{
 		blogManager.Unpublish(new LSCoreIdRequest { Id = id });

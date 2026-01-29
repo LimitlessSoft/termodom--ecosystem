@@ -59,4 +59,9 @@ public class ProductEntity : LSCoreEntity
 
 	[NotMapped]
 	public ProductPriceGroupEntity ProductPriceGroup { get; set; }
+
+	/// <summary>
+	/// Users who can manage this specific product (inverse navigation for UserEntity.ManagingProducts)
+	/// </summary>
+	public List<UserEntity>? ManagingUsers { get; set; }
 }

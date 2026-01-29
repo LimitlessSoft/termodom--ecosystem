@@ -150,4 +150,41 @@ public class UsersController(
 		[FromRoute] string Username,
 		[FromBody] List<long> managingGroups
 	) => userManager.SetManagingProductsGroups(Username, managingGroups);
+
+	[HttpGet]
+	[LSCoreAuth]
+	[Route("/users-managing-products/{Username}")]
+	[Permissions(Permission.Access, Permission.Admin_Products_Access)]
+	public List<long> GetManagingProducts([FromRoute] string Username) =>
+		userManager.GetManagingProducts(Username);
+
+	[HttpPost]
+	[LSCoreAuth]
+	[Route("/users-managing-products/{Username}")]
+	[Permissions(Permission.Access, Permission.Admin_Products_Access)]
+	public void PostManagingProducts(
+		[FromRoute] string Username,
+		[FromBody] List<long> productIds
+	) => userManager.SetManagingProducts(Username, productIds);
+
+	[HttpGet]
+	[LSCoreAuth]
+	[Route("/users/{Username}/permissions")]
+	[Permissions(Permission.Access, Permission.Admin_Users_Access)]
+	public IActionResult GetUserPermissions([FromRoute] string Username) =>
+		Ok(userManager.GetUserPermissions(Username));
+
+	[HttpPut]
+	[LSCoreAuth]
+	[Route("/users/{Username}/permissions")]
+	[Permissions(Permission.Access, Permission.Admin_Users_Access, Permission.Admin_Users_Write)]
+	public IActionResult SetUserPermissions(
+		[FromRoute] string Username,
+		[FromBody] List<int> permissionIds
+	)
+	{
+		var permissions = permissionIds.Select(id => (Permission)id).ToList();
+		userManager.SetUserPermissions(Username, permissions);
+		return Ok();
+	}
 }

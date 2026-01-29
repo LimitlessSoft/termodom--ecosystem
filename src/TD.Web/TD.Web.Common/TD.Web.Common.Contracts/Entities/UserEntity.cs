@@ -32,6 +32,11 @@ public class UserEntity : LSCoreEntity, ILSCoreAuthUserPassEntity<string>
 	/// </summary>
 	public List<ProductGroupEntity>? ManaginProductGroups { get; set; } // Leaving it to EF to map many to many
 
+	/// <summary>
+	/// Used to determine which individual products the user can edit (in addition to product groups)
+	/// </summary>
+	public List<ProductEntity>? ManagingProducts { get; set; }
+
 	[NotMapped]
 	public PaymentTypeEntity? DefaultPaymentType { get; set; }
 

@@ -1,4 +1,4 @@
-﻿using LSCore.SortAndPage.Contracts;
+using LSCore.SortAndPage.Contracts;
 using TD.Web.Admin.Contracts.Requests.Users;
 using TD.Web.Common.Contracts.Dtos.Users;
 using TD.Web.Common.Contracts.Enums;
@@ -36,5 +36,9 @@ public interface IUserManager
 	bool HasPermission(Permission permission);
 	List<long> GetManagingProductsGroups(string username);
 	void SetManagingProductsGroups(string username, List<long> managingGroups);
+	List<long> GetManagingProducts(string username);
+	void SetManagingProducts(string username, List<long> productIds);
 	List<string> GetPhoneNumbers();
+	List<UserPermissionDto> GetUserPermissions(string username);
+	void SetUserPermissions(string username, List<Permission> permissions);
 }

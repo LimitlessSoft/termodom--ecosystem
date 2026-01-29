@@ -11,8 +11,14 @@ export const PERMISSIONS_CONSTANTS = {
             EDIT_META_TAGS: 'Admin_Products_EditMetaTags',
         },
         PORUDZBINE: { READ: 'Admin_Orders_Access' },
-        KORISNICI: { READ: 'Admin_Users_Access' },
+        KORISNICI: {
+            READ: 'Admin_Users_Access',
+            WRITE: 'Admin_Users_Write',
+        },
         PODESAVANJA: { READ: 'Admin_Settings_Access' },
-        BLOGOVI: { READ: 'Admin_Blogs_Access' },
+        BLOGOVI: {
+            READ: 'Admin_Blogs_Access',
+            WRITE: 'Admin_Blogs_Write',
+        },
     },
 }

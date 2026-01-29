@@ -4,7 +4,6 @@ using LSCore.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TD.Web.Admin.Contracts.Dtos.Permissions;
-using TD.Web.Common.Contracts.Attributes;
 using TD.Web.Common.Contracts.Enums;
 using TD.Web.Common.Contracts.Helpers;
 using TD.Web.Common.Repository;
@@ -12,7 +11,6 @@ using TD.Web.Common.Repository;
 namespace TD.Web.Admin.Api.Controllers;
 
 [LSCoreAuth]
-[Permissions(Permission.Access)]
 public class PermissionsController(
 	LSCoreAuthContextEntity<string> contextEntity,
 	WebDbContext dbContext
