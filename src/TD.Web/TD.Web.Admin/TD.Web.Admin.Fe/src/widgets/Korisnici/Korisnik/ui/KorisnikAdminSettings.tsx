@@ -228,18 +228,18 @@ export const KorisnikAdminSettings = ({ username, disabled }: KorisnikAdminSetti
                                                 disabled={disabled || canEditAll || savingGroups}
                                             />
                                         </Box>
+                                        <Box sx={{ mt: 2 }}>
+                                            <Button
+                                                variant="contained"
+                                                disabled={savingGroups || disabled || canEditAll}
+                                                onClick={saveGroups}
+                                            >
+                                                Sačuvaj grupe
+                                            </Button>
+                                        </Box>
                                     </>
                                 )
                             })()}
-                            <Box sx={{ mt: 2 }}>
-                                <Button
-                                    variant="contained"
-                                    disabled={savingGroups || disabled}
-                                    onClick={saveGroups}
-                                >
-                                    Sačuvaj grupe
-                                </Button>
-                            </Box>
                         </>
                     )}
                 </Paper>

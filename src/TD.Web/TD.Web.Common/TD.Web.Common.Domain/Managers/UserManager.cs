@@ -446,6 +446,7 @@ public class UserManager(
 			throw new LSCoreNotFoundException();
 
 		user.ManaginProductGroups ??= [];
+		user.ManaginProductGroups.Clear();
 
 		user.ManaginProductGroups.AddRange(
 			productGroupRepository
