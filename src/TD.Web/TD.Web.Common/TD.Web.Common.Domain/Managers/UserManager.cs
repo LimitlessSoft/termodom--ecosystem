@@ -458,6 +458,37 @@ public class UserManager(
 		repository.Update(user);
 	}
 
+	public List<long> GetManagingProducts(string username) =>
+		repository
+			.GetMultiple()
+			.Where(x => x.IsActive && x.Username == username)
+			.Include(x => x.ManagingProducts)
+			.SelectMany(x => x.ManagingProducts!.Select(z => z.Id))
+			.ToList();
+
+	public void SetManagingProducts(string username, List<long> productIds)
+	{
+		var user = repository
+			.GetMultiple()
+			.Include(x => x.ManagingProducts)
+			.FirstOrDefault(x => x.Username == username);
+
+		if (user == null)
+			throw new LSCoreNotFoundException();
+
+		user.ManagingProducts ??= [];
+		user.ManagingProducts.Clear();
+
+		user.ManagingProducts.AddRange(
+			productRepository
+				.GetMultiple()
+				.Where(x => productIds.Any(y => y == x.Id))
+				.ToList()
+		);
+
+		repository.Update(user);
+	}
+
 	public List<string> GetPhoneNumbers() =>
 		repository.GetMultiple().Select(x => x.Mobile).ToList();
 

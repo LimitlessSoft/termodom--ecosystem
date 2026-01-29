@@ -153,6 +153,22 @@ public class UsersController(
 
 	[HttpGet]
 	[LSCoreAuth]
+	[Route("/users-managing-products/{Username}")]
+	[Permissions(Permission.Access, Permission.Admin_Products_Access)]
+	public List<long> GetManagingProducts([FromRoute] string Username) =>
+		userManager.GetManagingProducts(Username);
+
+	[HttpPost]
+	[LSCoreAuth]
+	[Route("/users-managing-products/{Username}")]
+	[Permissions(Permission.Access, Permission.Admin_Products_Access)]
+	public void PostManagingProducts(
+		[FromRoute] string Username,
+		[FromBody] List<long> productIds
+	) => userManager.SetManagingProducts(Username, productIds);
+
+	[HttpGet]
+	[LSCoreAuth]
 	[Route("/users/{Username}/permissions")]
 	[Permissions(Permission.Access, Permission.Admin_Users_Access)]
 	public IActionResult GetUserPermissions([FromRoute] string Username) =>

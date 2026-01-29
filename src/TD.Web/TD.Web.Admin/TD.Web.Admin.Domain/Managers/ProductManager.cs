@@ -59,13 +59,17 @@ public class ProductManager(
 			httpContextAccessor.HttpContext?.User?.Identity?.AuthenticationType == "ApiKey"
 			|| userManager.HasPermission(Permission.Admin_Products_EditAll);
 
-		// Get the group IDs the current user can manage
+		// Get the group IDs and individual product IDs the current user can manage
 		var userManagedGroupIds = userCanEditAll
 			? new List<long>()
 			: userManager.GetManagingProductsGroups(contextEntity.Identifier);
 
-		// If user has no managed groups and can't edit all, return empty list
-		if (!userCanEditAll && userManagedGroupIds.Count == 0)
+		var userManagedProductIds = userCanEditAll
+			? new List<long>()
+			: userManager.GetManagingProducts(contextEntity.Identifier);
+
+		// If user has no managed groups, no managed products, and can't edit all, return empty list
+		if (!userCanEditAll && userManagedGroupIds.Count == 0 && userManagedProductIds.Count == 0)
 			return new List<ProductsGetDto>();
 
 		var query = repository
@@ -92,13 +96,16 @@ public class ProductManager(
 					|| request.Classification.Length == 0
 					|| request.Classification.Any(y => y == x.Classification)
 				)
-				// Filter by user's managed groups (unless they can edit all)
-				&& (userCanEditAll || x.Groups.Any(g => userManagedGroupIds.Contains(g.Id)))
+				// Filter by user's managed groups OR individual products (unless they can edit all)
+				&& (userCanEditAll
+					|| x.Groups.Any(g => userManagedGroupIds.Contains(g.Id))
+					|| userManagedProductIds.Contains(x.Id))
 			);
 
 		var products = query
 			.Include(x => x.Groups)
 			.ThenInclude(x => x.ManagingUsers)
+			.Include(x => x.ManagingUsers)
 			.Include(x => x.Unit)
 			.Include(x => x.Price)
 			.ToList();
@@ -134,7 +141,11 @@ public class ProductManager(
 			? new List<long>()
 			: userManager.GetManagingProductsGroups(contextEntity.Identifier);
 
-		if (!userCanEditAll && userManagedGroupIds.Count == 0)
+		var userManagedProductIds = userCanEditAll
+			? new List<long>()
+			: userManager.GetManagingProducts(contextEntity.Identifier);
+
+		if (!userCanEditAll && userManagedGroupIds.Count == 0 && userManagedProductIds.Count == 0)
 			return new List<ProductsGetDto>();
 
 		return repository
@@ -158,7 +169,9 @@ public class ProductManager(
 					|| EF.Functions.ILike(x.CatalogId, $"%{request.SearchTerm}%")
 					|| EF.Functions.ILike(x.Src, $"%{request.SearchTerm}%")
 				)
-				&& (userCanEditAll || x.Groups.Any(g => userManagedGroupIds.Contains(g.Id)))
+				&& (userCanEditAll
+					|| x.Groups.Any(g => userManagedGroupIds.Contains(g.Id))
+					|| userManagedProductIds.Contains(x.Id))
 			)
 			.ToList()
 			.ToMappedList<ProductEntity, ProductsGetDto>();
@@ -265,35 +278,57 @@ public class ProductManager(
 	}
 
 	public bool HasPermissionToEdit(long productId) =>
-		HasPermissionToEdit(repository.GetMultiple().Include(x => x.Groups).ThenInclude(x => x.ManagingUsers), productId);
+		HasPermissionToEdit(repository.GetMultiple().Include(x => x.Groups).ThenInclude(x => x.ManagingUsers).Include(x => x.ManagingUsers), productId);
 
 	/// <summary>
 	/// Checks if user has permission to edit product.
-	/// Product must be in editable status AND user must be managing at least one of its groups.
+	/// Product must be in editable status AND user must be managing at least one of its groups OR the product directly.
 	/// </summary>
-	public bool HasPermissionToEdit(IQueryable<ProductEntity> products, long productId) =>
-		products
-			.Where(x =>
-				x.IsActive
-				&& x.Id == productId
-				&& new List<ProductStatus>
-				{
-					ProductStatus.AzuriranjeCekaOdobrenje,
-					ProductStatus.NoviCekaOdobrenje,
-					ProductStatus.AzuriranjeNaObradi,
-				}.Contains(x.Status)
-			)
+	public bool HasPermissionToEdit(IQueryable<ProductEntity> products, long productId)
+	{
+		var editableStatuses = new List<ProductStatus>
+		{
+			ProductStatus.AzuriranjeCekaOdobrenje,
+			ProductStatus.NoviCekaOdobrenje,
+			ProductStatus.AzuriranjeNaObradi,
+		};
+
+		// Check if user manages product via groups
+		var hasGroupAccess = products
+			.Where(x => x.IsActive && x.Id == productId && editableStatuses.Contains(x.Status))
 			.SelectMany(x => x.Groups.SelectMany(y => y.ManagingUsers!.Select(z => z.Username)))
 			.Any(x => x == contextEntity.Identifier);
 
+		if (hasGroupAccess)
+			return true;
+
+		// Check if user manages product directly
+		return products
+			.Where(x => x.IsActive && x.Id == productId && editableStatuses.Contains(x.Status))
+			.SelectMany(x => x.ManagingUsers!.Select(z => z.Username))
+			.Any(x => x == contextEntity.Identifier);
+	}
+
 	/// <summary>
-	/// Checks if user can view/access product based on managing its groups.
+	/// Checks if user can view/access product based on managing its groups or the product directly.
 	/// </summary>
-	public bool CanAccessProduct(IQueryable<ProductEntity> products, long productId) =>
-		products
+	public bool CanAccessProduct(IQueryable<ProductEntity> products, long productId)
+	{
+		// Check if user manages product via groups
+		var hasGroupAccess = products
 			.Where(x => x.IsActive && x.Id == productId)
 			.SelectMany(x => x.Groups.SelectMany(y => y.ManagingUsers!.Select(z => z.Username)))
 			.Any(x => x == contextEntity.Identifier);
+
+		if (hasGroupAccess)
+			return true;
+
+		// Check if user manages product directly
+		return products
+			.Where(x => x.IsActive && x.Id == productId)
+			.SelectMany(x => x.ManagingUsers!.Select(z => z.Username))
+			.Any(x => x == contextEntity.Identifier);
+	}
 
 	public void AppendSearchKeywords(CreateProductSearchKeywordRequest request)
 	{
