@@ -592,7 +592,7 @@ const ProizvodIzmeni = () => {
                         <Alert severity="info" sx={{ mb: 2 }}>
                             <Typography variant="body2">
                                 <strong>Saveti:</strong> Dodajte varijante
-                                naziva (npr. "lepak" i "ljepilo"), brendove,
+                                naziva (npr. &quot;lepak&quot; i &quot;ljepilo&quot;), brendove,
                                 dimenzije, boje i druge atribute po kojima bi
                                 kupci mogli tražiti proizvod.
                             </Typography>
