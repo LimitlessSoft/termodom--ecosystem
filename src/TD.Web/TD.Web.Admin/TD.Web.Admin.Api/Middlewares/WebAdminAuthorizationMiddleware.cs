@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using LSCore.Auth.Key.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using TD.Web.Common.Contracts;
 using TD.Web.Common.Contracts.Attributes;
@@ -10,7 +11,7 @@ namespace TD.Web.Admin.Api.Middlewares;
 
 public class WebAdminAuthorizationMiddleware(
 	RequestDelegate next,
-	ApiKeysConfiguration apiKeysSettings
+	LSCoreAuthKeyConfiguration apiKeysSettings
 )
 {
 	public async Task Invoke(HttpContext context)
@@ -82,12 +83,9 @@ public class WebAdminAuthorizationMiddleware(
 
 		bool IsApiKeyAuthorized()
 		{
-			return false;
-			// var requestApiKey = context
-			// 	.Request.Headers[LSCoreContractsConstants.ApiKeyCustomHeader]
-			// 	.FirstOrDefault();
-			// return !string.IsNullOrWhiteSpace(requestApiKey)
-			// 	&& apiKeysSettings.ApiKeys.Contains(requestApiKey);
+			var requestApiKey = context.Request.Headers["X-LS-Key"].FirstOrDefault();
+			return !string.IsNullOrWhiteSpace(requestApiKey)
+				&& apiKeysSettings.ValidKeys.Contains(requestApiKey);
 		}
 	}
 }
