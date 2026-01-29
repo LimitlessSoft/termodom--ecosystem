@@ -56,6 +56,10 @@ export const NAV_BAR_CONSTANTS = {
         {
             label: NAV_BAR_CONSTANTS.MODULE_LABELS.BLOGOVI,
             href: URL_CONSTANTS.BLOGOVI.INDEX,
+            hasPermission: hasPermission(
+                permissions,
+                PERMISSIONS_CONSTANTS.USER_PERMISSIONS.BLOGOVI.READ
+            ),
             icon: <Article />,
         },
     ],

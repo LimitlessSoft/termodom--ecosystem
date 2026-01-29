@@ -16,9 +16,18 @@ import { adminApi, handleApiError } from '@/apis/adminApi'
 import { ArrowDropDownIcon } from '@mui/x-date-pickers'
 import { toast } from 'react-toastify'
 
+interface Permission {
+    id: number
+    name: string
+    description: string
+    isGranted: boolean
+}
+
 export const KorisnikAdminSettings = (props: any) => {
     const [groups, setGroups] = React.useState<any>(null)
     const [checkedGroups, setCheckedGroups] = useState<any | undefined>(null)
+    const [permissions, setPermissions] = useState<Permission[] | null>(null)
+    const [savingPermissions, setSavingPermissions] = useState(false)
 
     useEffect(() => {
         if (props.username === undefined) return
@@ -33,7 +42,39 @@ export const KorisnikAdminSettings = (props: any) => {
                 setCheckedGroups(response.data)
             })
             .catch((err) => handleApiError(err))
+
+        adminApi
+            .get(`/users/${props.username}/permissions`)
+            .then((response) => {
+                setPermissions(response.data)
+            })
+            .catch((err) => handleApiError(err))
     }, [props.username])
+
+    const handlePermissionChange = (permissionName: string, checked: boolean) => {
+        setPermissions((prev) =>
+            prev?.map((p) =>
+                p.name === permissionName ? { ...p, isGranted: checked } : p
+            ) ?? null
+        )
+    }
+
+    const savePermissions = () => {
+        if (!permissions) return
+
+        setSavingPermissions(true)
+        const grantedPermissions = permissions
+            .filter((p) => p.isGranted)
+            .map((p) => p.id)
+
+        adminApi
+            .put(`/users/${props.username}/permissions`, grantedPermissions)
+            .then(() => {
+                toast.success('Prava sačuvana!')
+            })
+            .catch((err) => handleApiError(err))
+            .finally(() => setSavingPermissions(false))
+    }
 
     return (
         <Accordion
@@ -90,7 +131,61 @@ export const KorisnikAdminSettings = (props: any) => {
                                     .catch((err) => handleApiError(err))
                             }}
                         >
-                            Sačuvaj admin podesavanja
+                            Sačuvaj grupe proizvoda
+                        </Button>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Paper
+                            elevation={12}
+                            sx={{
+                                p: 2,
+                                mt: 2,
+                            }}
+                        >
+                            <Typography variant={`h6`}>
+                                Prava korisnika
+                            </Typography>
+                            <Box>
+                                {permissions == null ? (
+                                    <LinearProgress />
+                                ) : (
+                                    <Grid container>
+                                        {permissions.map((permission) => (
+                                            <Grid
+                                                item
+                                                xs={12}
+                                                sm={6}
+                                                md={4}
+                                                key={permission.name}
+                                            >
+                                                <FormControlLabel
+                                                    label={permission.description}
+                                                    control={
+                                                        <Checkbox
+                                                            checked={permission.isGranted}
+                                                            onChange={(e) =>
+                                                                handlePermissionChange(
+                                                                    permission.name,
+                                                                    e.target.checked
+                                                                )
+                                                            }
+                                                        />
+                                                    }
+                                                />
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                )}
+                            </Box>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button
+                            variant={`contained`}
+                            disabled={savingPermissions || permissions == null}
+                            onClick={savePermissions}
+                        >
+                            Sačuvaj prava
                         </Button>
                     </Grid>
                 </Grid>

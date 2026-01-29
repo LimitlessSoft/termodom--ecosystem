@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using TD.Web.Common.Contracts.Interfaces;
 
 namespace TD.Web.Common.Repository;
 
@@ -14,5 +15,6 @@ public static class ServicesExtensions
 					options.UseInternalServiceProvider(serviceProvider);
 				}
 			);
+		serviceCollection.AddScoped<IWebDbContext>(sp => sp.GetRequiredService<WebDbContext>());
 	}
 }

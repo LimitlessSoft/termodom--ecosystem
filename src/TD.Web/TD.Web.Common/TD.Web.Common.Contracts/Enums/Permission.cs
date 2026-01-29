@@ -38,4 +38,16 @@ public enum Permission
 	[PermissionGroup(LegacyConstants.PermissionGroup.Products)]
 	[Description("Admin - Proizvodi - Moze da menja 'Meta Tags'")]
 	Admin_Products_EditMetaTags,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+	[Description("Admin - Blogovi - Pristup modulu")]
+	Admin_Blogs_Access,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+	[Description("Admin - Blogovi - Izmena blogova")]
+	Admin_Blogs_Write,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.NavBar)]
+	[Description("Admin - Korisnici - Izmena korisnika")]
+	Admin_Users_Write,
 }
