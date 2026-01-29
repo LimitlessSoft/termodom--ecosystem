@@ -15,14 +15,10 @@ import React, { useEffect, useState } from 'react'
 import { adminApi, handleApiError } from '@/apis/adminApi'
 import { toast } from 'react-toastify'
 
-interface Props {
-    productId: string | string[] | undefined
-}
-
-export const ProizvodiIzmeniVarijacijeProizvoda = ({ productId }: Props) => {
+export const ProizvodiIzmeniVarijacijeProizvoda = ({ productId }) => {
     const [linkInput, setLinkInput] = useState('')
-    const [linkedProducts, setLinkedProducts] = useState<string[]>([])
-    const [link, setLink] = useState<string | undefined>(undefined)
+    const [linkedProducts, setLinkedProducts] = useState([])
+    const [link, setLink] = useState(undefined)
     const [updating, setUpdating] = useState(false)
     const [expanded, setExpanded] = useState(true)
 

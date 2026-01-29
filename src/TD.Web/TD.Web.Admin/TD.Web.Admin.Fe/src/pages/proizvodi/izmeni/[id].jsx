@@ -30,19 +30,13 @@ import { getStatuses } from '@/helpers/productHelpers'
 import { Add, Delete, ExpandMore, ExpandLess, Save, CloudUpload } from '@mui/icons-material'
 import { ProizvodiIzmeniVarijacijeProizvoda } from '@/widgets/Proizvodi/ProizvodiIzmeniVarijacijeProizvoda/ui/proizvodiIzmeniVarijacijeProizvoda'
 
-interface TabPanelProps {
-    children?: React.ReactNode
-    index: number
-    value: number
-}
-
-const TabPanel = ({ children, value, index }: TabPanelProps) => (
+const TabPanel = ({ children, value, index }) => (
     <div role="tabpanel" hidden={value !== index}>
         {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
     </div>
 )
 
-const SectionTitle = ({ children }: { children: React.ReactNode }) => (
+const SectionTitle = ({ children }) => (
     <Typography variant="subtitle1" fontWeight="bold" color="text.secondary" sx={{ mb: 2 }}>
         {children}
     </Typography>
@@ -54,18 +48,18 @@ const ProizvodIzmeni = () => {
     const productId = router.query.id
 
     const [tabValue, setTabValue] = useState(0)
-    const [units, setUnits] = useState<any[]>([])
-    const [groups, setGroups] = useState<any[]>([])
-    const [priceGroups, setPriceGroups] = useState<any[]>([])
-    const [stockTypes, setStockTypes] = useState<any[]>([])
-    const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('')
-    const [checkedGroups, setCheckedGroups] = useState<number[]>([])
-    const [imageToUpload, setImageToUpload] = useState<File | null>(null)
+    const [units, setUnits] = useState([])
+    const [groups, setGroups] = useState([])
+    const [priceGroups, setPriceGroups] = useState([])
+    const [stockTypes, setStockTypes] = useState([])
+    const [imagePreviewUrl, setImagePreviewUrl] = useState('')
+    const [checkedGroups, setCheckedGroups] = useState([])
+    const [imageToUpload, setImageToUpload] = useState(null)
     const [isCreating, setIsCreating] = useState(false)
     const [isLoaded, setIsLoaded] = useState(false)
     const [hasAlternateUnit, setHasAlternateUnit] = useState(false)
     const [searchKeywordDeleting, setSearchKeywordDeleting] = useState(false)
-    const [searchKeywords, setSearchKeywords] = useState<string[] | undefined>(undefined)
+    const [searchKeywords, setSearchKeywords] = useState(undefined)
     const [newSearchKeyword, setNewSearchKeyword] = useState('')
 
     const [requestBody, setRequestBody] = useState({
@@ -89,7 +83,7 @@ const ProizvodIzmeni = () => {
         vat: 20,
         metaTitle: '',
         metaDescription: '',
-        groups: [] as number[],
+        groups: [],
         canEdit: false,
     })
 
@@ -132,7 +126,7 @@ const ProizvodIzmeni = () => {
             .catch(handleApiError)
     }, [isLoaded, requestBody.image])
 
-    const dataURLtoFile = (dataurl: string, filename: string): File => {
+    const dataURLtoFile = (dataurl, filename) => {
         const arr = dataurl.split(',')
         const mime = arr[0].match(/:(.*?);/)?.[1] || ''
         const bstr = atob(arr[arr.length - 1])
@@ -162,7 +156,7 @@ const ProizvodIzmeni = () => {
             .finally(() => setIsCreating(false))
     }
 
-    const handleImageChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = (evt) => {
         const files = evt.target.files
         if (!files) {
             toast.error('Greška pri uploadu slike.')
@@ -172,7 +166,7 @@ const ProizvodIzmeni = () => {
         if (FileReader && files.length) {
             const fr = new FileReader()
             fr.onload = () => {
-                setImagePreviewUrl(fr.result as string)
+                setImagePreviewUrl(fr.result)
             }
             fr.readAsDataURL(files[0])
         }
@@ -193,7 +187,7 @@ const ProizvodIzmeni = () => {
             .catch(handleApiError)
     }
 
-    const handleDeleteSearchKeyword = (keyword: string) => {
+    const handleDeleteSearchKeyword = (keyword) => {
         setSearchKeywordDeleting(true)
         adminApi
             .delete(ENDPOINTS_CONSTANTS.PRODUCTS.SEARCH_KEYWORDS(productId?.toString() || ''), {
@@ -207,17 +201,17 @@ const ProizvodIzmeni = () => {
             .finally(() => setSearchKeywordDeleting(false))
     }
 
-    const updateField = <K extends keyof typeof requestBody>(field: K, value: typeof requestBody[K]) => {
+    const updateField = (field, value) => {
         setRequestBody((prev) => ({ ...prev, [field]: value }))
     }
 
-    const getStatusLabel = (status: number) => {
+    const getStatusLabel = (status) => {
         const statuses = getStatuses()
         const key = Object.keys(statuses).find((k) => statuses[k] === status)
         return key?.split(/(?=[A-Z])/).join(' ').toUpperCase() || 'Nepoznat'
     }
 
-    const getStatusColor = (status: number): 'success' | 'warning' | 'error' | 'default' => {
+    const getStatusColor = (status) => {
         switch (status) {
             case 0: return 'success'
             case 1: return 'warning'
@@ -621,30 +615,21 @@ const ProizvodIzmeni = () => {
 }
 
 // Helper functions
-const isChecked = (groups: any[], checkedGroups: number[], id: number): boolean => {
+const isChecked = (groups, checkedGroups, id) => {
     const subGroups = groups.filter((item) => item.parentGroupId === id)
     const thisChecked = checkedGroups.includes(id)
     if (thisChecked || subGroups.length === 0) return thisChecked
     return subGroups.some((sg) => isChecked(groups, checkedGroups, sg.id))
 }
 
-const decheck = (groups: any[], setCheckedGroups: React.Dispatch<React.SetStateAction<number[]>>, id: number) => {
+const decheck = (groups, setCheckedGroups, id) => {
     const subGroups = groups.filter((item) => item.parentGroupId === id)
     setCheckedGroups((prev) => prev.filter((item) => item !== id))
     subGroups.forEach((sg) => decheck(groups, setCheckedGroups, sg.id))
 }
 
-interface GroupTreeProps {
-    disabled: boolean
-    groups: any[]
-    checkedGroups: number[]
-    setCheckedGroups: React.Dispatch<React.SetStateAction<number[]>>
-    parentId: number | null
-    level?: number
-}
-
-const GroupTree = ({ disabled, groups, checkedGroups, setCheckedGroups, parentId, level = 0 }: GroupTreeProps) => {
-    const [expanded, setExpanded] = useState<Record<number, boolean>>({})
+const GroupTree = ({ disabled, groups, checkedGroups, setCheckedGroups, parentId, level = 0 }) => {
+    const [expanded, setExpanded] = useState({})
     const children = groups.filter((item) => item.parentGroupId === parentId)
 
     if (children.length === 0) return null
