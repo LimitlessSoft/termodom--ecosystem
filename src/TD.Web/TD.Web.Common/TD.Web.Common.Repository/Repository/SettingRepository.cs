@@ -13,6 +13,14 @@ public class SettingRepository(WebDbContext dbContext, IWebDbContextFactory dbCo
 	public SettingEntity GetSetting(SettingKey key) =>
 		dbContext.Settings.First(x => x.IsActive && x.Key == key);
 
+	public SettingEntity? GetSettingOrDefault(SettingKey key) =>
+		dbContext.Settings.FirstOrDefault(x => x.IsActive && x.Key == key);
+
+	public List<SettingEntity> GetSettingsByPrefix(string prefix) =>
+		dbContext.Settings
+			.Where(x => x.IsActive && x.Key.ToString().StartsWith(prefix))
+			.ToList();
+
 	public T GetValue<T>(SettingKey key)
 	{
 		var setting = GetSetting(key);
@@ -34,6 +42,21 @@ public class SettingRepository(WebDbContext dbContext, IWebDbContextFactory dbCo
 	{
 		var setting = GetSetting(key);
 		setting.Value = value;
+		dbContext.SaveChanges();
+	}
+
+	public void SetOrCreateValue(SettingKey key, string value)
+	{
+		var setting = GetSettingOrDefault(key);
+		if (setting == null)
+		{
+			setting = new SettingEntity { Key = key, Value = value };
+			dbContext.Settings.Add(setting);
+		}
+		else
+		{
+			setting.Value = value;
+		}
 		dbContext.SaveChanges();
 	}
 }
