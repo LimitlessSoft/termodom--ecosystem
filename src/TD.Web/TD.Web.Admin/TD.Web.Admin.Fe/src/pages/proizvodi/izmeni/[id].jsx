@@ -38,6 +38,7 @@ import {
     Info,
     AutoFixHigh,
     AutoAwesome,
+    OpenInNew,
 } from '@mui/icons-material'
 import { ProizvodiIzmeniVarijacijeProizvoda } from '@/widgets/Proizvodi/ProizvodiIzmeniVarijacijeProizvoda/ui/proizvodiIzmeniVarijacijeProizvoda'
 import { useAiValidation } from '@/hooks/useAiValidation'
@@ -399,21 +400,33 @@ const ProizvodIzmeni = () => {
                             size="small"
                         />
                     </Stack>
-                    <Button
-                        variant="contained"
-                        size="large"
-                        startIcon={
-                            isCreating ? (
-                                <CircularProgress size={20} color="inherit" />
-                            ) : (
-                                <Save />
-                            )
-                        }
-                        disabled={isCreating}
-                        onClick={handleEditProduct}
-                    >
-                        Sačuvaj izmene
-                    </Button>
+                    <Stack direction="row" spacing={1}>
+                        <Button
+                            variant="outlined"
+                            size="large"
+                            startIcon={<OpenInNew />}
+                            href={`https://termodom.rs/proizvodi/${requestBody.src}`}
+                            target="_blank"
+                            disabled={!requestBody.src}
+                        >
+                            Idi na proizvod
+                        </Button>
+                        <Button
+                            variant="contained"
+                            size="large"
+                            startIcon={
+                                isCreating ? (
+                                    <CircularProgress size={20} color="inherit" />
+                                ) : (
+                                    <Save />
+                                )
+                            }
+                            disabled={isCreating}
+                            onClick={handleEditProduct}
+                        >
+                            Sačuvaj izmene
+                        </Button>
+                    </Stack>
                 </Stack>
             </Paper>
 
