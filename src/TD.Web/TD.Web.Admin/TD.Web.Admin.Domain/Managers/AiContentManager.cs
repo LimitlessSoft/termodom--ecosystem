@@ -91,6 +91,24 @@ public class AiContentManager : IAiContentManager
 			context);
 	}
 
+	public async Task<AiGeneratedContentDto> GenerateProductNameAsync(long productId, GenerateContentRequest request)
+	{
+		var product = _productRepository.Get(productId);
+		var context = new Dictionary<string, string>
+		{
+			["productId"] = productId.ToString(),
+			["catalogId"] = product.CatalogId ?? "",
+			["existingName"] = request.BaseContent ?? product.Name ?? "",
+			["description"] = product.Description ?? "",
+			["shortDescription"] = product.ShortDescription ?? "",
+			["style"] = request.Style ?? "professional"
+		};
+
+		return await GenerateContentAsync(
+			SettingKey.AI_PROMPT_PRODUCT_NAME_GENERATE,
+			context);
+	}
+
 	public async Task<AiGeneratedContentDto> GenerateProductDescriptionAsync(long productId, GenerateContentRequest request)
 	{
 		var product = _productRepository.Get(productId);
@@ -152,6 +170,7 @@ public class AiContentManager : IAiContentManager
 	{
 		if (string.IsNullOrWhiteSpace(_apiKey))
 		{
+			_logger.LogWarning("AI validation skipped - API key not configured");
 			return new AiValidationResultDto
 			{
 				IsValid = true,
@@ -160,11 +179,16 @@ public class AiContentManager : IAiContentManager
 			};
 		}
 
+		string? model = null;
+		string? systemPrompt = null;
+		string? userMessage = null;
+
 		try
 		{
-			var systemPrompt = await _settingRepository.GetValueAsync<string>(promptKey);
+			systemPrompt = await _settingRepository.GetValueAsync<string>(promptKey);
 			if (string.IsNullOrWhiteSpace(systemPrompt))
 			{
+				_logger.LogWarning("AI validation skipped - prompt not configured for {PromptKey}", promptKey);
 				return new AiValidationResultDto
 				{
 					IsValid = true,
@@ -173,15 +197,20 @@ public class AiContentManager : IAiContentManager
 				};
 			}
 
-			var model = await GetModelName();
-			var userMessage = BuildUserMessage(fieldValue, context);
+			model = await GetModelName();
+			userMessage = BuildUserMessage(fieldValue, context);
 			var response = await CallOpenAiAsync(systemPrompt, userMessage, model);
 
 			return ParseValidationResponse(response, fieldValue);
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, "AI validation failed for {PromptKey}", promptKey);
+			var systemPromptLength = systemPrompt?.Length ?? 0;
+			var userMessageLength = userMessage?.Length ?? 0;
+			_logger.LogError(ex,
+				"AI validation failed: PromptKey={PromptKey}, Model={Model}, " +
+				"SystemPromptChars={SystemChars}, UserMessageChars={UserChars}",
+				promptKey, model ?? "unknown", systemPromptLength, userMessageLength);
 			return new AiValidationResultDto
 			{
 				IsValid = true,
@@ -197,6 +226,7 @@ public class AiContentManager : IAiContentManager
 	{
 		if (string.IsNullOrWhiteSpace(_apiKey))
 		{
+			_logger.LogWarning("AI generation skipped - API key not configured");
 			return new AiGeneratedContentDto
 			{
 				Success = false,
@@ -204,11 +234,16 @@ public class AiContentManager : IAiContentManager
 			};
 		}
 
+		string? model = null;
+		string? systemPrompt = null;
+		string? userMessage = null;
+
 		try
 		{
-			var systemPrompt = await _settingRepository.GetValueAsync<string>(promptKey);
+			systemPrompt = await _settingRepository.GetValueAsync<string>(promptKey);
 			if (string.IsNullOrWhiteSpace(systemPrompt))
 			{
+				_logger.LogWarning("AI generation skipped - prompt not configured for {PromptKey}", promptKey);
 				return new AiGeneratedContentDto
 				{
 					Success = false,
@@ -216,15 +251,20 @@ public class AiContentManager : IAiContentManager
 				};
 			}
 
-			var model = await GetModelName();
-			var userMessage = BuildContextMessage(context);
+			model = await GetModelName();
+			userMessage = BuildContextMessage(context);
 			var response = await CallOpenAiAsync(systemPrompt, userMessage, model);
 
 			return ParseGenerationResponse(response);
 		}
 		catch (Exception ex)
 		{
-			_logger.LogError(ex, "AI generation failed for {PromptKey}", promptKey);
+			var systemPromptLength = systemPrompt?.Length ?? 0;
+			var userMessageLength = userMessage?.Length ?? 0;
+			_logger.LogError(ex,
+				"AI generation failed: PromptKey={PromptKey}, Model={Model}, " +
+				"SystemPromptChars={SystemChars}, UserMessageChars={UserChars}",
+				promptKey, model ?? "unknown", systemPromptLength, userMessageLength);
 			return new AiGeneratedContentDto
 			{
 				Success = false,
@@ -289,6 +329,21 @@ public class AiContentManager : IAiContentManager
 	{
 		var temperature = await GetTemperature();
 
+		// Estimate token count (rough: ~4 chars per token)
+		var systemPromptTokens = systemPrompt.Length / 4;
+		var userMessageTokens = userMessage.Length / 4;
+		var estimatedTotalTokens = systemPromptTokens + userMessageTokens;
+
+		_logger.LogInformation(
+			"OpenAI Request: Model={Model}, Temperature={Temperature}, " +
+			"SystemPromptChars={SystemChars} (~{SystemTokens} tokens), " +
+			"UserMessageChars={UserChars} (~{UserTokens} tokens), " +
+			"EstimatedTotalTokens=~{TotalTokens}",
+			model, temperature,
+			systemPrompt.Length, systemPromptTokens,
+			userMessage.Length, userMessageTokens,
+			estimatedTotalTokens);
+
 		var request = new
 		{
 			model,
@@ -305,10 +360,39 @@ public class AiContentManager : IAiContentManager
 			new AuthenticationHeaderValue("Bearer", _apiKey);
 
 		var response = await _httpClient.PostAsJsonAsync(OpenAiApiUrl, request);
-		response.EnsureSuccessStatusCode();
+
+		if (!response.IsSuccessStatusCode)
+		{
+			var errorBody = await response.Content.ReadAsStringAsync();
+			var errorMessage = ParseOpenAiError(errorBody);
+			_logger.LogError(
+				"OpenAI API Error: StatusCode={StatusCode}, Model={Model}, " +
+				"EstimatedTokens=~{Tokens}, ErrorMessage={ErrorMessage}, RawResponse={Response}",
+				(int)response.StatusCode, model, estimatedTotalTokens, errorMessage, errorBody);
+			throw new HttpRequestException(
+				$"OpenAI API Error ({(int)response.StatusCode}): {errorMessage}");
+		}
 
 		var result = await response.Content.ReadFromJsonAsync<OpenAiResponse>();
+		_logger.LogInformation("OpenAI Request successful for Model={Model}", model);
 		return result?.Choices?.FirstOrDefault()?.Message?.Content ?? "{}";
+	}
+
+	private static string ParseOpenAiError(string errorBody)
+	{
+		try
+		{
+			using var doc = JsonDocument.Parse(errorBody);
+			if (doc.RootElement.TryGetProperty("error", out var error))
+			{
+				var message = error.TryGetProperty("message", out var msg) ? msg.GetString() : null;
+				var type = error.TryGetProperty("type", out var t) ? t.GetString() : null;
+				var code = error.TryGetProperty("code", out var c) ? c.GetString() : null;
+				return $"{message} (type: {type}, code: {code})";
+			}
+		}
+		catch { }
+		return errorBody.Length > 200 ? errorBody[..200] + "..." : errorBody;
 	}
 
 	private static AiValidationResultDto ParseValidationResponse(string jsonResponse, string originalValue)

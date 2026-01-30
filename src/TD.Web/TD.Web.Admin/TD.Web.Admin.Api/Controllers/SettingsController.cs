@@ -26,6 +26,7 @@ public class SettingsController(ISettingRepository settingRepository) : Controll
 			ProductShortDescriptionValidation = GetSettingValue(SettingKey.AI_PROMPT_PRODUCT_SHORT_DESCRIPTION_VALIDATION),
 			ProductMetaValidation = GetSettingValue(SettingKey.AI_PROMPT_PRODUCT_META_VALIDATION),
 
+			ProductNameGenerate = GetSettingValue(SettingKey.AI_PROMPT_PRODUCT_NAME_GENERATE),
 			ProductDescriptionGenerate = GetSettingValue(SettingKey.AI_PROMPT_PRODUCT_DESCRIPTION_GENERATE),
 			ProductShortDescriptionGenerate = GetSettingValue(SettingKey.AI_PROMPT_PRODUCT_SHORT_DESCRIPTION_GENERATE),
 			ProductMetaGenerate = GetSettingValue(SettingKey.AI_PROMPT_PRODUCT_META_GENERATE),
@@ -49,6 +50,7 @@ public class SettingsController(ISettingRepository settingRepository) : Controll
 		SetSettingIfNotNull(SettingKey.AI_PROMPT_PRODUCT_SHORT_DESCRIPTION_VALIDATION, request.ProductShortDescriptionValidation);
 		SetSettingIfNotNull(SettingKey.AI_PROMPT_PRODUCT_META_VALIDATION, request.ProductMetaValidation);
 
+		SetSettingIfNotNull(SettingKey.AI_PROMPT_PRODUCT_NAME_GENERATE, request.ProductNameGenerate);
 		SetSettingIfNotNull(SettingKey.AI_PROMPT_PRODUCT_DESCRIPTION_GENERATE, request.ProductDescriptionGenerate);
 		SetSettingIfNotNull(SettingKey.AI_PROMPT_PRODUCT_SHORT_DESCRIPTION_GENERATE, request.ProductShortDescriptionGenerate);
 		SetSettingIfNotNull(SettingKey.AI_PROMPT_PRODUCT_META_GENERATE, request.ProductMetaGenerate);

@@ -13,6 +13,7 @@ public class SaveAiSettingsRequest
 	public string? ProductMetaValidation { get; set; }
 
 	// Generation prompts
+	public string? ProductNameGenerate { get; set; }
 	public string? ProductDescriptionGenerate { get; set; }
 	public string? ProductShortDescriptionGenerate { get; set; }
 	public string? ProductMetaGenerate { get; set; }

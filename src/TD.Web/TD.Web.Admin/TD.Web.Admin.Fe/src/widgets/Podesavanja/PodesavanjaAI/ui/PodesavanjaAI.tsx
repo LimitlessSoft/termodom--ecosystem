@@ -23,6 +23,7 @@ interface AiSettings {
     productDescriptionValidation: string
     productShortDescriptionValidation: string
     productMetaValidation: string
+    productNameGenerate: string
     productDescriptionGenerate: string
     productShortDescriptionGenerate: string
     productMetaGenerate: string
@@ -47,6 +48,7 @@ export const PodesavanjaAI = (): JSX.Element => {
                     productDescriptionValidation: response.data.productDescriptionValidation || '',
                     productShortDescriptionValidation: response.data.productShortDescriptionValidation || '',
                     productMetaValidation: response.data.productMetaValidation || '',
+                    productNameGenerate: response.data.productNameGenerate || '',
                     productDescriptionGenerate: response.data.productDescriptionGenerate || '',
                     productShortDescriptionGenerate: response.data.productShortDescriptionGenerate || '',
                     productMetaGenerate: response.data.productMetaGenerate || '',
@@ -174,6 +176,14 @@ export const PodesavanjaAI = (): JSX.Element => {
                     </AccordionSummary>
                     <AccordionDetails>
                         <Stack spacing={2}>
+                            <TextField
+                                label="Generisanje naziva proizvoda"
+                                value={settings.productNameGenerate}
+                                onChange={(e) => updateField('productNameGenerate', e.target.value)}
+                                multiline
+                                rows={4}
+                                size="small"
+                            />
                             <TextField
                                 label="Generisanje opisa proizvoda"
                                 value={settings.productDescriptionGenerate}
