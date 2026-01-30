@@ -53,6 +53,26 @@ public class ProductManager(
 		return dto;
 	}
 
+	public ProductsGetDto? GetBySlug(string slug)
+	{
+		var product = repository
+			.GetMultiple()
+			.Where(x => x.Src == slug)
+			.Include(x => x.Groups)
+			.Include(x => x.Unit)
+			.Include(x => x.ProductPriceGroup)
+			.Include(x => x.Price)
+			.FirstOrDefault();
+
+		if (product == null)
+			return null;
+
+		var dto = product.ToMapped<ProductEntity, ProductsGetDto>();
+		var userCanEditAll = userManager.HasPermission(Permission.Admin_Products_EditAll);
+		dto.CanEdit = userCanEditAll || HasPermissionToEdit(product.Id);
+		return dto;
+	}
+
 	public List<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request)
 	{
 		var userCanEditAll =

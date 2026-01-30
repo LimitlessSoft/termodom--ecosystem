@@ -110,6 +110,24 @@ public class AiContentManager : IAiContentManager
 			context);
 	}
 
+	public async Task<AiGeneratedContentDto> GenerateProductShortDescriptionAsync(long productId, GenerateContentRequest request)
+	{
+		var product = _productRepository.Get(productId);
+		var context = new Dictionary<string, string>
+		{
+			["productId"] = productId.ToString(),
+			["productName"] = product.Name,
+			["catalogId"] = product.CatalogId ?? "",
+			["existingShortDescription"] = request.BaseContent ?? product.ShortDescription ?? "",
+			["style"] = request.Style ?? "professional",
+			["maxLength"] = (request.MaxLength ?? 150).ToString()
+		};
+
+		return await GenerateContentAsync(
+			SettingKey.AI_PROMPT_PRODUCT_SHORT_DESCRIPTION_GENERATE,
+			context);
+	}
+
 	public async Task<AiGeneratedContentDto> GenerateProductMetaAsync(long productId)
 	{
 		var product = _productRepository.Get(productId);

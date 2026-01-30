@@ -9,6 +9,7 @@ namespace TD.Web.Admin.Contracts.Interfaces.IManagers;
 public interface IProductManager
 {
 	ProductsGetDto Get(LSCoreIdRequest request);
+	ProductsGetDto? GetBySlug(string slug);
 	List<ProductsGetDto> GetMultiple(ProductsGetMultipleRequest request);
 	List<ProductsGetDto> GetSearch(ProductsGetSearchRequest request);
 	long Save(ProductsSaveRequest request);

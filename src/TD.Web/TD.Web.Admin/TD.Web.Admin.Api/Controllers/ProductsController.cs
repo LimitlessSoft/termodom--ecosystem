@@ -28,6 +28,16 @@ public class ProductsController(
 	public ProductsGetDto Get([FromRoute] int id) =>
 		productManager.Get(new LSCoreIdRequest { Id = id });
 
+	[HttpGet]
+	[Route("/products/by-slug/{slug}")]
+	public IActionResult GetBySlug([FromRoute] string slug)
+	{
+		var product = productManager.GetBySlug(slug);
+		if (product == null)
+			return NotFound();
+		return Ok(product);
+	}
+
 	[HttpPost]
 	[Route("/products/{Id}/search-keywords")]
 	public IActionResult AppendSearchKeywords(
@@ -153,6 +163,13 @@ public class ProductsController(
 		[FromRoute] long id,
 		[FromBody] GenerateContentRequest request)
 		=> aiContentManager.GenerateProductDescriptionAsync(id, request);
+
+	[HttpPost]
+	[Route("/products/{id}/ai/generate/short-description")]
+	public Task<AiGeneratedContentDto> GenerateProductShortDescription(
+		[FromRoute] long id,
+		[FromBody] GenerateContentRequest request)
+		=> aiContentManager.GenerateProductShortDescriptionAsync(id, request);
 
 	[HttpPost]
 	[Route("/products/{id}/ai/generate/meta")]
