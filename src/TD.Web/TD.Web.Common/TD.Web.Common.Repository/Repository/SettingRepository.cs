@@ -47,15 +47,17 @@ public class SettingRepository(WebDbContext dbContext, IWebDbContextFactory dbCo
 
 	public void SetOrCreateValue(SettingKey key, string value)
 	{
-		var setting = GetSettingOrDefault(key);
+		// Find by key only (ignore IsActive to avoid duplicate key constraint)
+		var setting = dbContext.Settings.FirstOrDefault(x => x.Key == key);
 		if (setting == null)
 		{
-			setting = new SettingEntity { Key = key, Value = value };
+			setting = new SettingEntity { Key = key, Value = value, IsActive = true };
 			dbContext.Settings.Add(setting);
 		}
 		else
 		{
 			setting.Value = value;
+			setting.IsActive = true;
 		}
 		dbContext.SaveChanges();
 	}
