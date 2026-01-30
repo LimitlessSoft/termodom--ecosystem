@@ -158,6 +158,13 @@ public class ProductsController(
 	// === AI GENERATION ENDPOINTS ===
 
 	[HttpPost]
+	[Route("/products/{id}/ai/generate/name")]
+	public Task<AiGeneratedContentDto> GenerateProductName(
+		[FromRoute] long id,
+		[FromBody] GenerateContentRequest request)
+		=> aiContentManager.GenerateProductNameAsync(id, request);
+
+	[HttpPost]
 	[Route("/products/{id}/ai/generate/description")]
 	public Task<AiGeneratedContentDto> GenerateProductDescription(
 		[FromRoute] long id,

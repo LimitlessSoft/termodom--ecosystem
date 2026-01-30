@@ -506,16 +506,54 @@ const ProizvodIzmeni = () => {
                                     Informacije o proizvodu
                                 </SectionTitle>
                                 <Stack spacing={3}>
-                                    <TextField
-                                        fullWidth
-                                        required
-                                        label="Naziv proizvoda"
-                                        value={requestBody.name}
-                                        onChange={(e) =>
-                                            updateField('name', e.target.value)
-                                        }
-                                        helperText="Pun naziv proizvoda koji će se prikazivati kupcima. Budite precizni i opisni."
-                                    />
+                                    <Stack direction="row" spacing={1} alignItems="flex-start">
+                                        <TextField
+                                            fullWidth
+                                            required
+                                            label="Naziv proizvoda"
+                                            value={requestBody.name}
+                                            onChange={(e) =>
+                                                updateField('name', e.target.value)
+                                            }
+                                            helperText="Pun naziv proizvoda koji će se prikazivati kupcima. Budite precizni i opisni."
+                                        />
+                                        <IconButton
+                                            color="primary"
+                                            onClick={() =>
+                                                handleAiValidation(
+                                                    'name',
+                                                    ENDPOINTS_CONSTANTS.PRODUCTS.AI_VALIDATE_NAME(productId),
+                                                    'Naziv proizvoda'
+                                                )
+                                            }
+                                            disabled={isValidating || !requestBody.name}
+                                            title="AI validacija naziva"
+                                        >
+                                            {isValidating && aiFieldName === 'name' ? (
+                                                <CircularProgress size={20} />
+                                            ) : (
+                                                <AutoFixHigh />
+                                            )}
+                                        </IconButton>
+                                        <IconButton
+                                            color="secondary"
+                                            onClick={() =>
+                                                handleAiGenerate(
+                                                    'name',
+                                                    ENDPOINTS_CONSTANTS.PRODUCTS.AI_GENERATE_NAME(productId),
+                                                    'Naziv proizvoda'
+                                                )
+                                            }
+                                            disabled={isGenerating}
+                                            title="AI generisanje naziva"
+                                        >
+                                            {isGenerating && aiFieldName === 'name' ? (
+                                                <CircularProgress size={20} />
+                                            ) : (
+                                                <AutoAwesome />
+                                            )}
+                                        </IconButton>
+                                    </Stack>
 
                                     <Stack
                                         direction={{ xs: 'column', sm: 'row' }}

@@ -12,6 +12,7 @@ public interface IAiContentManager
 	Task<AiValidationResultDto> ValidateProductMetaAsync(long productId, ValidateMetaRequest request);
 
 	// Product generation
+	Task<AiGeneratedContentDto> GenerateProductNameAsync(long productId, GenerateContentRequest request);
 	Task<AiGeneratedContentDto> GenerateProductDescriptionAsync(long productId, GenerateContentRequest request);
 	Task<AiGeneratedContentDto> GenerateProductShortDescriptionAsync(long productId, GenerateContentRequest request);
 	Task<AiGeneratedContentDto> GenerateProductMetaAsync(long productId);
