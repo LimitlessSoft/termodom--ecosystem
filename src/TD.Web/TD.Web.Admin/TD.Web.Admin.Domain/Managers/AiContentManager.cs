@@ -346,16 +346,35 @@ public class AiContentManager : IAiContentManager
 		if (!response.IsSuccessStatusCode)
 		{
 			var errorBody = await response.Content.ReadAsStringAsync();
+			var errorMessage = ParseOpenAiError(errorBody);
 			_logger.LogError(
 				"OpenAI API Error: StatusCode={StatusCode}, Model={Model}, " +
-				"EstimatedTokens=~{Tokens}, Response={Response}",
-				(int)response.StatusCode, model, estimatedTotalTokens, errorBody);
-			response.EnsureSuccessStatusCode();
+				"EstimatedTokens=~{Tokens}, ErrorMessage={ErrorMessage}, RawResponse={Response}",
+				(int)response.StatusCode, model, estimatedTotalTokens, errorMessage, errorBody);
+			throw new HttpRequestException(
+				$"OpenAI API Error ({(int)response.StatusCode}): {errorMessage}");
 		}
 
 		var result = await response.Content.ReadFromJsonAsync<OpenAiResponse>();
 		_logger.LogInformation("OpenAI Request successful for Model={Model}", model);
 		return result?.Choices?.FirstOrDefault()?.Message?.Content ?? "{}";
+	}
+
+	private static string ParseOpenAiError(string errorBody)
+	{
+		try
+		{
+			using var doc = JsonDocument.Parse(errorBody);
+			if (doc.RootElement.TryGetProperty("error", out var error))
+			{
+				var message = error.TryGetProperty("message", out var msg) ? msg.GetString() : null;
+				var type = error.TryGetProperty("type", out var t) ? t.GetString() : null;
+				var code = error.TryGetProperty("code", out var c) ? c.GetString() : null;
+				return $"{message} (type: {type}, code: {code})";
+			}
+		}
+		catch { }
+		return errorBody.Length > 200 ? errorBody[..200] + "..." : errorBody;
 	}
 
 	private static AiValidationResultDto ParseValidationResponse(string jsonResponse, string originalValue)
