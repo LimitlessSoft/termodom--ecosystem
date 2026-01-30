@@ -17,4 +17,5 @@ public class SecretsDto
 	public string[] API_KEYS { get; set; }
 	public string OFFICE_API_BASE_URL { get; set; }
 	public string OFFICE_API_KEY { get; set; }
+	public string OPENAI_API_KEY { get; set; }
 }

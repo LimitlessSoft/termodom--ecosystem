@@ -36,8 +36,12 @@ import {
     Save,
     CloudUpload,
     Info,
+    AutoFixHigh,
+    AutoAwesome,
 } from '@mui/icons-material'
 import { ProizvodiIzmeniVarijacijeProizvoda } from '@/widgets/Proizvodi/ProizvodiIzmeniVarijacijeProizvoda/ui/proizvodiIzmeniVarijacijeProizvoda'
+import { useAiValidation } from '@/hooks/useAiValidation'
+import { AiSuggestionDialog, AiGenerationDialog } from '@/widgets/AiValidation'
 
 const TabPanel = ({ children, value, index }) => (
     <div role="tabpanel" hidden={value !== index}>
@@ -83,6 +87,22 @@ const ProizvodIzmeni = () => {
     const [searchKeywordDeleting, setSearchKeywordDeleting] = useState(false)
     const [searchKeywords, setSearchKeywords] = useState(undefined)
     const [newSearchKeyword, setNewSearchKeyword] = useState('')
+
+    // AI Validation state
+    const {
+        validateField,
+        generateContent,
+        isValidating,
+        isGenerating,
+        validationResult,
+        generationResult,
+        clearValidationResult,
+        clearGenerationResult,
+    } = useAiValidation()
+    const [aiDialogOpen, setAiDialogOpen] = useState(false)
+    const [aiGenerateDialogOpen, setAiGenerateDialogOpen] = useState(false)
+    const [aiFieldLabel, setAiFieldLabel] = useState('')
+    const [aiFieldName, setAiFieldName] = useState('')
 
     const [requestBody, setRequestBody] = useState({
         name: '',
@@ -254,6 +274,41 @@ const ProizvodIzmeni = () => {
 
     const updateField = (field, value) => {
         setRequestBody((prev) => ({ ...prev, [field]: value }))
+    }
+
+    const handleAiValidation = async (field, endpoint, label) => {
+        setAiFieldName(field)
+        setAiFieldLabel(label)
+        setAiDialogOpen(true)
+        await validateField(endpoint, requestBody[field] || '', {
+            productName: requestBody.name,
+        })
+    }
+
+    const handleAcceptAiSuggestion = (value) => {
+        if (aiFieldName) {
+            updateField(aiFieldName, value)
+        }
+        setAiDialogOpen(false)
+        clearValidationResult()
+    }
+
+    const handleAiGenerate = async (field, endpoint, label) => {
+        setAiFieldName(field)
+        setAiFieldLabel(label)
+        setAiGenerateDialogOpen(true)
+        await generateContent(endpoint, {
+            baseContent: requestBody[field] || '',
+            formatAsHtml: true,
+        })
+    }
+
+    const handleAcceptAiGeneration = (value) => {
+        if (aiFieldName) {
+            updateField(aiFieldName, value)
+        }
+        setAiGenerateDialogOpen(false)
+        clearGenerationResult()
     }
 
     const getStatusLabel = (status) => {
@@ -511,33 +566,93 @@ const ProizvodIzmeni = () => {
                                         )}
                                     </TextField>
 
-                                    <TextField
-                                        fullWidth
-                                        label="Kratak opis"
-                                        value={requestBody.shortDescription}
-                                        onChange={(e) =>
-                                            updateField(
-                                                'shortDescription',
-                                                e.target.value
-                                            )
-                                        }
-                                        helperText="Sažet opis (1-2 rečenice) koji se prikazuje u listi proizvoda i rezultatima pretrage."
-                                    />
+                                    <Stack direction="row" spacing={1} alignItems="flex-start">
+                                        <TextField
+                                            fullWidth
+                                            label="Kratak opis"
+                                            value={requestBody.shortDescription}
+                                            onChange={(e) =>
+                                                updateField(
+                                                    'shortDescription',
+                                                    e.target.value
+                                                )
+                                            }
+                                            helperText="Sažet opis (1-2 rečenice) koji se prikazuje u listi proizvoda i rezultatima pretrage."
+                                        />
+                                        <IconButton
+                                            color="primary"
+                                            onClick={() =>
+                                                handleAiValidation(
+                                                    'shortDescription',
+                                                    ENDPOINTS_CONSTANTS.PRODUCTS.AI_VALIDATE_SHORT_DESCRIPTION(productId),
+                                                    'Kratak opis'
+                                                )
+                                            }
+                                            disabled={isValidating || !requestBody.shortDescription}
+                                            title="AI validacija kratkog opisa"
+                                        >
+                                            {isValidating && aiFieldName === 'shortDescription' ? (
+                                                <CircularProgress size={20} />
+                                            ) : (
+                                                <AutoFixHigh />
+                                            )}
+                                        </IconButton>
+                                    </Stack>
 
-                                    <TextField
-                                        fullWidth
-                                        multiline
-                                        rows={6}
-                                        label="Pun opis proizvoda"
-                                        value={requestBody.description}
-                                        onChange={(e) =>
-                                            updateField(
-                                                'description',
-                                                e.target.value
-                                            )
-                                        }
-                                        helperText="Detaljan opis proizvoda sa specifikacijama, načinom upotrebe i prednostima. Možete koristiti HTML formatiranje."
-                                    />
+                                    <Stack direction="row" spacing={1} alignItems="flex-start">
+                                        <TextField
+                                            fullWidth
+                                            multiline
+                                            rows={6}
+                                            label="Pun opis proizvoda"
+                                            value={requestBody.description}
+                                            onChange={(e) =>
+                                                updateField(
+                                                    'description',
+                                                    e.target.value
+                                                )
+                                            }
+                                            helperText="Detaljan opis proizvoda sa specifikacijama, načinom upotrebe i prednostima. Možete koristiti HTML formatiranje."
+                                        />
+                                        <Stack direction="column" spacing={0.5}>
+                                            <IconButton
+                                                color="primary"
+                                                onClick={() =>
+                                                    handleAiValidation(
+                                                        'description',
+                                                        ENDPOINTS_CONSTANTS.PRODUCTS.AI_VALIDATE_DESCRIPTION(productId),
+                                                        'Pun opis proizvoda'
+                                                    )
+                                                }
+                                                disabled={isValidating || !requestBody.description}
+                                                title="AI validacija opisa"
+                                            >
+                                                {isValidating && aiFieldName === 'description' ? (
+                                                    <CircularProgress size={20} />
+                                                ) : (
+                                                    <AutoFixHigh />
+                                                )}
+                                            </IconButton>
+                                            <IconButton
+                                                color="secondary"
+                                                onClick={() =>
+                                                    handleAiGenerate(
+                                                        'description',
+                                                        ENDPOINTS_CONSTANTS.PRODUCTS.AI_GENERATE_DESCRIPTION(productId),
+                                                        'Pun opis proizvoda'
+                                                    )
+                                                }
+                                                disabled={isGenerating}
+                                                title="AI generisanje opisa"
+                                            >
+                                                {isGenerating && aiFieldName === 'description' ? (
+                                                    <CircularProgress size={20} />
+                                                ) : (
+                                                    <AutoAwesome />
+                                                )}
+                                            </IconButton>
+                                        </Stack>
+                                    </Stack>
 
                                     <TextField
                                         fullWidth
@@ -1025,6 +1140,32 @@ const ProizvodIzmeni = () => {
                     </TabPanel>
                 </Box>
             </Paper>
+
+            {/* AI Suggestion Dialog */}
+            <AiSuggestionDialog
+                open={aiDialogOpen}
+                onClose={() => {
+                    setAiDialogOpen(false)
+                    clearValidationResult()
+                }}
+                onAccept={handleAcceptAiSuggestion}
+                result={validationResult}
+                fieldLabel={aiFieldLabel}
+                isLoading={isValidating}
+            />
+
+            {/* AI Generation Dialog */}
+            <AiGenerationDialog
+                open={aiGenerateDialogOpen}
+                onClose={() => {
+                    setAiGenerateDialogOpen(false)
+                    clearGenerationResult()
+                }}
+                onAccept={handleAcceptAiGeneration}
+                result={generationResult}
+                fieldLabel={aiFieldLabel}
+                isLoading={isGenerating}
+            />
         </Box>
     )
 }

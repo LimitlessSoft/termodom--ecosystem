@@ -2,8 +2,10 @@
 using LSCore.Common.Contracts;
 using LSCore.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using TD.Web.Admin.Contracts.Dtos.AiContent;
 using TD.Web.Admin.Contracts.Dtos.Products;
 using TD.Web.Admin.Contracts.Interfaces.IManagers;
+using TD.Web.Admin.Contracts.Requests.AiContent;
 using TD.Web.Admin.Contracts.Requests.Products;
 using TD.Web.Common.Contracts.Attributes;
 using TD.Web.Common.Contracts.Dtos;
@@ -15,7 +17,10 @@ namespace TD.Web.Admin.Api.Controllers;
 [ApiController]
 [LSCoreAuth]
 [Permissions(Permission.Access)]
-public class ProductsController(IProductManager productManager, IUserManager userManager)
+public class ProductsController(
+	IProductManager productManager,
+	IUserManager userManager,
+	IAiContentManager aiContentManager)
 	: ControllerBase
 {
 	[HttpGet]
@@ -109,4 +114,48 @@ public class ProductsController(IProductManager productManager, IUserManager use
 	[HttpGet]
 	[Route("/products-classifications")]
 	public List<IdNamePairDto> GetClassifications() => productManager.GetClassifications();
+
+	// === AI VALIDATION ENDPOINTS ===
+
+	[HttpPost]
+	[Route("/products/{id}/ai/validate/name")]
+	public Task<AiValidationResultDto> ValidateProductName(
+		[FromRoute] long id,
+		[FromBody] ValidateFieldRequest request)
+		=> aiContentManager.ValidateProductNameAsync(id, request);
+
+	[HttpPost]
+	[Route("/products/{id}/ai/validate/description")]
+	public Task<AiValidationResultDto> ValidateProductDescription(
+		[FromRoute] long id,
+		[FromBody] ValidateFieldRequest request)
+		=> aiContentManager.ValidateProductDescriptionAsync(id, request);
+
+	[HttpPost]
+	[Route("/products/{id}/ai/validate/short-description")]
+	public Task<AiValidationResultDto> ValidateProductShortDescription(
+		[FromRoute] long id,
+		[FromBody] ValidateFieldRequest request)
+		=> aiContentManager.ValidateProductShortDescriptionAsync(id, request);
+
+	[HttpPost]
+	[Route("/products/{id}/ai/validate/meta")]
+	public Task<AiValidationResultDto> ValidateProductMeta(
+		[FromRoute] long id,
+		[FromBody] ValidateMetaRequest request)
+		=> aiContentManager.ValidateProductMetaAsync(id, request);
+
+	// === AI GENERATION ENDPOINTS ===
+
+	[HttpPost]
+	[Route("/products/{id}/ai/generate/description")]
+	public Task<AiGeneratedContentDto> GenerateProductDescription(
+		[FromRoute] long id,
+		[FromBody] GenerateContentRequest request)
+		=> aiContentManager.GenerateProductDescriptionAsync(id, request);
+
+	[HttpPost]
+	[Route("/products/{id}/ai/generate/meta")]
+	public Task<AiGeneratedContentDto> GenerateProductMeta([FromRoute] long id)
+		=> aiContentManager.GenerateProductMetaAsync(id);
 }
