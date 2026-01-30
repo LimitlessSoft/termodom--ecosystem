@@ -7,6 +7,7 @@ export const ENDPOINTS_CONSTANTS = {
         AI_VALIDATE_SHORT_DESCRIPTION: (id) => `/products/${id}/ai/validate/short-description`,
         AI_VALIDATE_META: (id) => `/products/${id}/ai/validate/meta`,
         AI_GENERATE_DESCRIPTION: (id) => `/products/${id}/ai/generate/description`,
+        AI_GENERATE_SHORT_DESCRIPTION: (id) => `/products/${id}/ai/generate/short-description`,
         AI_GENERATE_META: (id) => `/products/${id}/ai/generate/meta`,
     },
     MODULES_HELPS: {

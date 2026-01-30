@@ -3,3 +3,4 @@ export { ProizvodiMetaTagsEdit } from './Proizvodi/ProizvodiMetaTagsEdit/ui/Proi
 export { Podesavanja } from './Podesavanja/ui/Podesavanja'
 export { PodesavanjaKalkulator } from './Podesavanja/PodesavanjaKalkulator/ui/PodesavanjaKalkulator'
 export { PorudzbinaActionBar } from './Porudzbine/PorudzbinaActionbar/ui/PorudzbinaActionBar'
+export { SeoAnalyzer } from './SeoAnalyzer'

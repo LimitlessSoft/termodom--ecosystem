@@ -1,4 +1,4 @@
-import { Home, Widgets, ListAlt, People, Settings, Article } from '@mui/icons-material'
+import { Home, Widgets, ListAlt, People, Settings, Article, Search } from '@mui/icons-material'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { URL_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 
@@ -10,6 +10,7 @@ export const NAV_BAR_CONSTANTS = {
         KORISNICI: 'Korisnici',
         PODESAVANJA: 'Podesavanja',
         BLOGOVI: 'Blogovi',
+        SEO_ANALYZER: 'SEO Analyzer',
     },
     MODULES: (permissions) => [
         {
@@ -61,6 +62,11 @@ export const NAV_BAR_CONSTANTS = {
                 PERMISSIONS_CONSTANTS.USER_PERMISSIONS.BLOGOVI.READ
             ),
             icon: <Article />,
+        },
+        {
+            label: NAV_BAR_CONSTANTS.MODULE_LABELS.SEO_ANALYZER,
+            href: URL_CONSTANTS.SEO_ANALYZER.INDEX,
+            icon: <Search />,
         },
     ],
 }

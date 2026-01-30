@@ -14,4 +14,7 @@ export const URL_CONSTANTS = {
     BLOGOVI: {
         INDEX: '/blogovi',
     },
+    SEO_ANALYZER: {
+        INDEX: '/seo-analyzer',
+    },
 }

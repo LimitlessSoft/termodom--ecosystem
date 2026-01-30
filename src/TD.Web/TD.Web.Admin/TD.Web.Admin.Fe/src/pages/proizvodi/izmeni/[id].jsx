@@ -610,6 +610,24 @@ const ProizvodIzmeni = () => {
                                                 <AutoFixHigh />
                                             )}
                                         </IconButton>
+                                        <IconButton
+                                            color="secondary"
+                                            onClick={() =>
+                                                handleAiGenerate(
+                                                    'shortDescription',
+                                                    ENDPOINTS_CONSTANTS.PRODUCTS.AI_GENERATE_SHORT_DESCRIPTION(productId),
+                                                    'Kratak opis'
+                                                )
+                                            }
+                                            disabled={isGenerating}
+                                            title="AI generisanje kratkog opisa"
+                                        >
+                                            {isGenerating && aiFieldName === 'shortDescription' ? (
+                                                <CircularProgress size={20} />
+                                            ) : (
+                                                <AutoAwesome />
+                                            )}
+                                        </IconButton>
                                     </Stack>
 
                                     <Stack direction="row" spacing={1} alignItems="flex-start">

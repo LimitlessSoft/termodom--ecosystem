@@ -13,5 +13,6 @@ public interface IAiContentManager
 
 	// Product generation
 	Task<AiGeneratedContentDto> GenerateProductDescriptionAsync(long productId, GenerateContentRequest request);
+	Task<AiGeneratedContentDto> GenerateProductShortDescriptionAsync(long productId, GenerateContentRequest request);
 	Task<AiGeneratedContentDto> GenerateProductMetaAsync(long productId);
 }
