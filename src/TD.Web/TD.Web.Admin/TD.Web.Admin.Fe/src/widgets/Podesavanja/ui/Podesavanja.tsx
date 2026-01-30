@@ -1,20 +1,28 @@
-import { PodesavanjaStyled } from '@/widgets/Podesavanja/styled/PodesavanjaStyled'
-import { Box, Button, Grid, Stack, Typography } from '@mui/material'
+import { Box, List, ListItemButton, ListItemIcon, ListItemText, Paper } from '@mui/material'
 import {
     CalculateRounded,
     Category,
     Inventory,
     QrCode,
+    SmartToy,
 } from '@mui/icons-material'
 import { CGP } from '@/widgets/Podesavanja/CGP'
 import { GP } from '@/widgets/Podesavanja/GP'
 import { JM } from '@/widgets/Podesavanja/JM'
 import { PodesavanjaKalkulator } from '@/widgets'
-import { mainTheme } from '@/theme'
+import { PodesavanjaAI } from '@/widgets/Podesavanja/PodesavanjaAI'
 import { useState } from 'react'
 
-const InnerBox = (props: any): JSX.Element => {
-    switch (props.currentTab) {
+const tabs = [
+    { id: 'CGP', label: 'Cenovne grupe', icon: <QrCode /> },
+    { id: 'GP', label: 'Grupe proizvoda', icon: <Category /> },
+    { id: 'JM', label: 'Jedinice mere', icon: <Inventory /> },
+    { id: 'Kalkulator', label: 'Kalkulator', icon: <CalculateRounded /> },
+    { id: 'AI', label: 'AI Podešavanja', icon: <SmartToy /> },
+]
+
+const TabContent = ({ currentTab }: { currentTab: string }): JSX.Element => {
+    switch (currentTab) {
         case 'CGP':
             return <CGP />
         case 'GP':
@@ -23,74 +31,56 @@ const InnerBox = (props: any): JSX.Element => {
             return <JM />
         case 'Kalkulator':
             return <PodesavanjaKalkulator />
+        case 'AI':
+            return <PodesavanjaAI />
         default:
-            return <Typography>ERROR</Typography>
+            return <Box>Izaberite opciju</Box>
     }
 }
 
 export const Podesavanja = () => {
     const [currentTab, setCurrentTab] = useState<string>('CGP')
 
-    const handleSetCurrentTab = (tabName: string) => {
-        setCurrentTab(tabName)
-    }
-
     return (
-        <PodesavanjaStyled>
-            <Stack direction={'row'} sx={{ height: '100%' }}>
-                <Grid
-                    sx={{
-                        minHeight: '100%',
-                        p: 1,
-                        overflowX: 'hidden',
-                        backgroundColor: mainTheme.palette.info.main,
-                    }}
-                >
-                    <Stack sx={{ height: '100%' }}>
-                        <Button
-                            variant="text"
-                            size="large"
-                            color="secondary"
-                            startIcon={<QrCode />}
-                            onClick={() => handleSetCurrentTab('CGP')}
+        <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
+            {/* Sidebar */}
+            <Paper
+                elevation={2}
+                sx={{
+                    width: 220,
+                    minWidth: 220,
+                    borderRadius: 0,
+                    borderRight: '1px solid',
+                    borderColor: 'divider',
+                }}
+            >
+                <List component="nav" sx={{ py: 1 }}>
+                    {tabs.map((tab) => (
+                        <ListItemButton
+                            key={tab.id}
+                            selected={currentTab === tab.id}
+                            onClick={() => setCurrentTab(tab.id)}
+                            sx={{ py: 1.5 }}
                         >
-                            CGP
-                        </Button>
-                        <Button
-                            variant="text"
-                            size="large"
-                            color="secondary"
-                            startIcon={<Category />}
-                            onClick={() => handleSetCurrentTab('GP')}
-                        >
-                            GP
-                        </Button>
-                        <Button
-                            variant="text"
-                            size="large"
-                            color="secondary"
-                            startIcon={<Inventory />}
-                            onClick={() => handleSetCurrentTab('JM')}
-                        >
-                            JM
-                        </Button>
-                        <Button
-                            variant="text"
-                            size="large"
-                            color="secondary"
-                            startIcon={<CalculateRounded />}
-                            onClick={() => handleSetCurrentTab('Kalkulator')}
-                        >
-                            Kalk
-                        </Button>
-                    </Stack>
-                </Grid>
-                <Grid sx={{ height: '100%', flex: 1, overflowY: 'auto' }}>
-                    <Box>
-                        <InnerBox currentTab={currentTab} />
-                    </Box>
-                </Grid>
-            </Stack>
-        </PodesavanjaStyled>
+                            <ListItemIcon sx={{ minWidth: 40 }}>
+                                {tab.icon}
+                            </ListItemIcon>
+                            <ListItemText primary={tab.label} />
+                        </ListItemButton>
+                    ))}
+                </List>
+            </Paper>
+
+            {/* Content */}
+            <Box
+                sx={{
+                    flex: 1,
+                    overflow: 'auto',
+                    minWidth: 0,
+                }}
+            >
+                <TabContent currentTab={currentTab} />
+            </Box>
+        </Box>
     )
 }
