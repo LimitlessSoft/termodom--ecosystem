@@ -585,7 +585,7 @@ const ProizvodIzmeni = () => {
                                         }
                                         helperText={
                                             <>
-                                                Naziv koji će se koristiti za SEO optimizaciju (automatski generiše se sa sufiksom " - Termodom"). Dužina:{' '}
+                                                Naziv koji će se koristiti za SEO optimizaciju (automatski generiše se sa sufiksom &quot; - Termodom&quot;). Dužina:{' '}
                                                 <Box
                                                     component="span"
                                                     sx={{
