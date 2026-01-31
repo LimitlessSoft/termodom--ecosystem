@@ -66,6 +66,7 @@ public class TicketManager(
 		var currentUser = userRepository.GetCurrentUser();
 		var hasCreateBugPermission = userRepository.HasPermission(currentUser.Id, Permission.TicketsCreateBug);
 		var hasCreateFeaturePermission = userRepository.HasPermission(currentUser.Id, Permission.TicketsCreateFeature);
+		var hasEditAllPermission = userRepository.HasPermission(currentUser.Id, Permission.TicketsEditAll);
 
 		request.Validate();
 
@@ -75,8 +76,8 @@ public class TicketManager(
 		{
 			entity = ticketRepository.Get(request.Id.Value);
 
-			// Only the author can edit their own ticket
-			if (entity.SubmittedByUserId != currentUser.Id)
+			// Only the author or users with TicketsEditAll permission can edit
+			if (entity.SubmittedByUserId != currentUser.Id && !hasEditAllPermission)
 				throw new LSCoreForbiddenException("Možete menjati samo svoje tikete");
 
 			// Cannot edit resolved or rejected tickets
@@ -117,10 +118,11 @@ public class TicketManager(
 	public void Delete(long id)
 	{
 		var currentUser = userRepository.GetCurrentUser();
+		var hasEditAllPermission = userRepository.HasPermission(currentUser.Id, Permission.TicketsEditAll);
 		var entity = ticketRepository.Get(id);
 
-		// Only the author can delete their own ticket
-		if (entity.SubmittedByUserId != currentUser.Id)
+		// Only the author or users with TicketsEditAll permission can delete
+		if (entity.SubmittedByUserId != currentUser.Id && !hasEditAllPermission)
 			throw new LSCoreForbiddenException("Možete brisati samo svoje tikete");
 
 		ticketRepository.SoftDelete(id);

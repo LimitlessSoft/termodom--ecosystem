@@ -14,8 +14,8 @@ export const OneTimePrice = (props: any) => {
     ) : (
         <Grid sx={{ marginTop: `2px` }}>
             <Typography color={`rgb(203 148 92)`} variant={`caption`}>
-                {props.isWholesale ? `VP` : `MP`}
-                &nbsp;Cena /{props.unit}:
+                Cena {props.isWholesale ? `bez` : `sa`}
+                &nbsp;PDV /{props.unit}:
             </Typography>
             {minPrice == maxPrice ? (
                 <Typography>

@@ -18,9 +18,10 @@ export const OneTimePrice = (props: IOneTimePriceProps) => {
                             component={`span`}
                             sx={{ marginRight: `5px`, fontSize: `0.6em` }}
                         >
-                            {props.data.isWholesale ? `VP` : `MP`}
-                            &nbsp;Cena: &nbsp;
+                            Cena {props.data.isWholesale ? `bez` : `sa`}
+                            &nbsp;PDV: &nbsp;
                         </ResponsiveTypography>
+                        <br />
                         {minPrice == maxPrice ? (
                             formattedMaxPriceWithVAT
                         ) : (
@@ -53,7 +54,7 @@ export const OneTimePrice = (props: IOneTimePriceProps) => {
                 <Grid my={1}>
                     <ResponsiveTypography
                         component={`span`}
-                        sx={{ fontSize: `0.8em`, color: `rgb(203 148 92)` }}
+                        sx={{ fontSize: `0.8em`, color: `red` }}
                     >
                         *{props.data.isWholesale ? `vp` : `mp`} cena zavisi od
                         ukupne vrednosti vaše korpe. Tačnu cenu ćete videti u

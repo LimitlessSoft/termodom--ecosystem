@@ -28,6 +28,7 @@ import { Add, Edit, Delete, Visibility } from '@mui/icons-material'
 import { handleApiError, officeApi } from '@/apis/officeApi'
 import { ENDPOINTS_CONSTANTS, PERMISSIONS_CONSTANTS } from '@/constants'
 import { usePermissions } from '@/hooks/usePermissionsHook'
+import { useUser } from '@/hooks/useUserHook'
 import { hasPermission } from '@/helpers/permissionsHelpers'
 import { toast } from 'react-toastify'
 
@@ -86,6 +87,9 @@ export const Tickets = () => {
         }
     }
 
+    const user = useUser()
+    const currentUserId = user.data?.id
+
     const permissions = usePermissions(
         PERMISSIONS_CONSTANTS.PERMISSIONS_GROUPS.TICKETS
     )
@@ -115,7 +119,19 @@ export const Tickets = () => {
         PERMISSIONS_CONSTANTS.USER_PERMISSIONS.TICKETS.DEVELOPER_NOTES
     )
 
+    const canEditAll = hasPermission(
+        permissions,
+        PERMISSIONS_CONSTANTS.USER_PERMISSIONS.TICKETS.EDIT_ALL
+    )
+
     const canCreate = canCreateBug || canCreateFeature
+
+    // Check if user can edit/delete a specific ticket
+    const canEditTicket = (ticket) => {
+        if (!currentUserId) return false
+        // User can edit if they own the ticket or have TicketsEditAll permission
+        return ticket.submittedByUserId === currentUserId || canEditAll
+    }
 
     const fetchRecentlySolved = useCallback(async () => {
         try {
@@ -764,7 +780,7 @@ export const Tickets = () => {
                                             >
                                                 <Visibility />
                                             </IconButton>
-                                            {canCreate && (
+                                            {canEditTicket(ticket) && (
                                                 <>
                                                     <IconButton
                                                         size="small"

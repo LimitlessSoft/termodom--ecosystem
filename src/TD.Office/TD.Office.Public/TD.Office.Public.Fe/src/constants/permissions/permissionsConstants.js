@@ -119,6 +119,7 @@ export const PERMISSIONS_CONSTANTS = {
             MANAGE_PRIORITY: 'TicketsManagePriority',
             MANAGE_STATUS: 'TicketsManageStatus',
             DEVELOPER_NOTES: 'TicketsDeveloperNotes',
+            EDIT_ALL: 'TicketsEditAll',
         },
     },
 }
