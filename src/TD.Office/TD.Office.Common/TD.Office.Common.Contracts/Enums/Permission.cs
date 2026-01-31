@@ -288,4 +288,8 @@ public enum Permission
 	[PermissionGroup(LegacyConstants.PermissionGroup.Tickets)]
 	[Description("Tiketi - developer napomene")]
 	TicketsDeveloperNotes,
+
+	[PermissionGroup(LegacyConstants.PermissionGroup.Tickets)]
+	[Description("Tiketi - izmena svih tiketa")]
+	TicketsEditAll,
 }
