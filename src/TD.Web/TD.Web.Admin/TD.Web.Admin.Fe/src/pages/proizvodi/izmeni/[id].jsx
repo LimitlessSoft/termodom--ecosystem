@@ -416,7 +416,10 @@ const ProizvodIzmeni = () => {
                             size="large"
                             startIcon={
                                 isCreating ? (
-                                    <CircularProgress size={20} color="inherit" />
+                                    <CircularProgress
+                                        size={20}
+                                        color="inherit"
+                                    />
                                 ) : (
                                     <Save />
                                 )
@@ -506,14 +509,21 @@ const ProizvodIzmeni = () => {
                                     Informacije o proizvodu
                                 </SectionTitle>
                                 <Stack spacing={3}>
-                                    <Stack direction="row" spacing={1} alignItems="flex-start">
+                                    <Stack
+                                        direction="row"
+                                        spacing={1}
+                                        alignItems="flex-start"
+                                    >
                                         <TextField
                                             fullWidth
                                             required
                                             label="Naziv proizvoda"
                                             value={requestBody.name}
                                             onChange={(e) =>
-                                                updateField('name', e.target.value)
+                                                updateField(
+                                                    'name',
+                                                    e.target.value
+                                                )
                                             }
                                             helperText="Pun naziv proizvoda koji će se prikazivati kupcima. Budite precizni i opisni."
                                         />
@@ -522,14 +532,20 @@ const ProizvodIzmeni = () => {
                                             onClick={() =>
                                                 handleAiValidation(
                                                     'name',
-                                                    ENDPOINTS_CONSTANTS.PRODUCTS.AI_VALIDATE_NAME(productId),
+                                                    ENDPOINTS_CONSTANTS.PRODUCTS.AI_VALIDATE_NAME(
+                                                        productId
+                                                    ),
                                                     'Naziv proizvoda'
                                                 )
                                             }
-                                            disabled={isValidating || !requestBody.name}
+                                            disabled={
+                                                isValidating ||
+                                                !requestBody.name
+                                            }
                                             title="AI validacija naziva"
                                         >
-                                            {isValidating && aiFieldName === 'name' ? (
+                                            {isValidating &&
+                                            aiFieldName === 'name' ? (
                                                 <CircularProgress size={20} />
                                             ) : (
                                                 <AutoFixHigh />
@@ -540,20 +556,50 @@ const ProizvodIzmeni = () => {
                                             onClick={() =>
                                                 handleAiGenerate(
                                                     'name',
-                                                    ENDPOINTS_CONSTANTS.PRODUCTS.AI_GENERATE_NAME(productId),
+                                                    ENDPOINTS_CONSTANTS.PRODUCTS.AI_GENERATE_NAME(
+                                                        productId
+                                                    ),
                                                     'Naziv proizvoda'
                                                 )
                                             }
                                             disabled={isGenerating}
                                             title="AI generisanje naziva"
                                         >
-                                            {isGenerating && aiFieldName === 'name' ? (
+                                            {isGenerating &&
+                                            aiFieldName === 'name' ? (
                                                 <CircularProgress size={20} />
                                             ) : (
                                                 <AutoAwesome />
                                             )}
                                         </IconButton>
                                     </Stack>
+
+                                    <TextField
+                                        fullWidth
+                                        disabled
+                                        label="Tačan naziv za pretraživače"
+                                        value={
+                                            requestBody.name
+                                                ? `${requestBody.name} - Termodom`
+                                                : ''
+                                        }
+                                        helperText={
+                                            <>
+                                                Naziv koji će se koristiti za SEO optimizaciju (automatski generiše se sa sufiksom " - Termodom"). Dužina:{' '}
+                                                <Box
+                                                    component="span"
+                                                    sx={{
+                                                        color: (requestBody.name ? `${requestBody.name} - Termodom` : '').length > 60
+                                                            ? 'error.main'
+                                                            : 'success.main',
+                                                        fontWeight: 'bold'
+                                                    }}
+                                                >
+                                                    {(requestBody.name ? `${requestBody.name} - Termodom` : '').length} karaktera
+                                                </Box>
+                                            </>
+                                        }
+                                    />
 
                                     <Stack
                                         direction={{ xs: 'column', sm: 'row' }}
@@ -617,7 +663,11 @@ const ProizvodIzmeni = () => {
                                         )}
                                     </TextField>
 
-                                    <Stack direction="row" spacing={1} alignItems="flex-start">
+                                    <Stack
+                                        direction="row"
+                                        spacing={1}
+                                        alignItems="flex-start"
+                                    >
                                         <TextField
                                             fullWidth
                                             label="Kratak opis"
@@ -628,21 +678,43 @@ const ProizvodIzmeni = () => {
                                                     e.target.value
                                                 )
                                             }
-                                            helperText="Sažet opis (1-2 rečenice) koji se prikazuje u listi proizvoda i rezultatima pretrage."
+                                            helperText={
+                                                <>
+                                                    Sažet opis (120-155 karaktera) koji se prikazuje u listi proizvoda i rezultatima pretrage. Dužina:{' '}
+                                                    <Box
+                                                        component="span"
+                                                        sx={{
+                                                            color: (requestBody.shortDescription?.length || 0) < 120 || (requestBody.shortDescription?.length || 0) > 155
+                                                                ? 'error.main'
+                                                                : 'success.main',
+                                                            fontWeight: 'bold'
+                                                        }}
+                                                    >
+                                                        {requestBody.shortDescription?.length || 0} karaktera
+                                                    </Box>
+                                                </>
+                                            }
                                         />
                                         <IconButton
                                             color="primary"
                                             onClick={() =>
                                                 handleAiValidation(
                                                     'shortDescription',
-                                                    ENDPOINTS_CONSTANTS.PRODUCTS.AI_VALIDATE_SHORT_DESCRIPTION(productId),
+                                                    ENDPOINTS_CONSTANTS.PRODUCTS.AI_VALIDATE_SHORT_DESCRIPTION(
+                                                        productId
+                                                    ),
                                                     'Kratak opis'
                                                 )
                                             }
-                                            disabled={isValidating || !requestBody.shortDescription}
+                                            disabled={
+                                                isValidating ||
+                                                !requestBody.shortDescription
+                                            }
                                             title="AI validacija kratkog opisa"
                                         >
-                                            {isValidating && aiFieldName === 'shortDescription' ? (
+                                            {isValidating &&
+                                            aiFieldName ===
+                                                'shortDescription' ? (
                                                 <CircularProgress size={20} />
                                             ) : (
                                                 <AutoFixHigh />
@@ -653,14 +725,18 @@ const ProizvodIzmeni = () => {
                                             onClick={() =>
                                                 handleAiGenerate(
                                                     'shortDescription',
-                                                    ENDPOINTS_CONSTANTS.PRODUCTS.AI_GENERATE_SHORT_DESCRIPTION(productId),
+                                                    ENDPOINTS_CONSTANTS.PRODUCTS.AI_GENERATE_SHORT_DESCRIPTION(
+                                                        productId
+                                                    ),
                                                     'Kratak opis'
                                                 )
                                             }
                                             disabled={isGenerating}
                                             title="AI generisanje kratkog opisa"
                                         >
-                                            {isGenerating && aiFieldName === 'shortDescription' ? (
+                                            {isGenerating &&
+                                            aiFieldName ===
+                                                'shortDescription' ? (
                                                 <CircularProgress size={20} />
                                             ) : (
                                                 <AutoAwesome />
@@ -668,7 +744,11 @@ const ProizvodIzmeni = () => {
                                         </IconButton>
                                     </Stack>
 
-                                    <Stack direction="row" spacing={1} alignItems="flex-start">
+                                    <Stack
+                                        direction="row"
+                                        spacing={1}
+                                        alignItems="flex-start"
+                                    >
                                         <TextField
                                             fullWidth
                                             multiline
@@ -689,15 +769,24 @@ const ProizvodIzmeni = () => {
                                                 onClick={() =>
                                                     handleAiValidation(
                                                         'description',
-                                                        ENDPOINTS_CONSTANTS.PRODUCTS.AI_VALIDATE_DESCRIPTION(productId),
+                                                        ENDPOINTS_CONSTANTS.PRODUCTS.AI_VALIDATE_DESCRIPTION(
+                                                            productId
+                                                        ),
                                                         'Pun opis proizvoda'
                                                     )
                                                 }
-                                                disabled={isValidating || !requestBody.description}
+                                                disabled={
+                                                    isValidating ||
+                                                    !requestBody.description
+                                                }
                                                 title="AI validacija opisa"
                                             >
-                                                {isValidating && aiFieldName === 'description' ? (
-                                                    <CircularProgress size={20} />
+                                                {isValidating &&
+                                                aiFieldName ===
+                                                    'description' ? (
+                                                    <CircularProgress
+                                                        size={20}
+                                                    />
                                                 ) : (
                                                     <AutoFixHigh />
                                                 )}
@@ -707,15 +796,21 @@ const ProizvodIzmeni = () => {
                                                 onClick={() =>
                                                     handleAiGenerate(
                                                         'description',
-                                                        ENDPOINTS_CONSTANTS.PRODUCTS.AI_GENERATE_DESCRIPTION(productId),
+                                                        ENDPOINTS_CONSTANTS.PRODUCTS.AI_GENERATE_DESCRIPTION(
+                                                            productId
+                                                        ),
                                                         'Pun opis proizvoda'
                                                     )
                                                 }
                                                 disabled={isGenerating}
                                                 title="AI generisanje opisa"
                                             >
-                                                {isGenerating && aiFieldName === 'description' ? (
-                                                    <CircularProgress size={20} />
+                                                {isGenerating &&
+                                                aiFieldName ===
+                                                    'description' ? (
+                                                    <CircularProgress
+                                                        size={20}
+                                                    />
                                                 ) : (
                                                     <AutoAwesome />
                                                 )}
@@ -776,9 +871,10 @@ const ProizvodIzmeni = () => {
                         <Alert severity="info" sx={{ mb: 2 }}>
                             <Typography variant="body2">
                                 <strong>Saveti:</strong> Dodajte varijante
-                                naziva (npr. &quot;lepak&quot; i &quot;ljepilo&quot;), brendove,
-                                dimenzije, boje i druge atribute po kojima bi
-                                kupci mogli tražiti proizvod.
+                                naziva (npr. &quot;lepak&quot; i
+                                &quot;ljepilo&quot;), brendove, dimenzije, boje
+                                i druge atribute po kojima bi kupci mogli
+                                tražiti proizvod.
                             </Typography>
                         </Alert>
 
